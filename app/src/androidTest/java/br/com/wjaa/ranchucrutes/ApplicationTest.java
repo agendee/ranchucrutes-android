@@ -1,4 +1,4 @@
-package wjaa.com.br.ranchucrutes;
+package br.com.wjaa.ranchucrutes;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
