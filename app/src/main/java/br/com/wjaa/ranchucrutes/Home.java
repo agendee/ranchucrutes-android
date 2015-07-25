@@ -34,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Home extends FragmentActivity implements
+import roboguice.activity.RoboFragmentActivity;
+
+public class Home extends RoboFragmentActivity implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnMarkerDragListener,
