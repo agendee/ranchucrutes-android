@@ -1,21 +1,19 @@
-package br.com.wjaa.ranchucrutes;
+package br.com.wjaa.ranchucrutes.activity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,13 +27,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.service.MedicoService;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
+import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
+import roboguice.RoboGuice;
 import roboguice.activity.RoboFragmentActivity;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
+@ContentView(R.layout.activity_home)
 public class Home extends RoboFragmentActivity implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
@@ -43,11 +50,14 @@ public class Home extends RoboFragmentActivity implements
         SeekBar.OnSeekBarChangeListener,
         OnMapReadyCallback {
 
+    private static final String TAG = Home.class.getSimpleName();
     private static final LatLng BRISBANE = new LatLng(-27.47093, 153.0235);
     private static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
     private static final LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
     private static final LatLng ADELAIDE = new LatLng(-34.92873, 138.59995);
     private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
+
+    static { RoboGuice.setUseAnnotationDatabases(false);}
 
     /** Demonstrates customizing the info window and/or its contents. */
     class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
@@ -63,22 +73,18 @@ public class Home extends RoboFragmentActivity implements
 
         @Override
         public View getInfoWindow(Marker marker) {
-            if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_window) {
-                // This means that getInfoContents will be called.
-                return null;
-            }
             render(marker, mWindow);
             return mWindow;
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
+            //if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
                 // This means that the default info contents will be used.
                 return null;
-            }
-            render(marker, mContents);
-            return mContents;
+           // }
+            //render(marker, mContents);
+           // return mContents;
         }
 
         private void render(Marker marker, View view) {
@@ -140,40 +146,41 @@ public class Home extends RoboFragmentActivity implements
 
     private final List<Marker> mMarkerRainbow = new ArrayList<Marker>();
 
-    private TextView mTopText;
-    private SeekBar mRotationBar;
-    private CheckBox mFlatBox;
-    private RadioGroup mOptions;
+    //@InjectView(R.id.top_text)
+    //private TextView mTopText;
+
+    @Inject
+    private RanchucrutesService ranchucrutesService;
+
+    @Inject
+    private MedicoService medicoService;
+
+    private EspecialidadeVo [] especialidades;
 
     private final Random mRandom = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-        mTopText = (TextView) findViewById(R.id.top_text);
-
-        mRotationBar = (SeekBar) findViewById(R.id.rotationSeekBar);
-        mRotationBar.setMax(360);
-        mRotationBar.setOnSeekBarChangeListener(this);
-
-        mFlatBox = (CheckBox) findViewById(R.id.flat);
-
-        mOptions = (RadioGroup) findViewById(R.id.custom_info_window_options);
-        mOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        Thread thread = new Thread(new Runnable(){
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (mLastSelectedMarker != null && mLastSelectedMarker.isInfoWindowShown()) {
-                    // Refresh the info window when the info window's content has changed.
-                    mLastSelectedMarker.showInfoWindow();
+            public void run() {
+                try {
+                    especialidades = ranchucrutesService.getEspecialidades();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        thread.start();
+
+        Log.i(TAG,"ESPECS = " + especialidades);
+
     }
 
     @Override
@@ -227,6 +234,9 @@ public class Home extends RoboFragmentActivity implements
     }
 
     private void addMarkersToMap() {
+
+
+
         // Uses a colored icon.
         mBrisbane = mMap.addMarker(new MarkerOptions()
                 .position(BRISBANE)
@@ -288,7 +298,7 @@ public class Home extends RoboFragmentActivity implements
     }
 
     /** Called when the Reset button is clicked. */
-    public void onToggleFlat(View view) {
+   /* public void onToggleFlat(View view) {
         if (!checkReady()) {
             return;
         }
@@ -296,7 +306,7 @@ public class Home extends RoboFragmentActivity implements
         for (Marker marker : mMarkerRainbow) {
             marker.setFlat(flat);
         }
-    }
+    }*/
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -367,16 +377,19 @@ public class Home extends RoboFragmentActivity implements
 
     @Override
     public void onMarkerDragStart(Marker marker) {
-        mTopText.setText("onMarkerDragStart");
+
+        //
+        // mTopText.setText("onMarkerDragStart");
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        mTopText.setText("onMarkerDragEnd");
+
+        //mTopText.setText("onMarkerDragEnd");
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
+        //mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
     }
 }
