@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +70,7 @@ public class Home extends RoboFragmentActivity implements
     private GoogleMap mMap;
     private MarkerOptions you;
     private Map<String,MedicoBasicoVo> medicos = new HashMap<String, MedicoBasicoVo>();
+    private ProgressDialog dialog;
 
     /**
      * Keeps track of the last selected marker (though it may no longer be selected).  This is
@@ -100,6 +102,9 @@ public class Home extends RoboFragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dialog = new ProgressDialog(Home.this);
+        dialog.setMessage("Aguarde, carregando dados...");
+        dialog.show();
 
         this.createBtnEspec();
 
@@ -119,6 +124,9 @@ public class Home extends RoboFragmentActivity implements
                     Toast.makeText(Home.this, "Selecione uma especilidade", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                dialog = new ProgressDialog(Home.this);
+                dialog.setMessage("Procurando médicos, aguarde!");
+                dialog.show();
 
                 ProcurarMedicosTask t = new ProcurarMedicosTask(view);
                 t.execute();
@@ -162,7 +170,9 @@ public class Home extends RoboFragmentActivity implements
                             dialog.show();
                         }
                     });
-
+                    if (dialog != null){
+                        dialog.dismiss();
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -178,7 +188,8 @@ public class Home extends RoboFragmentActivity implements
         mMap = map;
 
         // Hide the zoom controls as the button panel will cover it.
-        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         // Add lots of markers to the map.
         //addMarkersToMap();
@@ -213,10 +224,11 @@ public class Home extends RoboFragmentActivity implements
                     } else {
                         mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 14));
                 }
             });
         }
+
     }
 
     private boolean checkReady() {
@@ -405,25 +417,29 @@ public class Home extends RoboFragmentActivity implements
             }*/
             ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
             MedicoBasicoVo medico = medicos.get(marker.getId());
-            TextView nomeMedico = ((TextView) view.findViewById(R.id.nome));
-            SpannableString medicoText = new SpannableString(medico.getNome());
-            medicoText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, medicoText.length(), 0);
-            nomeMedico.setText(medicoText);
 
-            TextView crmMedico = ((TextView) view.findViewById(R.id.crm));
-            String crm = medico.getCrm() != null ? medico.getCrm().toString() : "";
-            SpannableString crmText = new SpannableString(crm);
-            crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
-            crmMedico.setText(crmText);
+            if (medico != null){
+                TextView nomeMedico = ((TextView) view.findViewById(R.id.nome));
+                SpannableString medicoText = new SpannableString(medico.getNome());
+                medicoText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, medicoText.length(), 0);
+                nomeMedico.setText(medicoText);
 
-            TextView especMedico = ((TextView) view.findViewById(R.id.espec));
-            especMedico.setText(medico.getEspec());
+                TextView crmMedico = ((TextView) view.findViewById(R.id.crm));
+                String crm = medico.getCrm() != null ? medico.getCrm().toString() : "";
+                SpannableString crmText = new SpannableString(crm);
+                crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
+                crmMedico.setText(crmText);
 
-            TextView endMedico = ((TextView) view.findViewById(R.id.endereco));
-            endMedico.setText(medico.getEndereco());
+                TextView especMedico = ((TextView) view.findViewById(R.id.espec));
+                especMedico.setText(medico.getEspec());
 
-            TextView telMedico = ((TextView) view.findViewById(R.id.telefone));
-            telMedico.setText(medico.getTelefone());
+                TextView endMedico = ((TextView) view.findViewById(R.id.endereco));
+                endMedico.setText(medico.getEndereco());
+
+                TextView telMedico = ((TextView) view.findViewById(R.id.telefone));
+                telMedico.setText(medico.getTelefone());
+            }
+
 
         }
     }
@@ -439,7 +455,6 @@ public class Home extends RoboFragmentActivity implements
 
         @Override
         public Void call() throws Exception {
-
             ResultadoBuscaMedicoVo resultado = medicoService.find(especSelecionada.getId(), "07020280");
 
 
@@ -479,12 +494,10 @@ public class Home extends RoboFragmentActivity implements
                     medicos.put(m.getId(),medico);
 
                 }
-
-                LatLngBounds bounds = new LatLngBounds.Builder()
-                        .include(you.getPosition())
-                        .build();
-
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 14));
+                if (dialog != null){
+                    dialog.dismiss();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
