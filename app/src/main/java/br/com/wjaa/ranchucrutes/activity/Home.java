@@ -1,19 +1,21 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.Interpolator;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,17 +32,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
+import br.com.wjaa.ranchucrutes.vo.MedicoBasicoVo;
+import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
 import roboguice.RoboGuice;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+import roboguice.util.RoboAsyncTask;
 
 @ContentView(R.layout.activity_home)
 public class Home extends RoboFragmentActivity implements
@@ -51,92 +58,17 @@ public class Home extends RoboFragmentActivity implements
         OnMapReadyCallback {
 
     private static final String TAG = Home.class.getSimpleName();
-    private static final LatLng BRISBANE = new LatLng(-27.47093, 153.0235);
-    private static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-    private static final LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
-    private static final LatLng ADELAIDE = new LatLng(-34.92873, 138.59995);
-    private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
+    private static final LatLng CENTER = new LatLng(-23.545616, -46.629299);
 
-    static { RoboGuice.setUseAnnotationDatabases(false);}
 
-    /** Demonstrates customizing the info window and/or its contents. */
-    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-        // These a both viewgroups containing an ImageView with id "badge" and two TextViews with id
-        // "title" and "snippet".
-        private final View mWindow;
-        private final View mContents;
-
-        CustomInfoWindowAdapter() {
-            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
-        }
-
-        @Override
-        public View getInfoWindow(Marker marker) {
-            render(marker, mWindow);
-            return mWindow;
-        }
-
-        @Override
-        public View getInfoContents(Marker marker) {
-            //if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
-                // This means that the default info contents will be used.
-                return null;
-           // }
-            //render(marker, mContents);
-           // return mContents;
-        }
-
-        private void render(Marker marker, View view) {
-            int badge;
-            // Use the equals() method on a Marker to check for equals.  Do not use ==.
-            if (marker.equals(mBrisbane)) {
-                badge = R.drawable.badge_qld;
-            } else if (marker.equals(mAdelaide)) {
-                badge = R.drawable.badge_sa;
-            } else if (marker.equals(mSydney)) {
-                badge = R.drawable.badge_nsw;
-            } else if (marker.equals(mMelbourne)) {
-                badge = R.drawable.badge_victoria;
-            } else if (marker.equals(mPerth)) {
-                badge = R.drawable.badge_wa;
-            } else {
-                // Passing 0 to setImageResource will clear the image view.
-                badge = 0;
-            }
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
-
-            String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
-            if (title != null) {
-                // Spannable string allows us to edit the formatting of the text.
-                SpannableString titleText = new SpannableString(title);
-                titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
-                titleUi.setText(titleText);
-            } else {
-                titleUi.setText("");
-            }
-
-            String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 12) {
-                SpannableString snippetText = new SpannableString(snippet);
-                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
-                snippetUi.setText(snippetText);
-            } else {
-                snippetUi.setText("");
-            }
-        }
+    static {
+        RoboGuice.setUseAnnotationDatabases(false);
     }
 
+    private EspecialidadeVo especSelecionada;
     private GoogleMap mMap;
-
-    private Marker mPerth;
-    private Marker mSydney;
-    private Marker mBrisbane;
-    private Marker mAdelaide;
-    private Marker mMelbourne;
+    private MarkerOptions you;
+    private Map<String,MedicoBasicoVo> medicos = new HashMap<String, MedicoBasicoVo>();
 
     /**
      * Keeps track of the last selected marker (though it may no longer be selected).  This is
@@ -155,6 +87,12 @@ public class Home extends RoboFragmentActivity implements
     @Inject
     private MedicoService medicoService;
 
+    @InjectView(R.id.btnSelectEspec)
+    private Button btnEspecilidade;
+
+    @InjectView(R.id.btnProcurar)
+    private Button btnProcurarMedicos;
+
     private EspecialidadeVo [] especialidades;
 
     private final Random mRandom = new Random();
@@ -162,15 +100,70 @@ public class Home extends RoboFragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.createBtnEspec();
+
+        this.createBtnProcurar();
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+    }
+
+    private void createBtnProcurar() {
+        btnProcurarMedicos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (especSelecionada == null) {
+                    Toast.makeText(Home.this, "Selecione uma especilidade", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ProcurarMedicosTask t = new ProcurarMedicosTask(view);
+                t.execute();
+
+
+            }
+
+        });
+    }
+
+    private void createBtnEspec() {
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
                 try {
                     especialidades = ranchucrutesService.getEspecialidades();
+
+                    btnEspecilidade.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+
+                            builder.setTitle("Selecione uma especilidade");
+                            ListView modeList = new ListView(Home.this);
+                            builder.setView(modeList);
+
+                            final Dialog dialog = builder.create();
+                            ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(Home.this, android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    TextView t = new TextView(parent.getContext());
+                                    t.setTextAppearance(parent.getContext(),R.style.listDefault);
+                                    t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialog));
+                                    t.setText(especialidades[position].getNome());
+                                    return t;
+                                }
+                            };
+                            modeList.setAdapter(modeAdapter);
+
+
+                            dialog.show();
+                        }
+                    });
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -178,9 +171,6 @@ public class Home extends RoboFragmentActivity implements
         });
 
         thread.start();
-
-        Log.i(TAG,"ESPECS = " + especialidades);
-
     }
 
     @Override
@@ -191,7 +181,7 @@ public class Home extends RoboFragmentActivity implements
         mMap.getUiSettings().setZoomControlsEnabled(false);
 
         // Add lots of markers to the map.
-        addMarkersToMap();
+        //addMarkersToMap();
 
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
@@ -204,7 +194,7 @@ public class Home extends RoboFragmentActivity implements
 
         // Override the default content description on the view, for accessibility mode.
         // Ideally this string would be localised.
-        map.setContentDescription("Map with lots of markers.");
+        map.setContentDescription("medicos localizados");
 
         // Pan to see all markers in view.
         // Cannot zoom to bounds until the map has a size.
@@ -216,59 +206,17 @@ public class Home extends RoboFragmentActivity implements
                 @Override
                 public void onGlobalLayout() {
                     LatLngBounds bounds = new LatLngBounds.Builder()
-                            .include(PERTH)
-                            .include(SYDNEY)
-                            .include(ADELAIDE)
-                            .include(BRISBANE)
-                            .include(MELBOURNE)
+                            .include(CENTER)
                             .build();
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                         mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     } else {
                         mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
                 }
             });
         }
-    }
-
-    private void addMarkersToMap() {
-
-
-
-        // Uses a colored icon.
-        mBrisbane = mMap.addMarker(new MarkerOptions()
-                .position(BRISBANE)
-                .title("Brisbane")
-                .snippet("Population: 2,074,200")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
-        // Uses a custom icon with the info window popping out of the center of the icon.
-        mSydney = mMap.addMarker(new MarkerOptions()
-                .position(SYDNEY)
-                .title("Sydney")
-                .snippet("Population: 4,627,300")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow))
-                .infoWindowAnchor(0.5f, 0.5f));
-
-        // Creates a draggable marker. Long press to drag.
-        mMelbourne = mMap.addMarker(new MarkerOptions()
-                .position(MELBOURNE)
-                .title("Melbourne")
-                .snippet("Population: 4,137,400")
-                .draggable(true));
-
-        // A few more markers for good measure.
-        mPerth = mMap.addMarker(new MarkerOptions()
-                .position(PERTH)
-                .title("Perth")
-                .snippet("Population: 1,738,800"));
-        mAdelaide = mMap.addMarker(new MarkerOptions()
-                .position(ADELAIDE)
-                .title("Adelaide")
-                .snippet("Population: 1,213,000"));
-
     }
 
     private boolean checkReady() {
@@ -294,7 +242,6 @@ public class Home extends RoboFragmentActivity implements
         }
         // Clear the map because we don't want duplicates of the markers.
         mMap.clear();
-        addMarkersToMap();
     }
 
     /** Called when the Reset button is clicked. */
@@ -335,7 +282,7 @@ public class Home extends RoboFragmentActivity implements
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        if (marker.equals(mPerth)) {
+        /*if (marker.equals(mPerth)) {
             // This causes the marker at Perth to bounce into position when it is clicked.
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
@@ -361,7 +308,7 @@ public class Home extends RoboFragmentActivity implements
             // This causes the marker at Adelaide to change color and alpha.
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(mRandom.nextFloat() * 360));
             marker.setAlpha(mRandom.nextFloat());
-        }
+        }*/
 
         mLastSelectedMarker = marker;
         // We return false to indicate that we have not consumed the event and that we wish
@@ -392,4 +339,157 @@ public class Home extends RoboFragmentActivity implements
     public void onMarkerDrag(Marker marker) {
         //mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
     }
+
+
+    class EspecOnClickListener implements View.OnClickListener{
+
+        private EspecialidadeVo especialidadeVo;
+        private Dialog dialog;
+        EspecOnClickListener(EspecialidadeVo especialidadeVo, Dialog dialog){
+            this.especialidadeVo = especialidadeVo;
+            this.dialog = dialog;
+        }
+        @Override
+        public void onClick(View view) {
+            especSelecionada = this.especialidadeVo;
+            btnEspecilidade.setText(especSelecionada.getNome());
+            dialog.dismiss();
+        }
+    }
+
+
+    /** Demonstrates customizing the info window and/or its contents. */
+    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        // These a both viewgroups containing an ImageView with id "badge" and two TextViews with id
+        // "title" and "snippet".
+        private final View mWindow;
+        private final View mContents;
+
+        CustomInfoWindowAdapter() {
+            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            render(marker, mWindow);
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            //if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
+            // This means that the default info contents will be used.
+            return null;
+            // }
+            //render(marker, mContents);
+            // return mContents;
+        }
+
+        private void render(Marker marker, View view) {
+            int badge = 0;
+            // Use the equals() method on a Marker to check for equals.  Do not use ==.
+           /* if (marker.equals(mBrisbane)) {
+                badge = R.drawable.badge_qld;
+            } else if (marker.equals(mAdelaide)) {
+                badge = R.drawable.badge_sa;
+            } else if (marker.equals(mSydney)) {
+                badge = R.drawable.badge_nsw;
+            } else if (marker.equals(mMelbourne)) {
+                badge = R.drawable.badge_victoria;
+            } else if (marker.equals(mPerth)) {
+                badge = R.drawable.badge_wa;
+            } else {
+                // Passing 0 to setImageResource will clear the image view.
+                badge = 0;
+            }*/
+            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
+            MedicoBasicoVo medico = medicos.get(marker.getId());
+            TextView nomeMedico = ((TextView) view.findViewById(R.id.nome));
+            SpannableString medicoText = new SpannableString(medico.getNome());
+            medicoText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, medicoText.length(), 0);
+            nomeMedico.setText(medicoText);
+
+            TextView crmMedico = ((TextView) view.findViewById(R.id.crm));
+            String crm = medico.getCrm() != null ? medico.getCrm().toString() : "";
+            SpannableString crmText = new SpannableString(crm);
+            crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
+            crmMedico.setText(crmText);
+
+            TextView especMedico = ((TextView) view.findViewById(R.id.espec));
+            especMedico.setText(medico.getEspec());
+
+            TextView endMedico = ((TextView) view.findViewById(R.id.endereco));
+            endMedico.setText(medico.getEndereco());
+
+            TextView telMedico = ((TextView) view.findViewById(R.id.telefone));
+            telMedico.setText(medico.getTelefone());
+
+        }
+    }
+
+
+    class ProcurarMedicosTask extends RoboAsyncTask<Void>{
+
+        private View view;
+        ProcurarMedicosTask(View v){
+            super(v.getContext());
+            this.view = v;
+        }
+
+        @Override
+        public Void call() throws Exception {
+
+            ResultadoBuscaMedicoVo resultado = medicoService.find(especSelecionada.getId(), "07020280");
+
+
+            if (resultado != null) {
+                ReloadMarkerThread r = new ReloadMarkerThread(resultado);
+                ((Activity)view.getContext()).runOnUiThread(r);
+
+            }
+
+           return null;
+        }
+    }
+
+
+    class ReloadMarkerThread extends Thread{
+
+        private ResultadoBuscaMedicoVo resultado;
+        ReloadMarkerThread(ResultadoBuscaMedicoVo resultado){
+            this.resultado = resultado;
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                mMap.clear();
+                medicos.clear();
+                Marker you = mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(resultado.getLatitude(), resultado.getLongitude()))
+                        .title("Você está aqui")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+                for (MedicoBasicoVo medico : resultado.getMedicos()) {
+                    Marker m = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(medico.getLatitude(), medico.getLongitude()))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                    medicos.put(m.getId(),medico);
+
+                }
+
+                LatLngBounds bounds = new LatLngBounds.Builder()
+                        .include(you.getPosition())
+                        .build();
+
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        }
+    }
+
 }

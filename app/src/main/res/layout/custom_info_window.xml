@@ -31,7 +31,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <TextView
-      android:id="@+id/title"
+      android:id="@+id/nome"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
@@ -41,7 +41,31 @@
       android:textSize="14dp"
       android:textStyle="bold"/>
     <TextView
-      android:id="@+id/snippet"
+      android:id="@+id/crm"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:textColor="#ff7f7f7f"
+      android:textSize="14dp"/>
+      <TextView
+      android:id="@+id/espec"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:textColor="#ff7f7f7f"
+      android:textSize="14dp"/>
+      <TextView
+      android:id="@+id/endereco"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:textColor="#ff7f7f7f"
+      android:textSize="14dp"/>
+      <TextView
+      android:id="@+id/telefone"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:ellipsize="end"

@@ -19,17 +19,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPostalAddress"
-        android:ems="10"
-        android:id="@+id/edtCep" />
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:weightSum="1">
 
+        <EditText
+            android:layout_width="215dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress"
+            android:ems="10"
+            android:id="@+id/edtCep"
+            android:drawableStart="@android:drawable/ic_menu_compass"
+            android:paddingRight="20px"
+            style="@style/edtDefault"
+            android:layout_weight="0.70" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="74dp"
+            android:id="@+id/imageButton"
+            android:src="@android:drawable/ic_menu_mylocation"
+            />
     </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
@@ -47,10 +62,27 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <SearchView
-                android:layout_width="wrap_content"
+
+            <Button
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/searchView" />
+                android:text="@string/bntSelectEspec"
+                android:id="@+id/btnSelectEspec"
+                android:drawableStart="@android:drawable/arrow_up_float"
+                android:paddingLeft="30px"
+                style="@style/btnDefault" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bntProcurar"
+                android:id="@+id/btnProcurar"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:paddingLeft="20px"
+                android:background="#FAF605"
+                style="@style/btnDefault"
+
+                />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

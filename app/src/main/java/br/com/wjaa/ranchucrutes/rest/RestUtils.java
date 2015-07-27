@@ -13,6 +13,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -75,22 +76,26 @@ public class RestUtils {
     public static <T>T postJson(Class<T> clazzReturn, String targetUrl, String uri, String json) throws
             RestResponseUnsatisfiedException, RestException, RestRequestUnstable {
 
-
+        OutputStream os = null;
+        HttpURLConnection conn = null;
+        InputStream in = null;
         try {
 
             URL url = new URL("http://" + targetUrl + "/" + uri);
 
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("application/json","UTF-8");
+            conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
             conn.setDoOutput(true);
-            OutputStream os = conn.getOutputStream();
+            conn.setDoInput(true);
+            conn.connect();
+            os = new BufferedOutputStream(conn.getOutputStream());
             os.write(json.getBytes());
             os.flush();
-            os.close();
 
-            Log.d(TAG,"Response Code: " + conn.getResponseCode());
-            InputStream in = new BufferedInputStream(conn.getInputStream());
+
+            Log.d(TAG, "Response Code: " + conn.getResponseCode());
+            in = new BufferedInputStream(conn.getInputStream());
             String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
             System.out.println(response);
 
@@ -114,7 +119,23 @@ public class RestUtils {
             throw new RestRequestUnstable(e.getMessage(), e);
         }  catch (Exception e) {
             throw new RestException(new ErrorMessageVo(500,e.getMessage()));
+        }finally {
+
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (in !=null) {
+                    in.close();
+                }
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     private static String createParamsPath(String[] params) {

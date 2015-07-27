@@ -5,4 +5,41 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="btnDefault">
+        <item name="android:textSize">30px</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">10px</item>
+        <item name="android:layout_marginBottom">10px</item>
+        <item name="android:layout_marginLeft">30px</item>
+        <item name="android:layout_marginRight">30px</item>
+    </style>
+
+
+    <style name="edtDefault">
+        <item name="android:textSize">30px</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">10px</item>
+        <item name="android:layout_marginBottom">10px</item>
+        <item name="android:layout_marginLeft">30px</item>
+        <item name="android:layout_marginRight">30px</item>
+    </style>
+
+    <style name="listDefault">
+        <item name="android:textSize">45px</item>
+        <item name="android:layout_marginTop">30px</item>
+        <item name="android:layout_marginBottom">30px</item>
+        <item name="android:layout_marginLeft">30px</item>
+        <item name="android:layout_marginRight">30px</item>
+        <item name="android:padding">20px</item>
+        <item name="android:listSelector">
+            <selector xmlns:android="http://schemas.android.com/apk/res/android">
+                <item android:drawable="@drawable/item_selected" android:state_pressed="true"/>
+                <item android:drawable="@drawable/item_focused" android:state_focused="true"/>
+                <item android:drawable="@drawable/item_normal"/>
+            </selector>
+        </item>
+    </style>
+
+
+
 </resources>
