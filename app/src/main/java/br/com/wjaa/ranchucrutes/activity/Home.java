@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -79,7 +80,6 @@ public class Home extends RoboFragmentActivity implements
     private Marker mLastSelectedMarker;
 
     private final List<Marker> mMarkerRainbow = new ArrayList<Marker>();
-
     //@InjectView(R.id.top_text)
     //private TextView mTopText;
 
@@ -91,6 +91,9 @@ public class Home extends RoboFragmentActivity implements
 
     @InjectView(R.id.btnSelectEspec)
     private Button btnEspecilidade;
+
+    @InjectView(R.id.edtCep)
+    private EditText edtCep;
 
     @InjectView(R.id.btnProcurar)
     private Button btnProcurarMedicos;
@@ -124,6 +127,12 @@ public class Home extends RoboFragmentActivity implements
                     Toast.makeText(Home.this, "Selecione uma especilidade", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                if (edtCep == null) {
+                    Toast.makeText(Home.this, "Digite um cep.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 dialog = new ProgressDialog(Home.this);
                 dialog.setMessage("Procurando médicos, aguarde!");
                 dialog.show();
@@ -190,6 +199,7 @@ public class Home extends RoboFragmentActivity implements
         // Hide the zoom controls as the button panel will cover it.
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
 
         // Add lots of markers to the map.
         //addMarkersToMap();
@@ -224,7 +234,7 @@ public class Home extends RoboFragmentActivity implements
                     } else {
                         mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 14));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 10));
                 }
             });
         }
@@ -415,7 +425,7 @@ public class Home extends RoboFragmentActivity implements
                 // Passing 0 to setImageResource will clear the image view.
                 badge = 0;
             }*/
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
+            //((ImageView) view.findViewById(R.id.badge)).setImageBitmap(ImageService.getBitmapFromURLWithScale();
             MedicoBasicoVo medico = medicos.get(marker.getId());
 
             if (medico != null){
@@ -438,6 +448,21 @@ public class Home extends RoboFragmentActivity implements
 
                 TextView telMedico = ((TextView) view.findViewById(R.id.telefone));
                 telMedico.setText(medico.getTelefone());
+            }else{
+                TextView nomeMedico = ((TextView) view.findViewById(R.id.nome));
+                nomeMedico.setText("Você está aqui");
+
+                TextView crmMedico = ((TextView) view.findViewById(R.id.crm));
+                crmMedico.setText("");
+
+                TextView especMedico = ((TextView) view.findViewById(R.id.espec));
+                especMedico.setText("");
+
+                TextView endMedico = ((TextView) view.findViewById(R.id.endereco));
+                endMedico.setText("");
+
+                TextView telMedico = ((TextView) view.findViewById(R.id.telefone));
+                telMedico.setText("");
             }
 
 
@@ -455,7 +480,7 @@ public class Home extends RoboFragmentActivity implements
 
         @Override
         public Void call() throws Exception {
-            ResultadoBuscaMedicoVo resultado = medicoService.find(especSelecionada.getId(), "07020280");
+            ResultadoBuscaMedicoVo resultado = medicoService.find(especSelecionada.getId(), edtCep.getText().toString());
 
 
             if (resultado != null) {
@@ -494,7 +519,7 @@ public class Home extends RoboFragmentActivity implements
                     medicos.put(m.getId(),medico);
 
                 }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 14));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 10));
                 if (dialog != null){
                     dialog.dismiss();
                 }
