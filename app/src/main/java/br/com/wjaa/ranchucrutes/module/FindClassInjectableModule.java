@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
 import br.com.wjaa.ranchucrutes.service.MedicoServiceImpl;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
@@ -25,7 +26,7 @@ public class FindClassInjectableModule implements Module {
     public void configure(Binder binder) {
         binder.bind(MedicoService.class).to(MedicoServiceImpl.class);
         binder.bind(RanchucrutesService.class).to(RanchucrutesServiceImpl.class);
-
+        binder.bind(RanchucrutesBuffer.class);
         //binder.bind(DataService.class).toInstance(new DataServiceImpl(this.context));
     }
 

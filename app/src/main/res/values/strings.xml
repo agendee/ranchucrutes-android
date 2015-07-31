@@ -1,6 +1,12 @@
 <resources>
-    <string name="app_name">ranchucrutes-android</string>
+    <string name="app_name">MarcMed</string>
     <string name="title_activity_home">MarcMed</string>
     <string name="bntProcurar">Procurar Médicos</string>
-    <string name="bntSelectEspec">Selecione a especialidade</string>
+    <string name="bntSelectEspec">Selecione uma especialidade</string>
+    <string name="msg_warning">Ops!</string>
+    <string name="msg_informeEspeciliade">Informe uma especilidade</string>
+    <string name="msg_informeCep">Informe um cep</string>
+    <string name="msg_buscaMedico">Procurando médicos, aguarde!</string>
+    <string name="msg_voceAqui">Você está aqui</string>
+    <string name="msg_aguarde">Aguarde carregando dados...</string>
 </resources>
