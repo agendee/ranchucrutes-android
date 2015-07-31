@@ -9,4 +9,5 @@
     <string name="msg_buscaMedico">Procurando médicos, aguarde!</string>
     <string name="msg_voceAqui">Você está aqui</string>
     <string name="msg_aguarde">Aguarde carregando dados...</string>
+    <string name="msg_nenhumMedicoEncontrado">Nenhum médico encontrado para essa especialidade</string>
 </resources>

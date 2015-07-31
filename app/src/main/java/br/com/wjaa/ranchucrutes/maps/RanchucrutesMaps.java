@@ -135,7 +135,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 Location l = mMap.getMyLocation();
                 editText.setText("Minha localização");
 
-                return true;
+                return false;
             }
         });
         // Add lots of markers to the map.
@@ -302,6 +302,13 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 13));
 
                 AndroidUtils.closeWaitDlg();
+                
+                if (resultado.getMedicos() == null || resultado.getMedicos().size() == 0){
+                    AndroidUtils.showMessageDlg(context.getString(R.string.msg_warning),
+                            context.getString(R.string.msg_nenhumMedicoEncontrado), context);
+                }else{
+                    Toast.makeText(context,resultado.getMedicos().size() + " Médicos foram encontrados", Toast.LENGTH_LONG);
+                }
 
             } catch (Exception ex) {
                 ex.printStackTrace();
