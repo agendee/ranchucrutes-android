@@ -3,16 +3,23 @@ package br.com.wjaa.ranchucrutes.maps;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,10 +32,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.vo.MedicoBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
@@ -41,11 +52,15 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMarkerDragListener,
         OnMapReadyCallback{
 
-
+    private static final String TAG = RanchucrutesMaps.class.getSimpleName();
     private static final LatLng CENTER = new LatLng(-23.545616, -46.629299);
 
     private FragmentActivity context;
+
+
+
     private GoogleMap mMap;
+    private Boolean reloadImage = true;
     private Marker mLastSelectedMarker;
     private Map<String,MedicoBasicoVo> medicos = new HashMap<String, MedicoBasicoVo>();
 
@@ -87,8 +102,12 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(mRandom.nextFloat() * 360));
             marker.setAlpha(mRandom.nextFloat());
         }*/
-
+        reloadImage = true;
         mLastSelectedMarker = marker;
+
+
+
+
         // We return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
@@ -97,7 +116,27 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(context, "Click Info Window", Toast.LENGTH_SHORT).show();
+
+        try{
+
+            MedicoBasicoVo m = medicos.get(marker.getId());
+
+            if (m != null && m.getTelefone() != null && !"".equals(m.getTelefone())){
+
+                AndroidUtils.showConfirmDlg("Ligar", "Esse médico não possui agenda online. \n Deseja ligar?",
+                        context, new DialogInfoWindowCallback(m));
+
+            }else{
+                AndroidUtils.showMessageDlg("Ops!", "Esse médico não possui agenda e telefone.", context);
+            }
+
+        }
+
+        catch(ActivityNotFoundException act){
+            Log.e("Exemplo de chamada", "falha", act);
+        }
+
+
     }
 
     @Override
@@ -128,19 +167,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
-        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                EditText editText = (EditText) context.findViewById(R.id.edtCep);
-                Location l = mMap.getMyLocation();
-                editText.setText("Minha localização");
-
-                return false;
-            }
-        });
-        // Add lots of markers to the map.
-        //addMarkersToMap();
-
+        mMap.setOnMyLocationButtonClickListener((GoogleMap.OnMyLocationButtonClickListener)context);
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
@@ -189,11 +216,11 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         // These a both viewgroups containing an ImageView with id "badge" and two TextViews with id
         // "title" and "snippet".
         private final View mWindow;
-        private final View mContents;
+        //private final View mContents;
 
         CustomInfoWindowAdapter() {
             mWindow = context.getLayoutInflater().inflate(R.layout.custom_info_window, null);
-            mContents = context.getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+           // mContents = context.getLayoutInflater().inflate(R.layout.custom_info_contents, null);
         }
 
         @Override
@@ -204,12 +231,11 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
         @Override
         public View getInfoContents(Marker marker) {
-            //if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
-            // This means that the default info contents will be used.
+            if (marker != null && marker.isInfoWindowShown()) {
+                marker.hideInfoWindow();
+                marker.showInfoWindow();
+            }
             return null;
-            // }
-            //render(marker, mContents);
-            // return mContents;
         }
 
         private void render(Marker marker, View view) {
@@ -229,10 +255,15 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 // Passing 0 to setImageResource will clear the image view.
                 badge = 0;
             }*/
-            //((ImageView) view.findViewById(R.id.badge)).setImageBitmap(ImageService.getBitmapFromURLWithScale();
+            //
             MedicoBasicoVo medico = medicos.get(marker.getId());
 
             if (medico != null){
+
+
+                LoadImage li = new LoadImage(view, medico, marker, this);
+                li.start();
+
                 TextView nomeMedico = ((TextView) view.findViewById(R.id.nome));
                 SpannableString medicoText = new SpannableString(medico.getNome());
                 medicoText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, medicoText.length(), 0);
@@ -242,7 +273,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 String crm = medico.getCrm() != null ? medico.getCrm().toString() : "";
                 SpannableString crmText = new SpannableString(crm);
                 crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
-                crmMedico.setText(crmText);
+                crmMedico.setText("CRM: " + crmText);
 
                 TextView especMedico = ((TextView) view.findViewById(R.id.espec));
                 especMedico.setText(medico.getEspec());
@@ -251,8 +282,18 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 endMedico.setText(medico.getEndereco());
 
                 TextView telMedico = ((TextView) view.findViewById(R.id.telefone));
-                telMedico.setText(medico.getTelefone());
+                if (medico.getTelefone() != null && !"".equals(medico.getTelefone())){
+
+                    telMedico.setText("Telefone: " + medico.getTelefone());
+                }else{
+                    telMedico.setText("Telefone: --");
+                }
+
+
             }else{
+
+                ImageView i = (ImageView) view.findViewById(R.id.badge);
+                i.setImageBitmap(null);
                 TextView nomeMedico = ((TextView) view.findViewById(R.id.nome));
                 nomeMedico.setText(R.string.msg_voceAqui);
 
@@ -273,6 +314,45 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         }
     }
 
+    class LoadImage extends Thread{
+        private View view;
+        private MedicoBasicoVo medico;
+        private Bitmap bitmap = null;
+        private Marker marker;
+        private CustomInfoWindowAdapter customInfoWindowAdapter;
+
+        LoadImage(View view, MedicoBasicoVo medico, Marker marker, CustomInfoWindowAdapter customInfoWindowAdapter){
+            this.view = view;
+            this.medico = medico;
+            this.marker = marker;
+            this.customInfoWindowAdapter = customInfoWindowAdapter;
+
+        }
+
+        @Override
+        public void run() {
+
+            String imageUrl = "http://marcmed.com.br/f/" + medico.getCrm() + ".jpg";
+            try {
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if( reloadImage ){
+                            ImageView i = (ImageView) view.findViewById(R.id.badge);
+                            i.setImageBitmap(bitmap);
+                            i.invalidate();
+                            customInfoWindowAdapter.getInfoContents(marker);
+                            reloadImage = false;
+                        }
+
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG,"Erro ao buscar a imagem", e);
+            }
+        }
+    }
 
     class ReloadMarkerThread extends Thread{
 
@@ -292,22 +372,26 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                         .title(context.getString(R.string.msg_voceAqui))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
-                for (MedicoBasicoVo medico : resultado.getMedicos()) {
-                    Marker m = mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(medico.getLatitude(), medico.getLongitude()))
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                    medicos.put(m.getId(),medico);
+                try{
+
+                    for (MedicoBasicoVo medico : resultado.getMedicos()) {
+                        Marker m = mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(medico.getLatitude(), medico.getLongitude()))
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                        medicos.put(m.getId(),medico);
+
+                    }
+                }catch(Exception ex){
 
                 }
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 13));
-
                 AndroidUtils.closeWaitDlg();
                 
                 if (resultado.getMedicos() == null || resultado.getMedicos().size() == 0){
                     AndroidUtils.showMessageDlg(context.getString(R.string.msg_warning),
                             context.getString(R.string.msg_nenhumMedicoEncontrado), context);
                 }else{
-                    Toast.makeText(context,resultado.getMedicos().size() + " Médicos foram encontrados", Toast.LENGTH_LONG);
+                    Toast.makeText(context,resultado.getMedicos().size() + " Médicos foram encontrados", Toast.LENGTH_SHORT);
                 }
 
             } catch (Exception ex) {
@@ -315,5 +399,31 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
             }
 
         }
+    }
+
+
+    class DialogInfoWindowCallback implements DialogCallback{
+
+        private MedicoBasicoVo medico;
+        DialogInfoWindowCallback(MedicoBasicoVo medico){
+            this.medico = medico;
+        }
+
+        @Override
+        public void confirm() {
+            Intent chamada = new Intent(Intent.ACTION_DIAL);
+            //pega a posição da pessoa
+            chamada.setData(Uri.parse("tel:" + medico.getTelefone().trim()));
+            context.startActivity(chamada);
+        }
+
+        @Override
+        public void cancel() {
+
+        }
+    }
+
+    public GoogleMap getmMap() {
+        return mMap;
     }
 }

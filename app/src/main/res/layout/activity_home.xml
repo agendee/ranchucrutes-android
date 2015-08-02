@@ -18,60 +18,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
 
-        <EditText
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/edtCep"
-            android:drawableStart="@android:drawable/ic_menu_compass"
-            android:paddingRight="20px"
-            style="@style/edtDefault" />
+            android:layout_height="match_parent">
+            <fragment
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_gravity="center" >
 
-    </LinearLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <fragment
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="346dp"
-            class="com.google.android.gms.maps.SupportMapFragment"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:id="@+id/edtCep"
+                        android:hint="Digite seu cep"
+                        android:layout_gravity="left|top"
+                        android:gravity="center"
+                        style="@style/edtDefault"
 
-    </FrameLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom|left"
-        android:background="#D000"
-        android:orientation="vertical"
-        android:padding="5dp">
+                         />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|left"
+                    android:orientation="vertical"
+                    android:paddingRight="50dp"
+                    android:paddingBottom="10dp"
+                    >
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bntSelectEspec"
+                        android:id="@+id/btnSelectEspec"
+                        android:drawableEnd="@android:drawable/arrow_up_float"
+                        style="@style/btnDefault" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bntProcurar"
+                        android:id="@+id/btnProcurar"
+                        android:drawableEnd="@android:drawable/ic_menu_search"
+                        android:alpha="0.8"
+                        style="@style/btnDefault"
+
+                        />
+                </LinearLayout>
+
+            </fragment>
+
+        </FrameLayout>
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/bntSelectEspec"
-            android:id="@+id/btnSelectEspec"
-            android:drawableStart="@android:drawable/arrow_up_float"
-            android:paddingLeft="30px"
-            style="@style/btnDefault" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/bntProcurar"
-            android:id="@+id/btnProcurar"
-            android:drawableStart="@android:drawable/ic_menu_search"
-            android:paddingLeft="20px"
-            android:background="#FAF605"
-            style="@style/btnDefault"
 
-            />
-    </LinearLayout>
 </LinearLayout>

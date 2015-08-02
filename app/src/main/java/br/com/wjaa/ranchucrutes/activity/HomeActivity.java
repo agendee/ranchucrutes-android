@@ -3,8 +3,11 @@ package br.com.wjaa.ranchucrutes.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.location.Location;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,7 +15,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.inject.Inject;
 
@@ -24,6 +30,7 @@ import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
+import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
 import roboguice.RoboGuice;
 import roboguice.activity.RoboFragmentActivity;
@@ -32,7 +39,7 @@ import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 
 @ContentView(R.layout.activity_home)
-public class HomeActivity extends RoboFragmentActivity {
+public class HomeActivity extends RoboFragmentActivity implements GoogleMap.OnMyLocationButtonClickListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -53,6 +60,7 @@ public class HomeActivity extends RoboFragmentActivity {
     private Button btnProcurarMedicos;
     private EspecialidadeVo [] especialidades;
     private RanchucrutesMaps ranchucrutesMaps = new RanchucrutesMaps(this);
+    private Location myLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +69,6 @@ public class HomeActivity extends RoboFragmentActivity {
     }
 
     private void initActivity() {
-        AndroidUtils.showWaitDlg(getString(R.string.msg_aguarde), HomeActivity.this);
         this.initBuffers();
         this.initEvents();
     }
@@ -73,8 +80,19 @@ public class HomeActivity extends RoboFragmentActivity {
     private void initEvents() {
         this.createBtnEspec();
         this.createBtnProcurar();
+        this.createEdtCep();
         this.createMaps();
 
+    }
+
+    private void createEdtCep() {
+        edtCep.setOnKeyListener(new OnKeyListener(){
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                myLocation = null;
+                return false;
+            }
+        });
     }
 
     private void createMaps() {
@@ -93,7 +111,7 @@ public class HomeActivity extends RoboFragmentActivity {
                     return;
                 }
 
-                if (edtCep.getText() == null || edtCep.getText().toString().trim().equals("")) {
+                if (myLocation == null && (edtCep.getText() == null || edtCep.getText().toString().trim().equals(""))) {
                     AndroidUtils.showMessageDlg(getString(R.string.msg_warning), getString(R.string.msg_informeCep), HomeActivity.this);
                     return;
                 }
@@ -114,26 +132,33 @@ public class HomeActivity extends RoboFragmentActivity {
                     btnEspecilidade.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
 
-                            builder.setTitle("Selecione uma especilidade");
-                            ListView modeList = new ListView(HomeActivity.this);
-                            builder.setView(modeList);
+                            especialidades = RanchucrutesBuffer.getEspecialidades();
 
-                            final Dialog dialogEspecs = builder.create();
+                            if (especialidades != null){
+                                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
 
-                            ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(HomeActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
-                                @Override
-                                public View getView(int position, View convertView, ViewGroup parent) {
-                                    TextView t = new TextView(parent.getContext());
-                                    t.setTextAppearance(parent.getContext(),R.style.listDefault);
-                                    t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
-                                    t.setText(especialidades[position].getNome());
-                                    return t;
-                                }
-                            };
-                            modeList.setAdapter(modeAdapter);
-                            dialogEspecs.show();
+                                builder.setTitle("Selecione uma especilidade");
+                                ListView modeList = new ListView(HomeActivity.this);
+                                builder.setView(modeList);
+                                final Dialog dialogEspecs = builder.create();
+                                ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(HomeActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
+                                    @Override
+                                    public View getView(int position, View convertView, ViewGroup parent) {
+                                        TextView t = new TextView(parent.getContext());
+                                        t.setTextAppearance(parent.getContext(),R.style.listDefault);
+                                        t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
+                                        t.setText(especialidades[position].getNome());
+                                        return t;
+                                    }
+                                };
+                                modeList.setAdapter(modeAdapter);
+                                dialogEspecs.show();
+                            }else{
+                                AndroidUtils.showMessageDlg("Ops!","Ocorreu algum problema na comunicação com o servidor",HomeActivity.this);
+                                especialidades = RanchucrutesBuffer.getEspecialidades();
+                            }
+
                         }
                     });
                     AndroidUtils.closeWaitDlg();
@@ -144,6 +169,23 @@ public class HomeActivity extends RoboFragmentActivity {
         });
 
         thread.start();
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        this.myLocation = this.ranchucrutesMaps.getmMap().getMyLocation();
+
+        if (this.myLocation == null){
+            AndroidUtils.showMessageDlg(getString(R.string.msg_warning),
+                    "Não foi possível pegar sua localização. \n Verique se o GPS está ativo.", this);
+        }else{
+            this.edtCep.setText("");
+            this.edtCep.setHint("Usando sua Localização");
+            this.ranchucrutesMaps.getmMap().moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(this.myLocation.getLatitude(),this.myLocation.getLongitude()), 13));
+        }
+        return true;
+
     }
 
     /**
@@ -174,7 +216,14 @@ public class HomeActivity extends RoboFragmentActivity {
         }
         @Override
         public Void call() throws Exception {
-            ResultadoBuscaMedicoVo resultado = medicoService.find(especSelecionada.getId(), edtCep.getText().toString());
+
+            ResultadoBuscaMedicoVo resultado = null;
+            if (myLocation != null){
+                resultado = medicoService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
+            }else{
+                resultado = medicoService.find(especSelecionada.getId(), edtCep.getText().toString());
+            }
+
             if (resultado != null) {
                 ranchucrutesMaps.realoadMarker(resultado);
             }
