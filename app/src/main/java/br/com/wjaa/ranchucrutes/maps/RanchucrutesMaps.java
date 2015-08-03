@@ -168,7 +168,6 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationButtonClickListener((GoogleMap.OnMyLocationButtonClickListener)context);
-        mMap.setPadding(0,0,0,220);
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
