@@ -218,7 +218,7 @@ public class HomeActivity extends RoboFragmentActivity implements GoogleMap.OnMy
         public Void call() throws Exception {
 
             ResultadoBuscaMedicoVo resultado = null;
-            if (myLocation != null){
+            if ((edtCep.getText() == null || "".equals(edtCep.getText().toString())) && myLocation != null){
                 resultado = medicoService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
             }else{
                 resultado = medicoService.find(especSelecionada.getId(), edtCep.getText().toString());
