@@ -10,4 +10,25 @@
     <string name="msg_voceAqui">Você está aqui</string>
     <string name="msg_aguarde">Aguarde carregando dados...</string>
     <string name="msg_nenhumMedicoEncontrado">Nenhum médico encontrado para essa especialidade</string>
+    <string name="action_menu">Menu Principal</string>
+
+    <string-array name="nav_drawer_items">
+        <item>Home</item>
+        <item>Cardápio</item>
+        <item>Notícias</item>
+        <item>Eventos</item>
+        <item>Locais</item>
+        <item>Anúncios</item>
+    </string-array>
+
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_media_play</item>
+        <item>@drawable/ic_media_pause</item>
+        <item>@drawable/ic_setting_dark</item>
+        <item>@drawable/ic_cast_dark</item>
+        <item>@drawable/ic_media_route_on_2_mono_dark</item>
+        <item>@drawable/ic_setting_light</item>
+    </array>
+
+
 </resources>

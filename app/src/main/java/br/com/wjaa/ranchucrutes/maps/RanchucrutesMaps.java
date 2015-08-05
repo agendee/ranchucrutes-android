@@ -54,19 +54,16 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
     private static final String TAG = RanchucrutesMaps.class.getSimpleName();
     private static final LatLng CENTER = new LatLng(-23.545616, -46.629299);
-
     private FragmentActivity context;
-
-
-
     private GoogleMap mMap;
     private Boolean reloadImage = true;
     private Marker mLastSelectedMarker;
     private Map<String,MedicoBasicoVo> medicos = new HashMap<String, MedicoBasicoVo>();
+    private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener;
 
-
-    public RanchucrutesMaps(Context context){
+    public RanchucrutesMaps(Context context, GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener){
         this.context = (FragmentActivity)context;
+        this.onMyLocationButtonClickListener = onMyLocationButtonClickListener;
     }
 
     //
@@ -167,7 +164,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setMyLocationEnabled(true);
-        mMap.setOnMyLocationButtonClickListener((GoogleMap.OnMyLocationButtonClickListener)context);
+        mMap.setOnMyLocationButtonClickListener(this.onMyLocationButtonClickListener);
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());

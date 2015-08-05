@@ -29,7 +29,7 @@ public class SplashActivity extends RoboActivity implements Runnable {
     }
 
     public void run(){
-        startActivity(new Intent(this, HomeActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 }
