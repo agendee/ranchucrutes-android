@@ -29,6 +29,22 @@
         <item>@drawable/ic_media_route_on_2_mono_dark</item>
         <item>@drawable/ic_setting_light</item>
     </array>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Configurações</string>
+    <string name="title_activity_navegator">NavegatorActivity</string>
+
+    <string name="drawer_open">Abrir</string>
+    <string name="drawer_close">Fechar</string>
 
 
 </resources>

@@ -2,151 +2,98 @@ package br.com.wjaa.ranchucrutes.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.res.TypedArray;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
 
-import java.util.ArrayList;
-
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.adapter.NavDrawerItem;
-import br.com.wjaa.ranchucrutes.adapter.NavDrawerListAdapter;
+import br.com.wjaa.ranchucrutes.fragment.MedicoFavoritoFragment;
+import br.com.wjaa.ranchucrutes.fragment.MeusDadosFragment;
+import roboguice.activity.RoboActionBarActivity;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectFragment;
+import roboguice.inject.InjectView;
 
 /**
  * Created by wagner on 04/08/15.
  */
 @ContentView(R.layout.main)
-public class MainActivity extends RoboFragmentActivity {
+public class MainActivity extends RoboActionBarActivity {
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    @InjectView(R.id.toolbar)
+    private Toolbar toolbar;
+    @InjectView(R.id.drawerLayout)
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
 
-    // slide menu items
-    private String[] navMenuTitles;
-    private TypedArray navMenuIcons;
+    @InjectView(R.id.left_drawer)
+    private ListView leftDrawerList;
 
-    private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter adapter;
-
-    private static boolean alreadyOpen = false;
+    private ArrayAdapter<String> navigationDrawerAdapter;
+    private String[] leftSliderData = {"Meus Dados", "Minhas Consultas", "Médicos Favoritos", "Fazer Login"};
 
     @Inject
     private HomeActivity home;
 
+    @Inject
+    private MedicoFavoritoFragment medicoFavorito;
+
+    @Inject
+    private MeusDadosFragment meusDadosFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayUseLogoEnabled(false);
-        getActionBar().setDisplayShowTitleEnabled(false);
-
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
-        // nav drawer icons from resources
-        navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-
-        navDrawerItems = new ArrayList<NavDrawerItem>();
-
-        // adding nav drawer items to array
-        // Home
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        // Find People
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
-        // Photos
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        // Communities, Will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
-        // Pages
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        // What's hot, We  will add a counter here
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1), true, "50+"));
-
-        // Recycle the typed array
-        navMenuIcons.recycle();
-
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
-
-        // setting the nav drawer list adapter
-        adapter = new NavDrawerListAdapter(getApplicationContext(), navDrawerItems);
-        mDrawerList.setAdapter(adapter);
-
-        if (savedInstanceState == null)
-        {
-            // on first time display view for first nav item
-            displayView(0);
+        //setContentView(R.layout.main);
+        nitView();
+        if (toolbar != null) {
+            toolbar.setTitle("MarcMed");
+            setSupportActionBar(toolbar);
         }
+        initDrawer();
+        displayView(0);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity_actions, menu);
-        return super.onCreateOptionsMenu(menu);
+    private void nitView() {
+        //leftDrawerList = (ListView) findViewById(R.id.left_drawer);
+        //toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        navigationDrawerAdapter=new ArrayAdapter<String>( MainActivity.this, android.R.layout.simple_list_item_1, leftSliderData);
+        leftDrawerList.setAdapter(navigationDrawerAdapter);
+        //leftDrawerList.setOnClickListener();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.action_menu:
-                mDrawerLayout.openDrawer(mDrawerList);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    private void initDrawer() {
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+
+            }
+        };
+        drawerLayout.setDrawerListener(drawerToggle);
     }
-
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-        Log.i("Already Open", "" + alreadyOpen);
-
-        if(!alreadyOpen){
-            mDrawerLayout.openDrawer(mDrawerList);
-            Handler h = new Handler();
-            h.postDelayed(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    mDrawerLayout.closeDrawer(mDrawerList);
-                }
-            }, 2000);
-
-            alreadyOpen = true;
-        }
-    }
-
-
-    private class SlideMenuClickListener implements ListView.OnItemClickListener{
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-            // display view for selected nav drawer item
-            displayView(position);
-        }
-    }
-
 
     /**
      * Diplaying fragment view for selected nav drawer list item
@@ -158,12 +105,13 @@ public class MainActivity extends RoboFragmentActivity {
             case 0:
                 fragment = home;
                 break;
-          /*  case 1:
-                fragment = new MenuFragment();
+            case 1:
+                fragment = meusDadosFragment;
                 break;
             case 2:
-                fragment = new NewsFragment();
+                fragment = medicoFavorito;
                 break;
+            /*
             case 3:
                 fragment = new EventsFragment();
                 break;
@@ -184,21 +132,51 @@ public class MainActivity extends RoboFragmentActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.frame_container, fragment).commit();
+                        .replace(R.id.main_frame, fragment).commit();
             }
             else{
-                fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_frame, fragment).commit();
             }
 
             // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(navMenuTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
+            //mDrawerList.setItemChecked(position, true);
+            //mDrawerList.setSelection(position);
+            //setTitle(navMenuTitles[position]);
+            //mDrawerLayout.closeDrawer(mDrawerList);
         }
-        else{
-            // error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
+
+    }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
         }
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
+

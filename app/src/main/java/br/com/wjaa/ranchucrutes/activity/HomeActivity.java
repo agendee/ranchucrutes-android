@@ -30,6 +30,7 @@ import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
 import roboguice.RoboGuice;
+import roboguice.activity.RoboActionBarActivity;
 import roboguice.activity.RoboFragmentActivity;
 import roboguice.fragment.provided.RoboFragment;
 import roboguice.inject.InjectView;
@@ -100,7 +101,7 @@ public class HomeActivity extends RoboFragment implements GoogleMap.OnMyLocation
 
     private void createMaps() {
         SupportMapFragment mapFragment =
-                (SupportMapFragment) ((RoboFragmentActivity)getActivity()).getSupportFragmentManager().findFragmentById(R.id.map);
+                (SupportMapFragment) ((RoboActionBarActivity)getActivity()).getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this.ranchucrutesMaps);
     }
 
