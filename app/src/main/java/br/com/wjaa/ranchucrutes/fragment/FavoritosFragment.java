@@ -2,7 +2,6 @@ package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ import roboguice.fragment.provided.RoboFragment;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class MedicoFavoritoFragment extends RoboFragment implements AbsListView.OnItemClickListener {
+public class FavoritosFragment extends RoboFragment implements AbsListView.OnItemClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,8 +49,8 @@ public class MedicoFavoritoFragment extends RoboFragment implements AbsListView.
     private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static MedicoFavoritoFragment newInstance(String param1, String param2) {
-        MedicoFavoritoFragment fragment = new MedicoFavoritoFragment();
+    public static FavoritosFragment newInstance(String param1, String param2) {
+        FavoritosFragment fragment = new FavoritosFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -63,7 +62,7 @@ public class MedicoFavoritoFragment extends RoboFragment implements AbsListView.
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public MedicoFavoritoFragment() {
+    public FavoritosFragment() {
     }
 
     @Override
@@ -95,7 +94,7 @@ public class MedicoFavoritoFragment extends RoboFragment implements AbsListView.
         return view;
     }
 
-    @Override
+  /*  @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
@@ -111,7 +110,7 @@ public class MedicoFavoritoFragment extends RoboFragment implements AbsListView.
         super.onDetach();
         mListener = null;
     }
-
+*/
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {

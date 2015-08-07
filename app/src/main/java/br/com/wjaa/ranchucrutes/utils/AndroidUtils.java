@@ -6,7 +6,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.Html;
+import android.view.View;
+import android.widget.TextView;
 
+import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.activity.listener.ButtonDialogClickListener;
 
@@ -27,8 +31,11 @@ public class AndroidUtils {
 
     public static void showMessageDlg(String title, String msg, Context context){
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(msg);
+        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
+        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        tv.setText(title);
+        alertDialog.setCustomTitle(v);
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -40,8 +47,11 @@ public class AndroidUtils {
 
     public static void showConfirmDlg(String title, String msg, Context context, DialogCallback callback ){
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(msg);
+        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
+        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        tv.setText(title);
+        alertDialog.setCustomTitle(v);
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
         DialogInterface.OnClickListener listener = new ButtonDialogClickListener(callback);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Sim", listener);
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Não", listener);
@@ -57,8 +67,12 @@ public class AndroidUtils {
         if (dialog.isShowing()){
             closeWaitDlg();
         }
+        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
+        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        tv.setText("Aguarde!");
+        dialog.setCustomTitle(v);
 
-        dialog.setMessage(msg);
+        dialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
         dialog.show();
         return dialog;
     }

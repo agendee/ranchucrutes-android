@@ -1,9 +1,13 @@
-package br.com.wjaa.ranchucrutes.activity;
+package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,14 +35,13 @@ import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
 import roboguice.RoboGuice;
 import roboguice.activity.RoboActionBarActivity;
-import roboguice.activity.RoboFragmentActivity;
 import roboguice.fragment.provided.RoboFragment;
 import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 
-public class HomeActivity extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
+public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
 
-    private static final String TAG = HomeActivity.class.getSimpleName();
+    private static final String TAG = BuscaFragment.class.getSimpleName();
 
 
 
@@ -71,6 +74,17 @@ public class HomeActivity extends RoboFragment implements GoogleMap.OnMyLocation
         return inflater.inflate(R.layout.activity_home, container, false);
 
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        FragmentManager fm = ((FragmentActivity)getActivity()).getSupportFragmentManager();
+        Fragment fragment = (fm.findFragmentById(R.id.map));
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commitAllowingStateLoss();
+    }
+
 
     private void initActivity() {
         this.initBuffers();
@@ -142,9 +156,13 @@ public class HomeActivity extends RoboFragment implements GoogleMap.OnMyLocation
                             if (especialidades != null){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                                builder.setTitle("Selecione uma especilidade");
                                 ListView modeList = new ListView(getActivity());
+                                View v = getActivity().getLayoutInflater().inflate(R.layout.custom_title, null);
+                                TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+                                tv.setText("Selecione uma especilidade");
+                                builder.setCustomTitle(v);
                                 builder.setView(modeList);
+                                modeList.setBackgroundColor(getResources().getColor(android.support.v7.appcompat.R.color.primary_material_dark));
                                 final Dialog dialogEspecs = builder.create();
                                 ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
                                     @Override

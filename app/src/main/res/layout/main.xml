@@ -63,6 +63,7 @@
                 android:divider="#eee"
                 android:choiceMode="singleChoice"
                 android:background="@color/primary_material_dark"
+                style="?android:attr/textAppearanceSmallInverse"
                 android:dividerHeight="1dp" />
 
         </RelativeLayout>

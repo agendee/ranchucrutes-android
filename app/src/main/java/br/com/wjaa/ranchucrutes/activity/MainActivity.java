@@ -6,9 +6,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +18,12 @@ import android.widget.ListView;
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.fragment.MedicoFavoritoFragment;
-import br.com.wjaa.ranchucrutes.fragment.MeusDadosFragment;
+import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
+import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
+import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
+import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
+import br.com.wjaa.ranchucrutes.fragment.LoginFragment;
 import roboguice.activity.RoboActionBarActivity;
-import roboguice.activity.RoboFragmentActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -43,16 +43,24 @@ public class MainActivity extends RoboActionBarActivity {
     private ListView leftDrawerList;
 
     private ArrayAdapter<String> navigationDrawerAdapter;
-    private String[] leftSliderData = {"Meus Dados", "Minhas Consultas", "Médicos Favoritos", "Fazer Login"};
+    private String[] leftSliderData = {"Pesquisar Médicos","Meus Dados", "Minhas Consultas", "Médicos Favoritos", "Fazer Login"};
 
     @Inject
-    private HomeActivity home;
+    private BuscaFragment buscaFragment;
 
     @Inject
-    private MedicoFavoritoFragment medicoFavorito;
+    private FavoritosFragment favoritosFragment;
 
     @Inject
-    private MeusDadosFragment meusDadosFragment;
+    private DadosUsuarioFragment dadosUsuarioFragment;
+
+    @Inject
+    private ConsultasFragment consultasFragment;
+
+    @Inject
+    private LoginFragment loginFragment;
+
+    private Fragment fragmentAtual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -73,7 +81,12 @@ public class MainActivity extends RoboActionBarActivity {
         //drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationDrawerAdapter=new ArrayAdapter<String>( MainActivity.this, android.R.layout.simple_list_item_1, leftSliderData);
         leftDrawerList.setAdapter(navigationDrawerAdapter);
-        //leftDrawerList.setOnClickListener();
+        leftDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                displayView(position);
+            }
+        });
     }
 
     private void initDrawer() {
@@ -101,27 +114,23 @@ public class MainActivity extends RoboActionBarActivity {
     private void displayView(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
+
         switch (position){
             case 0:
-                fragment = home;
+                fragment = this.buscaFragment;
                 break;
             case 1:
-                fragment = meusDadosFragment;
+                fragment = this.dadosUsuarioFragment;
                 break;
             case 2:
-                fragment = medicoFavorito;
+                fragment = this.consultasFragment;
                 break;
-            /*
             case 3:
-                fragment = new EventsFragment();
+                fragment = this.favoritosFragment;
                 break;
             case 4:
-                fragment = new PlacesFragment();
+                fragment = this.loginFragment;
                 break;
-            case 5:
-                fragment = new AdsFragment();
-                break;
-            */
             default:
                 break;
         }
@@ -129,6 +138,7 @@ public class MainActivity extends RoboActionBarActivity {
         if (fragment != null){
             FragmentManager fragmentManager = getFragmentManager();
 
+            //removendo o fragmento atual do gerenciador.
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
@@ -143,6 +153,8 @@ public class MainActivity extends RoboActionBarActivity {
             //mDrawerList.setSelection(position);
             //setTitle(navMenuTitles[position]);
             //mDrawerLayout.closeDrawer(mDrawerList);
+            this.drawerLayout.closeDrawers();
+            this.fragmentAtual = fragment;
         }
 
     }
@@ -170,12 +182,12 @@ public class MainActivity extends RoboActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
         }
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 }

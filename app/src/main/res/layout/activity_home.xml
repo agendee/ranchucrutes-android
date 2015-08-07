@@ -38,6 +38,7 @@
                         android:hint="Digite seu cep"
                         android:layout_gravity="left|top"
                         android:gravity="center"
+                        android:textColor="@android:color/black"
                         style="@style/edtDefault"
 
                          />
