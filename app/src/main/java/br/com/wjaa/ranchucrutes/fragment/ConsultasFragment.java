@@ -1,14 +1,14 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import br.com.wjaa.ranchucrutes.R;
+import roboguice.fragment.provided.RoboFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +18,7 @@ import br.com.wjaa.ranchucrutes.R;
  * Use the {@link ConsultasFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConsultasFragment extends Fragment {
+public class ConsultasFragment extends RoboFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

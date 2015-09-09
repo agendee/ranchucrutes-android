@@ -15,13 +15,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.facebook.FacebookSdk;
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
 import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
-import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
 import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
+import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
 import br.com.wjaa.ranchucrutes.fragment.LoginFragment;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
@@ -65,8 +66,8 @@ public class MainActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.main);
-        nitView();
+
+        initView();
         if (toolbar != null) {
             toolbar.setTitle("MarcMed");
             setSupportActionBar(toolbar);
@@ -75,7 +76,7 @@ public class MainActivity extends RoboActionBarActivity {
         displayView(0);
     }
 
-    private void nitView() {
+    private void initView() {
         //leftDrawerList = (ListView) findViewById(R.id.left_drawer);
         //toolbar = (Toolbar) findViewById(R.id.toolbar);
         //drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -189,6 +190,23 @@ public class MainActivity extends RoboActionBarActivity {
             return true;
         }*/
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+        //AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        //AppEventsLogger.deactivateApp(this);
     }
 }
 
