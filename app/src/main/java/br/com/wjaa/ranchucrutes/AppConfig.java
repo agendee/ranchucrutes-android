@@ -3,6 +3,8 @@ package br.com.wjaa.ranchucrutes;
 import android.app.Application;
 import android.content.Intent;
 
+import com.facebook.FacebookSdk;
+
 import br.com.wjaa.ranchucrutes.module.FindClassInjectableModule;
 import roboguice.RoboGuice;
 
@@ -17,6 +19,7 @@ public class AppConfig extends Application {
         RoboGuice.getOrCreateBaseApplicationInjector(this, RoboGuice.DEFAULT_STAGE,
                 RoboGuice.newDefaultRoboModule(this), new FindClassInjectableModule(this));
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
         //BufferBuilder bufferBuilder = RoboGuice.getBaseApplicationInjector(this).getInstance(BufferBuilder.class);
         //bufferBuilder.load();
 
