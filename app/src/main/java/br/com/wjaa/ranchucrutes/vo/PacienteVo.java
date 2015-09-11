@@ -7,13 +7,15 @@ import br.com.wjaa.ranchucrutes.form.LoginForm;
  */
 public class PacienteVo {
 
-    private String id;
+    private Long id;
     private String email;
     private String nome;
     private String telefone;
     private String senha;
     private String keySocial;
     private LoginForm.AuthType authType;
+
+    public PacienteVo(){}
 
     public PacienteVo(String nome, String email, String telefone, String keySocial, LoginForm.AuthType authType) {
         this.nome = nome;
@@ -73,11 +75,11 @@ public class PacienteVo {
         this.authType = authType;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }
