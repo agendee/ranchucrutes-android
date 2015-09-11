@@ -19,8 +19,6 @@ import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
  */
 public class MedicoServiceImpl implements MedicoService{
 
-    private static final String URL = "rest.marcmed.com.br";
-    private static final String URI_FIND = "medico/search";
 
     @Override
     public ResultadoBuscaMedicoVo find(Integer idEspecialidade, String cep) {
@@ -29,7 +27,7 @@ public class MedicoServiceImpl implements MedicoService{
         form.setIdEspecialidade(idEspecialidade);
         String json = ObjectUtils.toJson(form);
         try {
-            return RestUtils.postJson(ResultadoBuscaMedicoVo.class,URL,URI_FIND,json);
+            return RestUtils.postJson(ResultadoBuscaMedicoVo.class,RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_PROCURAR_MEDICO,json);
         } catch (RestResponseUnsatisfiedException e) {
             e.printStackTrace();
         } catch (RestException e) {
@@ -47,7 +45,7 @@ public class MedicoServiceImpl implements MedicoService{
         form.setIdEspecialidade(idEspecialidade);
         String json = ObjectUtils.toJson(form);
         try {
-            return RestUtils.postJson(ResultadoBuscaMedicoVo.class,URL,URI_FIND,json);
+            return RestUtils.postJson(ResultadoBuscaMedicoVo.class,RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_PROCURAR_MEDICO,json);
         } catch (RestResponseUnsatisfiedException e) {
             e.printStackTrace();
         } catch (RestException e) {

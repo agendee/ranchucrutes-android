@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
+import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 
 /**
  * Created by wagner on 31/07/15.
@@ -15,6 +16,7 @@ public class RanchucrutesBuffer {
 
     private static String TAG = RanchucrutesBuffer.class.getSimpleName();
     private static EspecialidadeVo[] especialidades;
+    private static PacienteVo paciente;
 
     @Inject
     private RanchucrutesService ranchucrutesService;
@@ -35,6 +37,15 @@ public class RanchucrutesBuffer {
 
     public static EspecialidadeVo [] getEspecialidades(){
         return RanchucrutesBuffer.especialidades;
+    }
+
+
+    public static void setPaciente(PacienteVo paciente){
+        RanchucrutesBuffer.paciente = paciente;
+    }
+
+    public static PacienteVo getPaciente(){
+        return paciente;
     }
 
 }

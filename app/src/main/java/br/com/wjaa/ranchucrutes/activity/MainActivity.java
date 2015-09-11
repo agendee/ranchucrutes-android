@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.facebook.FacebookSdk;
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
@@ -77,9 +76,6 @@ public class MainActivity extends RoboActionBarActivity {
     }
 
     private void initView() {
-        //leftDrawerList = (ListView) findViewById(R.id.left_drawer);
-        //toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationDrawerAdapter=new ArrayAdapter<String>( MainActivity.this, android.R.layout.simple_list_item_1, leftSliderData);
         leftDrawerList.setAdapter(navigationDrawerAdapter);
         leftDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,6 +84,15 @@ public class MainActivity extends RoboActionBarActivity {
                 displayView(position);
             }
         });
+        getFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+
+                        syncActionBarArrowState();
+                    }
+                }
+        );
     }
 
     private void initDrawer() {
@@ -107,6 +112,8 @@ public class MainActivity extends RoboActionBarActivity {
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
+
+
     }
 
     /**
@@ -143,11 +150,16 @@ public class MainActivity extends RoboActionBarActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.main_frame, fragment).commit();
+                        .replace(R.id.main_frame, fragment)
+                        .commit();
             }
             else{
-                fragmentManager.beginTransaction().replace(R.id.main_frame, fragment).commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.main_frame, fragment)
+                        .commit();
             }
+
+
 
             // update selected item and title, then close the drawer
             //mDrawerList.setItemChecked(position, true);
@@ -158,6 +170,11 @@ public class MainActivity extends RoboActionBarActivity {
             this.fragmentAtual = fragment;
         }
 
+    }
+
+    private void syncActionBarArrowState() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        drawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
     }
 
 
@@ -196,17 +213,12 @@ public class MainActivity extends RoboActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Logs 'install' and 'app activate' App Events.
-        //AppEventsLogger.activateApp(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        // Logs 'app deactivate' App Event.
-        //AppEventsLogger.deactivateApp(this);
     }
 }
 
