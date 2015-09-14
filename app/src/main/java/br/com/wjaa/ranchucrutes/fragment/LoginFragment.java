@@ -149,12 +149,10 @@ public class LoginFragment extends RoboFragment {
                 AndroidUtils.showWaitDlg("Aguarde, autenticando usuário",getActivity());
                 PacienteVo pacienteVo = loginService.auth(email, senha);
                 if (pacienteVo != null){
-                    AndroidUtils.closeWaitDlg();
                     AndroidUtils.showMessageDlg("Sucesso","Olá " + pacienteVo.getNome(),getActivity());
                 }
 
             } catch (Exception e) {
-                AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageDlg("Erro",e.getMessage(),getActivity());
             }
         }
