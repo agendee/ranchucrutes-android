@@ -51,7 +51,7 @@ public class AndroidUtils {
         TextView tv = (TextView) v.findViewById(R.id.titleDefault);
         tv.setText(title);
         alertDialog.setCustomTitle(v);
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
         DialogInterface.OnClickListener listener = new ButtonDialogClickListener(callback);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Sim", listener);
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Não", listener);
@@ -72,7 +72,7 @@ public class AndroidUtils {
         tv.setText("Aguarde!");
         dialog.setCustomTitle(v);
 
-        dialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
+        dialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
         dialog.show();
         return dialog;
     }
@@ -84,6 +84,21 @@ public class AndroidUtils {
     }
 
 
+    public static void showMessageDlgOnUiThread(final String titulo, final String msg, final Activity activity) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AndroidUtils.showMessageDlg(titulo,msg,activity);
+            }
+        });
+    }
 
-
+    public static void showWaitDlgOnUiThread(final String s, final Activity activity) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AndroidUtils.showWaitDlg(s,activity);
+            }
+        });
+    }
 }

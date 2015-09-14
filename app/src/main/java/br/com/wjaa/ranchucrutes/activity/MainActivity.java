@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
@@ -150,12 +151,12 @@ public class MainActivity extends RoboActionBarActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.main_frame, fragment)
+                        .replace(R.id.main_frame, fragment,fragment.getClass().getSimpleName())
                         .commit();
             }
             else{
                 fragmentManager.beginTransaction()
-                        .replace(R.id.main_frame, fragment)
+                        .replace(R.id.main_frame, fragment,fragment.getClass().getSimpleName())
                         .commit();
             }
 
@@ -219,6 +220,15 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onPause() {
         super.onPause();
 
+    }
+    @Override
+    public void onBackPressed() {
+        final BuscaFragment fragment = (BuscaFragment) getFragmentManager().findFragmentByTag(BuscaFragment.class.getSimpleName());
+
+        /*if (fragment.allowBackPressed()) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
+            super.onBackPressed();
+        }*/
+        Toast.makeText(this,"back button pressedddd",Toast.LENGTH_LONG);
     }
 }
 

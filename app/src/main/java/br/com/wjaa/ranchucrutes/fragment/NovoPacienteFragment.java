@@ -28,6 +28,4 @@ public class NovoPacienteFragment extends RoboFragment{
     }
 
 
-
-
 }
