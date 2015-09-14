@@ -3,15 +3,25 @@ package br.com.wjaa.ranchucrutes.fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import javax.security.auth.login.LoginException;
+
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
+import br.com.wjaa.ranchucrutes.service.LoginService;
+import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
+import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import roboguice.fragment.provided.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -23,8 +33,22 @@ public class LoginFragment extends RoboFragment {
     @Inject
     private FacebookService facebookService;
 
-    @InjectView(R.id.btnTesteFragment)
-    private Button button;
+    @Inject
+    private LoginService loginService;
+
+    @InjectView(R.id.btnEntrar)
+    private Button btnEntrar;
+
+
+    @InjectView(R.id.txtNovoPaciente)
+    private TextView txtNovoPaciente;
+
+    @InjectView(R.id.edtLoginEmail)
+    private EditText edtLoginEmail;
+
+    @InjectView(R.id.edtLoginPass)
+    private EditText edtLoginPass;
+
 
     @Inject
     private NovoPacienteFragment novoPacienteFragment;
@@ -46,9 +70,16 @@ public class LoginFragment extends RoboFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         facebookService.onViewCreated(view, savedInstanceState);
-        button.setOnClickListener(new View.OnClickListener() {
+        initButtons();
+
+    }
+
+    private void initButtons() {
+
+        txtNovoPaciente.setText(Html.fromHtml("<u>" + getString(R.string.txtNovoPaciente) + "</u>"));
+        txtNovoPaciente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // consider using Java coding conventions (upper first char class names!!!)
@@ -60,6 +91,26 @@ public class LoginFragment extends RoboFragment {
                         .replace(R.id.main_frame, novoPacienteFragment)
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        btnEntrar.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                String email = edtLoginEmail.getText().toString();
+                String pass = edtLoginPass.getText().toString();
+                if (StringUtils.isBlank(email)){
+                    AndroidUtils.showMessageDlg("Erro","Preencha seu email.",getActivity());
+                    return;
+                }
+                if (StringUtils.isBlank(pass)){
+                    AndroidUtils.showMessageDlg("Erro","Preencha sua senha.",getActivity());
+                    return;
+                }
+
+                new LogarUsuario(email,pass).start();
+
             }
         });
     }
@@ -83,7 +134,31 @@ public class LoginFragment extends RoboFragment {
     }
 
 
+    class LogarUsuario extends Thread{
+        private String email;
+        private String senha;
+        LogarUsuario(String email, String senha){
+            this.email = email;
+            this.senha = senha;
+        }
 
+        @Override
+        public void run() {
+
+            try {
+                AndroidUtils.showWaitDlg("Aguarde, autenticando usuário",getActivity());
+                PacienteVo pacienteVo = loginService.auth(email, senha);
+                if (pacienteVo != null){
+                    AndroidUtils.closeWaitDlg();
+                    AndroidUtils.showMessageDlg("Sucesso","Olá " + pacienteVo.getNome(),getActivity());
+                }
+
+            } catch (Exception e) {
+                AndroidUtils.closeWaitDlg();
+                AndroidUtils.showMessageDlg("Erro",e.getMessage(),getActivity());
+            }
+        }
+    }
 
 
 

@@ -1,6 +1,7 @@
 package br.com.wjaa.ranchucrutes.service;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import javax.security.auth.login.LoginException;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
@@ -49,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
 
         if ((LoginForm.AuthType.AUTH_GPLUS.equals(auth.getType()) ||
              LoginForm.AuthType.AUTH_FACEBOOK.equals(auth.getType()) ) &&
-                StringUtils.isBlank(auth.getKey()) ){
+                StringUtils.isBlank(auth.getKeySocial()) ){
             throw new IllegalArgumentException("Chave da redesocial não está preenchida.");
         }
 
@@ -72,6 +73,7 @@ public class LoginServiceImpl implements LoginService {
             }
 
         } catch (Exception e) {
+            Log.e(LoginServiceImpl.class.getSimpleName(),e.getMessage(),e);
             throw new RanchucrutesWSException("Erro na comunicação com servidor.");
         }
 
@@ -82,13 +84,14 @@ public class LoginServiceImpl implements LoginService {
         LoginForm loginForm = new LoginForm();
         loginForm.setLogin(login);
         loginForm.setSenha(senha);
+        loginForm.setType(LoginForm.AuthType.AUTH_RANCHUCRUTES);
         return this.auth(loginForm);
     }
 
     @Override
     public PacienteVo auth(String key, LoginForm.AuthType type) throws LoginException, RanchucrutesWSException {
         LoginForm loginForm = new LoginForm();
-        loginForm.setKey(key);
+        loginForm.setKeySocial(key);
         loginForm.setType(type);
         return this.auth(loginForm);
     }

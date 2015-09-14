@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="br.com.wjaa.ranchucrutes.fragment.LoginFragment"
-    android:background="#bc000000">
-
+    >
 
     <TextView
         android:id="@+id/info"
@@ -15,27 +15,69 @@
         android:layout_above="@+id/login_button"
         android:textSize="20dp"
         android:text="fdsafas"
+        android:textColor="@android:color/black"
         android:textIsSelectable="false" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="fdsafsadfsad"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"/>
+
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        android:id="@+id/edtLoginEmail"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:textColor="@android:color/black"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Senha"
+        android:id="@+id/edtLoginPass"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:layout_margin="10dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enviar Dados"
-        android:id="@+id/btnTesteFragment"
+        android:text="@string/btn.entrar"
+        android:id="@+id/btnEntrar"
         android:layout_gravity="center_horizontal"
-        android:background="?attr/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:padding="20dp"/>
+        style="@style/btn"
+        />
+
+    <TextView
+        android:id="@+id/txtNovoPaciente"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:textSize="20dp"
+        android:text="@string/txtNovoPaciente"
+        android:textColor="#d72228ff"
+        />
 
 </LinearLayout>

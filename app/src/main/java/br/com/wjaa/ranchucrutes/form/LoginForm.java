@@ -14,7 +14,7 @@ public class LoginForm {
 
     private String login;
     private String senha;
-    private String key;
+    private String keySocial;
     private AuthType type;
 
 
@@ -34,12 +34,12 @@ public class LoginForm {
         this.senha = senha;
     }
 
-    public String getKey() {
-        return key;
+    public String getKeySocial() {
+        return keySocial;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setKeySocial(String keySocial) {
+        this.keySocial = keySocial;
     }
 
     public AuthType getType() {
