@@ -73,7 +73,11 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-
+    <style name="edt">
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 
 </resources>
 

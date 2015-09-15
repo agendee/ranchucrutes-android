@@ -127,18 +127,23 @@ public class MainActivity extends RoboActionBarActivity {
         switch (position){
             case 0:
                 fragment = this.buscaFragment;
+                toolbar.setTitle("Procurar Médico");
                 break;
             case 1:
                 fragment = this.dadosUsuarioFragment;
+                toolbar.setTitle("Meus Dados");
                 break;
             case 2:
                 fragment = this.consultasFragment;
+                toolbar.setTitle("Minhas Consultas");
                 break;
             case 3:
                 fragment = this.favoritosFragment;
+                toolbar.setTitle("Médicos Favoritos");
                 break;
             case 4:
                 fragment = this.loginFragment;
+                toolbar.setTitle("Fazer Login");
                 break;
             default:
                 break;

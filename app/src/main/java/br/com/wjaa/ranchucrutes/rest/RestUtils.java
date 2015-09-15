@@ -45,20 +45,22 @@ public class RestUtils {
             conn.setRequestMethod("GET");
 
 
-            Log.d(TAG, "Response Code: " + conn.getResponseCode());
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-            String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-            System.out.println(response);
-
             int statusCode = conn.getResponseCode();
+            Log.d(TAG, "Response Code: " + statusCode);
 
             if ( statusCode >= 400 && statusCode < 500){
                 throw new RestRequestUnstable("Servico está fora do ar.");
             }
 
             if (statusCode >= 500 && statusCode < 600){
+                InputStream in = new BufferedInputStream(conn.getErrorStream());
+                String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
                 throw new RestException(gson.fromJson(response, ErrorMessageVo.class));
             }
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+            System.out.println(response);
+
 
             Log.d(TAG,"m=getJsonWithParamPath Response: " + response);
 
@@ -68,9 +70,7 @@ public class RestUtils {
             throw new RestResponseUnsatisfiedException(e.getMessage(), e);
         } catch (IOException e) {
             throw new RestRequestUnstable(e.getMessage(), e);
-        }  catch (Exception e) {
-            throw new RestException(new ErrorMessageVo(500, e.getMessage()));
-        }
+        }  
     }
 
     public static <T>T postJson(Class<T> clazzReturn, String targetUrl, String uri, String json) throws
@@ -94,22 +94,22 @@ public class RestUtils {
             os.flush();
 
 
-            Log.d(TAG, "Response Code: " + conn.getResponseCode());
-            in = new BufferedInputStream(conn.getInputStream());
-            String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-            System.out.println(response);
-
             int statusCode = conn.getResponseCode();
+            Log.d(TAG,"m=getJsonWithParamPath Response: " + statusCode);
 
             if ( statusCode >= 400 && statusCode < 500){
                 throw new RestRequestUnstable("Servico está fora do ar.");
             }
 
             if (statusCode >= 500 && statusCode < 600){
+                in = new BufferedInputStream(conn.getErrorStream());
+                String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
                 throw new RestException(gson.fromJson(response, ErrorMessageVo.class));
             }
+            in = new BufferedInputStream(conn.getInputStream());
+            String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
+            System.out.println(response);
 
-            Log.d(TAG,"m=getJsonWithParamPath Response: " + conn.getResponseCode());
 
             return gson.fromJson(response, clazzReturn);
 
@@ -117,8 +117,6 @@ public class RestUtils {
             throw new RestResponseUnsatisfiedException(e.getMessage(), e);
         } catch (IOException  e) {
             throw new RestRequestUnstable(e.getMessage(), e);
-        }  catch (Exception e) {
-            throw new RestException(new ErrorMessageVo(500,e.getMessage()));
         }finally {
 
             try {

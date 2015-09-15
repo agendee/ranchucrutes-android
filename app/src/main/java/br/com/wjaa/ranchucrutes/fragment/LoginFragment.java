@@ -1,6 +1,5 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -13,10 +12,8 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
-import javax.security.auth.login.LoginException;
-
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
+import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
@@ -50,10 +47,6 @@ public class LoginFragment extends RoboFragment {
     private EditText edtLoginPass;
 
 
-    @Inject
-    private NovoPacienteFragment novoPacienteFragment;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,34 +75,26 @@ public class LoginFragment extends RoboFragment {
         txtNovoPaciente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // consider using Java coding conventions (upper first char class names!!!)
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.main_frame, novoPacienteFragment)
-                        .addToBackStack(null)
-                        .commit();
+                AndroidUtils.openActivity(getActivity(),NovoPacienteActivity.class);
             }
         });
 
-        btnEntrar.setOnClickListener(new View.OnClickListener(){
+        btnEntrar.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 String email = edtLoginEmail.getText().toString();
                 String pass = edtLoginPass.getText().toString();
-                if (StringUtils.isBlank(email)){
-                    AndroidUtils.showMessageDlg("Erro","Preencha seu email.",getActivity());
+                if (StringUtils.isBlank(email)) {
+                    AndroidUtils.showMessageDlg("Erro", "Preencha seu email.", getActivity());
                     return;
                 }
-                if (StringUtils.isBlank(pass)){
-                    AndroidUtils.showMessageDlg("Erro","Preencha sua senha.",getActivity());
+                if (StringUtils.isBlank(pass)) {
+                    AndroidUtils.showMessageDlg("Erro", "Preencha sua senha.", getActivity());
                     return;
                 }
 
-                new LogarUsuario(email,pass).start();
+                new LogarUsuario(email, pass).start();
 
             }
         });

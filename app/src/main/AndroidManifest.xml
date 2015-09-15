@@ -49,6 +49,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.NovoPacienteActivity"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"

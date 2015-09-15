@@ -1,7 +1,6 @@
 package br.com.wjaa.ranchucrutes.service;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +28,7 @@ import javax.security.auth.login.LoginException;
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
-import br.com.wjaa.ranchucrutes.fragment.NovoPacienteFragment;
+import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.wrapper.NativeFragmentWrapper;
 
@@ -46,9 +45,6 @@ public class FacebookServiceImpl implements FacebookService {
 
     @Inject
     private LoginService loginService;
-
-    @Inject
-    private NovoPacienteFragment novoPacienteFragment;
 
     @Override
     public void onCreate(Fragment frament) {
@@ -160,19 +156,7 @@ public class FacebookServiceImpl implements FacebookService {
                             AndroidUtils.closeWaitDlg();
                             String nome = object.get("name").toString();
                             String email = object.get("email").toString();
-                            //esse cara nao existe
-                            //String telefone = object.get("phone").toString();
-                            LoginForm login = new LoginForm();
-
-                            // consider using Java coding conventions (upper first char class names!!!)
-                            FragmentTransaction transaction = fragment.getFragmentManager().beginTransaction();
-
-                            // Replace whatever is in the fragment_container view with this fragment,
-                            // and add the transaction to the back stack
-                            transaction.setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                                    .replace(R.id.main_frame, novoPacienteFragment)
-                                    .addToBackStack(null)
-                                    .commit();
+                            AndroidUtils.openActivity(fragment.getActivity(),NovoPacienteActivity.class);
 
 
 
