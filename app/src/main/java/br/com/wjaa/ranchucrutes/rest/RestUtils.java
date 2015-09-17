@@ -70,7 +70,7 @@ public class RestUtils {
             throw new RestResponseUnsatisfiedException(e.getMessage(), e);
         } catch (IOException e) {
             throw new RestRequestUnstable(e.getMessage(), e);
-        }  
+        }
     }
 
     public static <T>T postJson(Class<T> clazzReturn, String targetUrl, String uri, String json) throws

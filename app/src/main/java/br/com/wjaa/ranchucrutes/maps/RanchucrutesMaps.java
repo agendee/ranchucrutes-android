@@ -328,25 +328,34 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
         @Override
         public void run() {
-
-            String imageUrl = "http://marcmed.com.br/f/" + medico.getCrm() + ".jpg";
-            try {
-                bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if( reloadImage ){
+            if( reloadImage ) {
+                String imageUrl = "http://marcmed.com.br/f/" + medico.getCrm() + ".jpg";
+                try {
+                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
                             ImageView i = (ImageView) view.findViewById(R.id.badge);
                             i.setImageBitmap(bitmap);
                             i.invalidate();
                             customInfoWindowAdapter.getInfoContents(marker);
                             reloadImage = false;
                         }
+                    });
+                } catch (Exception e) {
+                    Log.e(TAG, "Erro ao buscar a imagem", e);
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageView i = (ImageView) view.findViewById(R.id.badge);
+                            i.setImageResource(R.drawable.unknow);
+                            i.invalidate();
+                            customInfoWindowAdapter.getInfoContents(marker);
+                            reloadImage = false;
+                        }
+                    });
 
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(TAG,"Erro ao buscar a imagem", e);
+                }
             }
         }
     }

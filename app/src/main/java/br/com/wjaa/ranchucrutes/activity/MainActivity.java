@@ -2,28 +2,35 @@ package br.com.wjaa.ranchucrutes.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
 import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
 import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
 import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
 import br.com.wjaa.ranchucrutes.fragment.LoginFragment;
+import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
+import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -32,7 +39,7 @@ import roboguice.inject.InjectView;
  * Created by wagner on 04/08/15.
  */
 @ContentView(R.layout.main)
-public class MainActivity extends RoboActionBarActivity {
+public class MainActivity extends RoboActionBarActivity implements SessionChangedListener{
 
     @InjectView(R.id.toolbar)
     private Toolbar toolbar;
@@ -44,7 +51,7 @@ public class MainActivity extends RoboActionBarActivity {
     private ListView leftDrawerList;
 
     private ArrayAdapter<String> navigationDrawerAdapter;
-    private String[] leftSliderData = {"Pesquisar Médicos","Meus Dados", "Minhas Consultas", "Médicos Favoritos", "Fazer Login"};
+    private String[] menuSlider = {"Pesquisar Médicos","Meus Dados", "Minhas Consultas", "Médicos Favoritos", "Fazer Login"};
 
     @Inject
     private BuscaFragment buscaFragment;
@@ -61,12 +68,19 @@ public class MainActivity extends RoboActionBarActivity {
     @Inject
     private LoginFragment loginFragment;
 
+    @InjectView(R.id.headerView)
+    private TextView headerView;
+
+    @InjectView(R.id.footerView)
+    private TextView footerView;
+
     private Fragment fragmentAtual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
+        RanchucrutesSession.addSessionChangedListener(this);
+        RanchucrutesSession.addSessionChangedListener(dadosUsuarioFragment);
         initView();
         if (toolbar != null) {
             toolbar.setTitle("MarcMed");
@@ -77,7 +91,7 @@ public class MainActivity extends RoboActionBarActivity {
     }
 
     private void initView() {
-        navigationDrawerAdapter=new ArrayAdapter<String>( MainActivity.this, android.R.layout.simple_list_item_1, leftSliderData);
+        navigationDrawerAdapter=new ArrayAdapter<String>( MainActivity.this, android.R.layout.simple_list_item_1, menuSlider);
         leftDrawerList.setAdapter(navigationDrawerAdapter);
         leftDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -94,6 +108,17 @@ public class MainActivity extends RoboActionBarActivity {
                     }
                 }
         );
+
+        footerView.setText(Html.fromHtml("<u>" + footerView.getText() + "</u>"));
+        footerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "http://www.marcmed.com.br/medico/cadastro";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
     }
 
     private void initDrawer() {
@@ -120,7 +145,7 @@ public class MainActivity extends RoboActionBarActivity {
     /**
      * Diplaying fragment view for selected nav drawer list item
      * */
-    private void displayView(int position) {
+    public void displayView(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
 
@@ -233,7 +258,22 @@ public class MainActivity extends RoboActionBarActivity {
         /*if (fragment.allowBackPressed()) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
             super.onBackPressed();
         }*/
-        Toast.makeText(this,"back button pressedddd",Toast.LENGTH_LONG);
+        Toast.makeText(this,"sair sair sair",Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void pacienteChange(PacienteVo paciente) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                headerView.setText("Olá " + RanchucrutesSession.getPaciente().getNome());
+                menuSlider = new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos"};
+                navigationDrawerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, menuSlider);
+                leftDrawerList.setAdapter(navigationDrawerAdapter);
+                leftDrawerList.refreshDrawableState();
+            }
+        });
+
     }
 }
 

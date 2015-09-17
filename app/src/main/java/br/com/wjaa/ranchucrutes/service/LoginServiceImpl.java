@@ -5,6 +5,7 @@ import android.util.Log;
 
 import javax.security.auth.login.LoginException;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.exception.RestException;
@@ -66,15 +67,18 @@ public class LoginServiceImpl implements LoginService {
                     RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_AUTH_PACIENTE,authJson);
 
             if (ResultadoLoginVo.StatusLogin.SUCESSO.equals(resultadoLogin.getStatus())){
-                RanchucrutesBuffer.setPaciente(resultadoLogin.getPaciente());
+                RanchucrutesSession.setPaciente(resultadoLogin.getPaciente());
                 return resultadoLogin.getPaciente();
             }else{
                 throw new LoginException(resultadoLogin.getStatus().getMsg());
             }
 
-        } catch (Exception e) {
-            Log.e(LoginServiceImpl.class.getSimpleName(),e.getMessage(),e);
-            throw new RanchucrutesWSException("Erro na comunicação com servidor.");
+        } catch (RestResponseUnsatisfiedException | RestRequestUnstable e ) {
+            Log.e(LoginServiceImpl.class.getSimpleName(), e.getMessage(), e);
+            throw new RanchucrutesWSException(e.getMessage());
+        } catch (RestException e) {
+            Log.e(LoginServiceImpl.class.getSimpleName(), e.getMessage(), e);
+            throw new RanchucrutesWSException(e.getErrorMessage().getErrorMessage());
         }
 
     }
@@ -102,7 +106,7 @@ public class LoginServiceImpl implements LoginService {
         try {
             PacienteVo pVo = RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,
                     RanchucrutesConstants.END_POINT_CRIAR_PACIENTE, pacienteJson);
-            RanchucrutesBuffer.setPaciente(pVo);
+            RanchucrutesSession.setPaciente(pVo);
             return pVo;
         } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
             throw new NovoPacienteException("Erro na comunicação com o servidor, tente criar seu login mais tarde!");

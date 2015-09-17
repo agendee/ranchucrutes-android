@@ -3,6 +3,7 @@ package br.com.wjaa.ranchucrutes.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.MainActivity;
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
@@ -135,10 +138,24 @@ public class LoginFragment extends RoboFragment {
                 PacienteVo pacienteVo = loginService.auth(email, senha);
                 AndroidUtils.closeWaitDlg();
                 if (pacienteVo != null){
-                    AndroidUtils.showMessageDlgOnUiThread("Sucesso", "Olá " + pacienteVo.getNome(), getActivity());
+                    AndroidUtils.showMessageDlgOnUiThread("Sucesso", "Olá " + pacienteVo.getNome(), getActivity(), new DialogCallback(){
+
+                        @Override
+                        public void confirm() {
+                            //TODO ARRUMAR ESSA GABIARRA.
+                            ((MainActivity)getActivity()).displayView(0);
+                        }
+
+                        @Override
+                        public void cancel() {
+
+                        }
+                    });
+
                 }
 
             } catch (Exception e) {
+                Log.e("LoginFrament",e.getMessage(),e);
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), getActivity());
             }

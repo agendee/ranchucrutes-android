@@ -16,7 +16,7 @@ public class RanchucrutesBuffer {
 
     private static String TAG = RanchucrutesBuffer.class.getSimpleName();
     private static EspecialidadeVo[] especialidades;
-    private static PacienteVo paciente;
+
 
     @Inject
     private RanchucrutesService ranchucrutesService;
@@ -37,15 +37,6 @@ public class RanchucrutesBuffer {
 
     public static EspecialidadeVo [] getEspecialidades(){
         return RanchucrutesBuffer.especialidades;
-    }
-
-
-    public static void setPaciente(PacienteVo paciente){
-        RanchucrutesBuffer.paciente = paciente;
-    }
-
-    public static PacienteVo getPaciente(){
-        return paciente;
     }
 
 }

@@ -42,9 +42,6 @@ import roboguice.util.RoboAsyncTask;
 public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
 
     private static final String TAG = BuscaFragment.class.getSimpleName();
-
-
-
     static {
         RoboGuice.setUseAnnotationDatabases(false);
     }
@@ -157,7 +154,8 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                                 ListView modeList = new ListView(getActivity());
-                                View v = getActivity().getLayoutInflater().inflate(R.layout.custom_title, null);
+                                modeList.setItemsCanFocus(true);
+                                View v = getActivity().getLayoutInflater().inflate(R.layout.custom_title,null);
                                 TextView tv = (TextView) v.findViewById(R.id.titleDefault);
                                 tv.setText("Selecione uma especilidade");
                                 builder.setCustomTitle(v);
@@ -167,8 +165,8 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                                 ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
                                     @Override
                                     public View getView(int position, View convertView, ViewGroup parent) {
-                                        TextView t = new TextView(parent.getContext());
-                                        t.setTextAppearance(parent.getContext(),R.style.listDefault);
+                                        View v = getActivity().getLayoutInflater().inflate(R.layout.custom_item, null);
+                                        TextView t = (TextView) v.findViewById(R.id.txtViewItem);
                                         t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
                                         t.setText(especialidades[position].getNome());
                                         return t;

@@ -59,7 +59,10 @@ public class FacebookServiceImpl implements FacebookService {
     @Override
     public void onResume() {
         Profile profile = Profile.getCurrentProfile();
-        mTextDetails.setText(constructWelcomeMessage(profile));
+        if (profile != null){
+            mTextDetails.setText(constructWelcomeMessage(profile));
+
+        }
     }
 
     @Override

@@ -4,4 +4,8 @@
     <color name="primaryColor">#a33433</color>
     <color name="primaryColorDark">#81040e</color>
 
+    <color name="pressed_color">#4d90fe</color>
+    <color name="focused_color">#4d90fe</color>
+    <color name="default_color">#000000</color>
+
 </resources>

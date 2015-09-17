@@ -45,6 +45,23 @@ public class AndroidUtils {
         alertDialog.show();
     }
 
+    public static void showMessageDlg(String title, String msg, Context context, final DialogCallback dialogCallback){
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
+        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        tv.setText(title);
+        alertDialog.setCustomTitle(v);
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                dialogCallback.confirm();
+            }
+        });
+        alertDialog.show();
+    }
+
     public static void showConfirmDlg(String title, String msg, Context context, DialogCallback callback ){
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
@@ -89,6 +106,15 @@ public class AndroidUtils {
             @Override
             public void run() {
                 AndroidUtils.showMessageDlg(titulo,msg,activity);
+            }
+        });
+    }
+
+    public static void showMessageDlgOnUiThread(final String titulo, final String msg, final Activity activity, final DialogCallback dialogCallback) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AndroidUtils.showMessageDlg(titulo,msg,activity, dialogCallback);
             }
         });
     }
