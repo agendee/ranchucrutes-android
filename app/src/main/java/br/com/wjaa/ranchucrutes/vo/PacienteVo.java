@@ -1,11 +1,13 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import java.io.Serializable;
+
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 
 /**
  * Created by wagner on 10/09/15.
  */
-public class PacienteVo {
+public class PacienteVo implements Serializable {
 
     private Long id;
     private String email;

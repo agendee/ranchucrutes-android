@@ -16,6 +16,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.inject.Inject;
@@ -26,16 +27,21 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.MainActivity;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import br.com.wjaa.ranchucrutes.wrapper.NativeFragmentWrapper;
 
 /**
  * Created by wagner on 10/09/15.
  */
 public class FacebookServiceImpl implements FacebookService {
+
+    public static final String TAG = FacebookService.class.getSimpleName();
+
 
     private TextView mTextDetails;
     private CallbackManager mCallbackManager;
@@ -60,8 +66,7 @@ public class FacebookServiceImpl implements FacebookService {
     public void onResume() {
         Profile profile = Profile.getCurrentProfile();
         if (profile != null){
-            mTextDetails.setText(constructWelcomeMessage(profile));
-
+            logarWS(profile.getId(), null);
         }
     }
 
@@ -91,7 +96,7 @@ public class FacebookServiceImpl implements FacebookService {
         mTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                Log.d("VIVZ", "" + currentAccessToken);
+                Log.d(TAG, "TROCA DE TOKEN: " + currentAccessToken);
             }
         };
     }
@@ -100,8 +105,8 @@ public class FacebookServiceImpl implements FacebookService {
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                Log.d("VIVZ", "" + currentProfile);
-                mTextDetails.setText(constructWelcomeMessage(currentProfile));
+                Log.d(TAG, "trocando de profile: " + currentProfile);
+
             }
         };
     }
@@ -118,24 +123,21 @@ public class FacebookServiceImpl implements FacebookService {
         mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);
     }
 
-    private String constructWelcomeMessage(Profile profile) {
+    /*private String constructWelcomeMessage(Profile profile) {
         StringBuffer stringBuffer = new StringBuffer();
         if (profile != null) {
             stringBuffer.append("Welcome " + profile.getName());
         }
         return stringBuffer.toString();
-    }
+    }*/
 
 
     private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-
             AccessToken accessToken = loginResult.getAccessToken();
-            login(accessToken);
-
+            loginFacebook(accessToken);
         }
-
         @Override
         public void onCancel() {
             Log.d("VIVZ", "onCancel");
@@ -149,27 +151,29 @@ public class FacebookServiceImpl implements FacebookService {
 
     private void criarPaciente(AccessToken accessToken) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken,
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(
-                            JSONObject object,
-                            GraphResponse response) {
-                        try {
-
-                            AndroidUtils.closeWaitDlg();
-                            String nome = object.get("name").toString();
-                            String email = object.get("email").toString();
-                            AndroidUtils.openActivity(fragment.getActivity(),NovoPacienteActivity.class);
-
-
-
-
-                            //loginService.criarPacienteFacebook(profile.getName(), email, telefone, profile.getId())
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+            new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(
+                        JSONObject object,
+                        GraphResponse response) {
+                    try {
+                        AndroidUtils.closeWaitDlg();
+                        String id = object.get("id").toString();
+                        String nome = object.get("name").toString();
+                        String email = object.get("email").toString();
+                        PacienteVo paciente = new PacienteVo();
+                        paciente.setNome(nome);
+                        paciente.setEmail(email);
+                        paciente.setAuthType(LoginForm.AuthType.AUTH_FACEBOOK);
+                        paciente.setKeySocial(id);
+                        Bundle extra = new Bundle();
+                        extra.putSerializable("paciente", paciente);
+                        AndroidUtils.openActivity(fragment.getActivity(), NovoPacienteActivity.class, extra);
+                    } catch (JSONException e) {
+                        Log.e(TAG,e.getMessage(),e);
                     }
-                });
+                }
+            });
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,link,email");
         request.setParameters(parameters);
@@ -177,7 +181,7 @@ public class FacebookServiceImpl implements FacebookService {
     }
 
 
-    private void login(final AccessToken accessToken) {
+    private void loginFacebook(final AccessToken accessToken) {
 
         GraphRequest request = GraphRequest.newMeRequest(accessToken,
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -185,27 +189,11 @@ public class FacebookServiceImpl implements FacebookService {
                     public void onCompleted(
                             JSONObject object,
                             GraphResponse response) {
-                        String id = "";
                         try {
-                            AndroidUtils.showWaitDlg("Autenticando, aguarde...",fragment.getActivity());
-                            id = object.get("id").toString();
-                            //se estiver authenticado ele já envia o pacientevo para o buffer
-
-                            loginService.auth(id, LoginForm.AuthType.AUTH_FACEBOOK);
-
-                            AndroidUtils.showMessageDlg("Sucesso!", "Usuário logado com sucesso!", fragment.getActivity());
+                            String id = object.get("id").toString();
+                            logarWS(id, accessToken);
                         } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (LoginException e) {
-                            AndroidUtils.closeWaitDlg();
-                            //se paciente nao existe na base do ranchucrutes. Vamos cria-lo
-                            AndroidUtils.showWaitDlg("Registrando paciente, aguarde...",fragment.getActivity());
-                            criarPaciente(accessToken);
-                        } catch (RanchucrutesWSException e) {
-                            AndroidUtils.closeWaitDlg();
-                            AndroidUtils.showMessageDlg("Erro!", e.getMessage(), fragment.getActivity());
-                            //tirar isso daqui...é apenas um testes.
-                            criarPaciente(accessToken);
+                            Log.e(TAG,e.getMessage(),e);
                         }
                     }
                 });
@@ -213,9 +201,53 @@ public class FacebookServiceImpl implements FacebookService {
         parameters.putString("fields", "id,name,link,email");
         request.setParameters(parameters);
         request.executeAsync();
-
-
     }
 
+    private void logarWS(String id, AccessToken accessToken) {
+        new LogarUsuarioFacebook(id,accessToken).start();
+    }
+
+
+    class LogarUsuarioFacebook extends Thread{
+        private String id;
+        private AccessToken accessToken;
+
+        public LogarUsuarioFacebook(String id, AccessToken accessToken){
+            this.id = id;
+            this.accessToken = accessToken;
+        }
+
+
+        @Override
+        public void run() {
+            try {
+                AndroidUtils.showWaitDlgOnUiThread("Autenticando, aguarde...", fragment.getActivity());
+                //se estiver authenticado ele já envia o pacientevo para o buffer
+                loginService.auth(id, LoginForm.AuthType.AUTH_FACEBOOK);
+                AndroidUtils.closeWaitDlg();
+
+                //TODO MELHOR ISSO AQUI...TÁ MAIS FEIO QUE BATER NA MAE
+                fragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity) fragment.getActivity()).displayView(0);
+                    }
+                });
+
+
+            } catch (LoginException e) {
+                if (accessToken != null){
+                    AndroidUtils.showWaitDlgOnUiThread("Registrando paciente, aguarde...", fragment.getActivity());
+                    //se paciente nao existe na base do ranchucrutes. Vamos cria-lo
+                    criarPaciente(accessToken);
+                }else{
+                    AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), fragment.getActivity());
+                }
+            } catch (RanchucrutesWSException e) {
+
+                AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), fragment.getActivity());
+            }
+        }
+    }
 
 }

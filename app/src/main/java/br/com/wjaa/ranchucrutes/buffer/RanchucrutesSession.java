@@ -1,8 +1,11 @@
 package br.com.wjaa.ranchucrutes.buffer;
 
+import com.facebook.login.LoginManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 
@@ -33,5 +36,16 @@ public class RanchucrutesSession {
             sessionChangedListenerList = new ArrayList<>();
         }
         sessionChangedListenerList.add(listener);
+    }
+
+    public static boolean isPacienteLogado() {
+        return paciente != null;
+    }
+
+    public static void logoff() {
+        if (LoginForm.AuthType.AUTH_FACEBOOK.equals(paciente.getAuthType())){
+            LoginManager.getInstance().logOut();
+        }
+        setPaciente(null);
     }
 }

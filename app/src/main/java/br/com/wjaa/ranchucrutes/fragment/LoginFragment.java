@@ -143,7 +143,13 @@ public class LoginFragment extends RoboFragment {
                         @Override
                         public void confirm() {
                             //TODO ARRUMAR ESSA GABIARRA.
-                            ((MainActivity)getActivity()).displayView(0);
+                            getActivity().runOnUiThread(new Runnable(){
+                                @Override
+                                public void run() {
+                                    ((MainActivity)getActivity()).displayView(0);
+                                }
+                            });
+
                         }
 
                         @Override

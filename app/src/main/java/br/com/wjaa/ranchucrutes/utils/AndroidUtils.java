@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +25,13 @@ public class AndroidUtils {
 
     public static Intent openActivity(Activity context, Class<?> activity ){
         Intent i = new Intent(context, activity);
+        context.startActivityForResult(i, 1);
+        return i;
+    }
+
+    public static Intent openActivity(Activity context, Class<?> activity, Bundle bundle ){
+        Intent i = new Intent(context, activity);
+        i.putExtras(bundle);
         context.startActivityForResult(i, 1);
         return i;
     }

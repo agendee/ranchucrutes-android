@@ -2,6 +2,7 @@ package br.com.wjaa.ranchucrutes.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -51,7 +53,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     private ListView leftDrawerList;
 
     private ArrayAdapter<String> navigationDrawerAdapter;
-    private String[] menuSlider = {"Pesquisar Médicos","Meus Dados", "Minhas Consultas", "Médicos Favoritos", "Fazer Login"};
 
     @Inject
     private BuscaFragment buscaFragment;
@@ -80,7 +81,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         RanchucrutesSession.addSessionChangedListener(this);
-        RanchucrutesSession.addSessionChangedListener(dadosUsuarioFragment);
         initView();
         if (toolbar != null) {
             toolbar.setTitle("MarcMed");
@@ -91,14 +91,9 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     }
 
     private void initView() {
-        navigationDrawerAdapter=new ArrayAdapter<String>( MainActivity.this, android.R.layout.simple_list_item_1, menuSlider);
+        navigationDrawerAdapter = new MenuDefaultArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1);
         leftDrawerList.setAdapter(navigationDrawerAdapter);
-        leftDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                displayView(position);
-            }
-        });
+        leftDrawerList.setOnItemClickListener((MenuDefaultArrayAdapter)navigationDrawerAdapter);
         getFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
                     @Override
@@ -146,6 +141,8 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
      * Diplaying fragment view for selected nav drawer list item
      * */
     public void displayView(int position) {
+
+        //TODO ARRUMAR ESSA GAMBIARRA
         // update the main content by replacing fragments
         Fragment fragment = null;
 
@@ -173,6 +170,8 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
             default:
                 break;
         }
+
+
 
         if (fragment != null){
             FragmentManager fragmentManager = getFragmentManager();
@@ -266,14 +265,66 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                headerView.setText("Olá " + RanchucrutesSession.getPaciente().getNome());
-                menuSlider = new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos"};
-                navigationDrawerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, menuSlider);
+                if (RanchucrutesSession.isPacienteLogado()){
+                    headerView.setText("  Olá " + RanchucrutesSession.getPaciente().getNome());
+                    navigationDrawerAdapter = new MenuLogadoArrayAdapter( MainActivity.this, android.R.layout.simple_list_item_1);
+
+                }else{
+                    headerView.setText("  Paciente não autenticado");
+                    navigationDrawerAdapter = new MenuDefaultArrayAdapter( MainActivity.this, android.R.layout.simple_list_item_1);
+                }
                 leftDrawerList.setAdapter(navigationDrawerAdapter);
+                leftDrawerList.setOnItemClickListener((AdapterView.OnItemClickListener) navigationDrawerAdapter);
                 leftDrawerList.refreshDrawableState();
             }
         });
 
     }
+
+
+    class MenuLogadoArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener {
+
+        public MenuLogadoArrayAdapter(Context context, int resource) {
+            super(context, resource, new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos","Logout (Sair)"});
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            View v = super.getView(position, convertView, parent);
+
+
+            return v;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (id != 4){
+                displayView(position);
+            }else{
+                RanchucrutesSession.logoff();
+                drawerLayout.closeDrawers();
+            }
+        }
+    }
+
+    class MenuDefaultArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener{
+
+        public MenuDefaultArrayAdapter(Context context, int resource) {
+            super(context, resource, new String[]{"Pesquisar Médicos", "Fazer Login"});
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //TODO ARRUMAR ISSO AQUI É UMA GAMBIARRA PARA CONSEGUIR CHAMAR O MESMO METODO
+            if (position == 1){
+                displayView(4);
+            }else{
+                displayView(position);
+            }
+        }
+    }
+
+
 }
 

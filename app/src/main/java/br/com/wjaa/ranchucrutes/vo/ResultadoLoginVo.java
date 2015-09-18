@@ -9,6 +9,7 @@ public class ResultadoLoginVo {
     public enum StatusLogin{
         SUCESSO("Logado"),
         ERRO("Usúario ou senha inválido!"),
+        ERRO_SOCIAL("Usuário de rede social não cadastrado!"),
         ACESSO_NAO_CONFIRMADO("Seu acesso não foi confirmado!");
 
         private String msg;

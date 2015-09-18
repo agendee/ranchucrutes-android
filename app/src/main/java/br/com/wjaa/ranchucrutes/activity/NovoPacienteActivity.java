@@ -1,7 +1,6 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -11,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.exception.RestException;
 import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
 import br.com.wjaa.ranchucrutes.exception.RestResponseUnsatisfiedException;
@@ -30,6 +30,8 @@ import roboguice.inject.InjectView;
  */
 @ContentView(R.layout.activity_novo_paciente)
 public class NovoPacienteActivity extends RoboActionBarActivity {
+
+
 
     @InjectView(R.id.toolbar)
     private Toolbar toolbar;
@@ -52,22 +54,43 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
     @InjectView(R.id.btnCadSave)
     private Button btnSave;
 
+    private PacienteVo pacienteRedeSocial;
+    private boolean cadastroRedeSocial = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            this.pacienteRedeSocial = (PacienteVo) bundle.get("paciente");
+        }
+
         this.init();
+
+        if (this.pacienteRedeSocial != null){
+            this.cadastroRedeSocial = true;
+            this.initFacebook();
+        }
+
+    }
+
+    private void initFacebook() {
+        this.edtSenha.setVisibility(View.GONE);
+        this.edtConfSenha.setVisibility(View.GONE);
+        this.edtNome.setText(pacienteRedeSocial.getNome());
+        this.edtEmail.setText(pacienteRedeSocial.getEmail());
     }
 
     private void init() {
-        initToolbar();
-        initEvents();
+        this.initToolbar();
+        this.initEvents();
     }
 
     private void initToolbar() {
 
         if (toolbar != null) {
-            toolbar.setTitle("Novo Paciente");
+            this.toolbar.setTitle("Novo Paciente");
             setSupportActionBar(toolbar);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,9 +99,7 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
     }
 
     private void initEvents() {
-
-        btnSave.setOnClickListener(new BtnSaveClickListener());
-
+        this.btnSave.setOnClickListener(new BtnSaveClickListener());
     }
 
 
@@ -98,22 +119,26 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
             edtEmail.requestFocus();
             return false;
         }
-        if (StringUtils.isBlank(edtSenha.getText().toString())){
-            AndroidUtils.showMessageDlg("Ops!","A senha é obrigatória!",this);
-            edtSenha.requestFocus();
-            return false;
-        }
 
-        if (StringUtils.isBlank(edtConfSenha.getText().toString())){
-            AndroidUtils.showMessageDlg("Ops!","Confirme sua senha",this);
-            edtConfSenha.requestFocus();
-            return false;
-        }
+        /* Entra aqui apenas quando for um cadastro direto. */
+        if (pacienteRedeSocial == null){
+            if (StringUtils.isBlank(edtSenha.getText().toString())){
+                AndroidUtils.showMessageDlg("Ops!","A senha é obrigatória!",this);
+                edtSenha.requestFocus();
+                return false;
+            }
 
-        if (edtConfSenha.getText().toString().equals(edtSenha.getText())){
-            AndroidUtils.showMessageDlg("Ops!", "Confirmação de senha inválida!", this);
-            edtConfSenha.requestFocus();
-            return false;
+            if (StringUtils.isBlank(edtConfSenha.getText().toString())){
+                AndroidUtils.showMessageDlg("Ops!","Confirme sua senha",this);
+                edtConfSenha.requestFocus();
+                return false;
+            }
+
+            if (edtConfSenha.getText().toString().equals(edtSenha.getText())){
+                AndroidUtils.showMessageDlg("Ops!", "Confirmação de senha inválida!", this);
+                edtConfSenha.requestFocus();
+                return false;
+            }
         }
 
         return true;
@@ -149,13 +174,16 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
     }
 
     private PacienteVo getPacienteVo() {
-        PacienteVo pacienteVo = new PacienteVo();
+        PacienteVo pacienteVo = cadastroRedeSocial ? this.pacienteRedeSocial : new PacienteVo();
 
-        pacienteVo.setAuthType(LoginForm.AuthType.AUTH_RANCHUCRUTES);
         pacienteVo.setEmail(edtEmail.getText().toString());
         pacienteVo.setNome(edtNome.getText().toString());
-        pacienteVo.setSenha(edtSenha.getText().toString());
         pacienteVo.setTelefone(edtCelular.getText().toString());
+
+        if (!cadastroRedeSocial){
+            pacienteVo.setAuthType(LoginForm.AuthType.AUTH_RANCHUCRUTES);
+            pacienteVo.setSenha(edtSenha.getText().toString());
+        }
 
         return pacienteVo;
     }
@@ -174,7 +202,18 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
             try {
                 RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST, RanchucrutesConstants.END_POINT_SALVAR_PACIENTE,json);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Sucesso!","Cadastro criado com sucesso!",NovoPacienteActivity.this);
+                AndroidUtils.showMessageDlgOnUiThread("Sucesso!", "Cadastro criado com sucesso!", NovoPacienteActivity.this, new DialogCallback() {
+                    @Override
+                    public void confirm() {
+                        //TODO ARRUMAR ESSA CHADA AQUI ESTÁ MUITO FEIA
+                        ((MainActivity)getApplicationContext()).displayView(0);
+                    }
+
+                    @Override
+                    public void cancel() {
+
+                    }
+                });
 
                 //TODO AQUI REDIRECIONAR PARA O ACTIVITY QUE CHAMOU O CADASTRO OU DAR UM BACK
                 //CRIAR UM SHOWMESSAGE COM PARAMETRO DE CALLBACK...PARA RECEBER O CLICK DO BOTAO.
