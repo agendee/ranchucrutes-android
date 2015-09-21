@@ -1,5 +1,6 @@
 package br.com.wjaa.ranchucrutes.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -81,6 +82,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         RanchucrutesSession.addSessionChangedListener(this);
+        RanchucrutesSession.addSessionChangedListener(dadosUsuarioFragment);
         initView();
         if (toolbar != null) {
             toolbar.setTitle("MarcMed");
@@ -304,6 +306,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
             }else{
                 RanchucrutesSession.logoff();
                 drawerLayout.closeDrawers();
+                displayView(0);
             }
         }
     }
@@ -323,6 +326,11 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
                 displayView(position);
             }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        displayView(0);
     }
 
 

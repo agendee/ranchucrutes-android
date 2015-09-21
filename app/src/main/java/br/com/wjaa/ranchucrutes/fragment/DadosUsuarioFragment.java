@@ -17,7 +17,7 @@ import roboguice.inject.InjectView;
 /**
  *
  */
-public class DadosUsuarioFragment extends RoboFragment{
+public class DadosUsuarioFragment extends RoboFragment implements SessionChangedListener{
 
 
     @InjectView(R.id.edtDadosEmail)
@@ -46,22 +46,49 @@ public class DadosUsuarioFragment extends RoboFragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        initView();
     }
 
     public void initView() {
         PacienteVo paciente = RanchucrutesSession.getPaciente();
         if (paciente != null){
-            edtCelular.setText(paciente.getTelefone());
-            edtEmail.setText(paciente.getEmail());
-            edtNome.setText(paciente.getNome());
+            this.atualizarCampos(paciente);
+        }else{
+            this.zerarCampos();
         }
     }
 
 
+    @Override
+    public void pacienteChange(PacienteVo paciente) {
+        if (paciente == null){
+            this.zerarCampos();
+        }else{
+            this.atualizarCampos(paciente);
+        }
+    }
+
+    private void atualizarCampos(PacienteVo paciente) {
+        if (edtEmail != null) {
+            edtCelular.setText(paciente.getTelefone());
+            edtEmail.setText(paciente.getEmail());
+            edtNome.setText(paciente.getNome());
+        }
+
+    }
+
+    private void zerarCampos() {
+        //verificando se o campo nao está null, porque o fragmento pode nao ter sido criado ainda.
+        if (edtEmail != null){
+            edtCelular.setText("");
+            edtEmail.setText("");
+            edtNome.setText("");
+        }
+    }
 }

@@ -4,28 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="br.com.wjaa.ranchucrutes.fragment.LoginFragment"
-    >
+    android:weightSum="1">
 
-    <TextView
-        android:id="@+id/info"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/login_button"
-        android:textSize="20dp"
-        android:text="fdsafas"
-        android:textColor="@android:color/black"
-        android:textIsSelectable="false" />
-
-    <com.facebook.login.widget.LoginButton
+   <!-- <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="40dp"
         android:layout_gravity="center_horizontal"
+        android:padding="20dp"
+
+         />-->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn.entrar"
+        android:id="@+id/btnFacebook"
+        android:drawableLeft="@drawable/ic_facebook"
+        android:layout_gravity="center_horizontal"
+        style="@style/btn"
         android:padding="10dp"
-        android:text="fdsafsadfsad"/>
+        android:background="#3B579D"
+
+        />
+
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
@@ -33,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
-        android:padding="10dp"/>
+        android:padding="5dp"/>
 
 
 

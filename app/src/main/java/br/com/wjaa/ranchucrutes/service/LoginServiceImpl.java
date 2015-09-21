@@ -23,6 +23,9 @@ import br.com.wjaa.ranchucrutes.vo.ResultadoLoginVo;
  */
 public class LoginServiceImpl implements LoginService {
 
+
+
+
     @Override
     public PacienteVo criarPacienteFacebook(String nome, String email, String telefone, String idFacebook)
             throws NovoPacienteException {
@@ -101,7 +104,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Nullable
-    private PacienteVo criarPaciente(PacienteVo paciente) throws NovoPacienteException {
+    public PacienteVo criarPaciente(PacienteVo paciente) throws NovoPacienteException {
         String pacienteJson = ObjectUtils.toJson(paciente);
         try {
             PacienteVo pVo = RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,

@@ -6,6 +6,8 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
+import br.com.wjaa.ranchucrutes.service.DataService;
+import br.com.wjaa.ranchucrutes.service.DataServiceImpl;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
 import br.com.wjaa.ranchucrutes.service.FacebookServiceImpl;
 import br.com.wjaa.ranchucrutes.service.LoginService;
@@ -32,8 +34,7 @@ public class FindClassInjectableModule implements Module {
         binder.bind(RanchucrutesService.class).to(RanchucrutesServiceImpl.class);
         binder.bind(LoginService.class).to(LoginServiceImpl.class);
         binder.bind(FacebookService.class).to(FacebookServiceImpl.class);
-        binder.bind(RanchucrutesBuffer.class);
-        //binder.bind(DataService.class).toInstance(new DataServiceImpl(this.context));
+        binder.bind(DataService.class).toInstance(new DataServiceImpl(this.context));
     }
 
 }

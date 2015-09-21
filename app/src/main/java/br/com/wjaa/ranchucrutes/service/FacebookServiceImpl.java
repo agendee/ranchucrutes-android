@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -12,6 +13,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
@@ -24,10 +26,13 @@ import com.google.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.MainActivity;
+import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
@@ -64,10 +69,10 @@ public class FacebookServiceImpl implements FacebookService {
 
     @Override
     public void onResume() {
-        Profile profile = Profile.getCurrentProfile();
+        /*Profile profile = Profile.getCurrentProfile();
         if (profile != null){
             logarWS(profile.getId(), null);
-        }
+        }*/
     }
 
     @Override
@@ -105,14 +110,14 @@ public class FacebookServiceImpl implements FacebookService {
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                Log.d(TAG, "trocando de profile: " + currentProfile);
+                Log.d(TAG, "trocando de profile aa: " + currentProfile);
 
             }
         };
     }
 
     private void setupLoginButton(View view) {
-        LoginButton mButtonLogin = (LoginButton) view.findViewById(R.id.login_button);
+        /*LoginButton mButtonLogin = (LoginButton) view.findViewById(R.id.login_button);
         mButtonLogin.setFragment(new NativeFragmentWrapper(this.fragment));
 //        if (Build.VERSION.SDK_INT >= 16)
 //            mButtonLogin.setBackground(null);
@@ -120,21 +125,26 @@ public class FacebookServiceImpl implements FacebookService {
 //            mButtonLogin.setBackgroundDrawable(null);
         mButtonLogin.setCompoundDrawables(null, null, null, null);
         mButtonLogin.setReadPermissions("email", "public_profile", "user_friends");
-        mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);
+        mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);*/
+
+        LoginManager.getInstance().registerCallback(mCallbackManager, mFacebookCallback);
+        Button btn_fb_login = (Button)view.findViewById(R.id.btnFacebook);
+
+        btn_fb_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginManager.getInstance().logInWithReadPermissions(new NativeFragmentWrapper(fragment), Arrays.asList("email", "public_profile", "user_friends"));
+            }
+        });
+
     }
 
-    /*private String constructWelcomeMessage(Profile profile) {
-        StringBuffer stringBuffer = new StringBuffer();
-        if (profile != null) {
-            stringBuffer.append("Welcome " + profile.getName());
-        }
-        return stringBuffer.toString();
-    }*/
 
 
     private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
+            AndroidUtils.showWaitDlgOnUiThread("Autenticando, aguarde...", fragment.getActivity());
             AccessToken accessToken = loginResult.getAccessToken();
             loginFacebook(accessToken);
         }
@@ -156,22 +166,16 @@ public class FacebookServiceImpl implements FacebookService {
                 public void onCompleted(
                         JSONObject object,
                         GraphResponse response) {
-                    try {
-                        AndroidUtils.closeWaitDlg();
-                        String id = object.get("id").toString();
-                        String nome = object.get("name").toString();
-                        String email = object.get("email").toString();
-                        PacienteVo paciente = new PacienteVo();
-                        paciente.setNome(nome);
-                        paciente.setEmail(email);
-                        paciente.setAuthType(LoginForm.AuthType.AUTH_FACEBOOK);
-                        paciente.setKeySocial(id);
-                        Bundle extra = new Bundle();
-                        extra.putSerializable("paciente", paciente);
-                        AndroidUtils.openActivity(fragment.getActivity(), NovoPacienteActivity.class, extra);
-                    } catch (JSONException e) {
+                    try{
+                        new CriarUsuarioFacebook(object.get("id").toString(),
+                                object.get("name").toString(),
+                                object.get("email").toString()).start();
+
+                    }catch (JSONException e) {
                         Log.e(TAG,e.getMessage(),e);
                     }
+
+
                 }
             });
         Bundle parameters = new Bundle();
@@ -221,7 +225,6 @@ public class FacebookServiceImpl implements FacebookService {
         @Override
         public void run() {
             try {
-                AndroidUtils.showWaitDlgOnUiThread("Autenticando, aguarde...", fragment.getActivity());
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 loginService.auth(id, LoginForm.AuthType.AUTH_FACEBOOK);
                 AndroidUtils.closeWaitDlg();
@@ -247,6 +250,49 @@ public class FacebookServiceImpl implements FacebookService {
 
                 AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), fragment.getActivity());
             }
+        }
+    }
+
+
+    class CriarUsuarioFacebook extends Thread{
+        private String id;
+        private String nome;
+        private String email;
+
+        public CriarUsuarioFacebook(String id, String nome, String email){
+            this.id = id;
+            this.nome = nome;
+            this.email = email;
+        }
+
+
+        @Override
+        public void run() {
+            try {
+                AndroidUtils.closeWaitDlg();
+                PacienteVo paciente = new PacienteVo();
+                paciente.setNome(nome);
+                paciente.setEmail(email);
+                paciente.setAuthType(LoginForm.AuthType.AUTH_FACEBOOK);
+                paciente.setKeySocial(id);
+
+                AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando usuário...", fragment.getActivity());
+                loginService.criarPaciente(paciente);
+
+                AndroidUtils.closeWaitDlg();
+                //TODO mais feio que bater na mae.
+                fragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity) fragment.getActivity()).displayView(0);
+                    }
+                });
+            }  catch (NovoPacienteException e) {
+                Log.e("LoginFrament",e.getMessage(),e);
+                AndroidUtils.closeWaitDlg();
+                AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), fragment.getActivity());
+            }
+
         }
     }
 

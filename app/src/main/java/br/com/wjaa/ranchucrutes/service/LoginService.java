@@ -18,6 +18,8 @@ public interface LoginService {
 
     PacienteVo criarPaciente(String email, String senha, String nome, String telefone) throws NovoPacienteException;
 
+    PacienteVo criarPaciente(PacienteVo paciente) throws NovoPacienteException;
+
     PacienteVo auth(LoginForm auth) throws LoginException, RanchucrutesWSException;
 
     PacienteVo auth(String login, String senha) throws LoginException, RanchucrutesWSException;

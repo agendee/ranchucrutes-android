@@ -9,13 +9,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.inject.Inject;
+
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RestException;
 import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
 import br.com.wjaa.ranchucrutes.exception.RestResponseUnsatisfiedException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.rest.RestUtils;
+import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
@@ -53,6 +58,9 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.btnCadSave)
     private Button btnSave;
+
+    @Inject
+    private LoginService loginService;
 
     private PacienteVo pacienteRedeSocial;
     private boolean cadastroRedeSocial = false;
@@ -107,11 +115,6 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
         if (StringUtils.isBlank(edtNome.getText().toString())){
             AndroidUtils.showMessageDlg("Ops!","O nome é obrigatório!",this);
             edtNome.requestFocus();
-            return false;
-        }
-        if (StringUtils.isBlank(edtCelular.getText().toString())){
-            AndroidUtils.showMessageDlg("Ops!","O celular é obrigatório!",this);
-            edtCelular.requestFocus();
             return false;
         }
         if (StringUtils.isBlank(edtEmail.getText().toString())){
@@ -198,34 +201,23 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
         @Override
         public void run() {
             AndroidUtils.showWaitDlgOnUiThread("Aguarde enviando dados",  NovoPacienteActivity.this);
-            String json = ObjectUtils.toJson(pacienteVo);
             try {
-                RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST, RanchucrutesConstants.END_POINT_SALVAR_PACIENTE,json);
+                loginService.criarPaciente(pacienteVo);
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageDlgOnUiThread("Sucesso!", "Cadastro criado com sucesso!", NovoPacienteActivity.this, new DialogCallback() {
                     @Override
                     public void confirm() {
-                        //TODO ARRUMAR ESSA CHADA AQUI ESTÁ MUITO FEIA
-                        ((MainActivity)getApplicationContext()).displayView(0);
+                        finish();
                     }
-
                     @Override
                     public void cancel() {
 
                     }
                 });
-
-                //TODO AQUI REDIRECIONAR PARA O ACTIVITY QUE CHAMOU O CADASTRO OU DAR UM BACK
-                //CRIAR UM SHOWMESSAGE COM PARAMETRO DE CALLBACK...PARA RECEBER O CLICK DO BOTAO.
-
-            } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
-                Log.e(NovoPacienteActivity.class.getSimpleName(), "Erro ao criar um novo paciente", e);
-                AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Ops!", e.getMessage(), NovoPacienteActivity.this);
-            } catch (RestException e) {
+            } catch (NovoPacienteException e) {
                 Log.e(NovoPacienteActivity.class.getSimpleName(),"Erro ao criar um novo paciente", e);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Ops!",e.getErrorMessage().getErrorMessage(),NovoPacienteActivity.this);
+                AndroidUtils.showMessageDlgOnUiThread("Ops!", e.getMessage(), NovoPacienteActivity.this);
             }
         }
     }

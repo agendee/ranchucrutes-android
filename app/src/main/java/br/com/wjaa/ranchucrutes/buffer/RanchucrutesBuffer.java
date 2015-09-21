@@ -15,6 +15,7 @@ import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 public class RanchucrutesBuffer {
 
     private static String TAG = RanchucrutesBuffer.class.getSimpleName();
+    
     private static EspecialidadeVo[] especialidades;
 
 
