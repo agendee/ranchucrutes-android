@@ -2,6 +2,7 @@ package br.com.wjaa.ranchucrutes.vo;
 
 import java.io.Serializable;
 
+import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 
 /**
@@ -9,17 +10,18 @@ import br.com.wjaa.ranchucrutes.form.LoginForm;
  */
 public class PacienteVo implements Serializable {
 
+    private static final long serialVersionUID = -8738431158110410130L;
     private Long id;
     private String email;
     private String nome;
     private String telefone;
     private String senha;
     private String keySocial;
-    private LoginForm.AuthType authType;
+    private AuthType authType;
 
     public PacienteVo(){}
 
-    public PacienteVo(String nome, String email, String telefone, String keySocial, LoginForm.AuthType authType) {
+    public PacienteVo(String nome, String email, String telefone, String keySocial, AuthType authType) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
@@ -69,11 +71,11 @@ public class PacienteVo implements Serializable {
         this.keySocial = keySocial;
     }
 
-    public LoginForm.AuthType getAuthType() {
+    public AuthType getAuthType() {
         return authType;
     }
 
-    public void setAuthType(LoginForm.AuthType authType) {
+    public void setAuthType(AuthType authType) {
         this.authType = authType;
     }
 

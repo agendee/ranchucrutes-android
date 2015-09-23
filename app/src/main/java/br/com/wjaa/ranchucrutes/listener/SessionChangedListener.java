@@ -1,12 +1,12 @@
 package br.com.wjaa.ranchucrutes.listener;
 
-import br.com.wjaa.ranchucrutes.vo.PacienteVo;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 
 /**
  * Created by wagner on 17/09/15.
  */
 public interface SessionChangedListener {
 
-    void pacienteChange(PacienteVo paciente);
+    void usuarioChange(UsuarioEntity usuario);
 
 }

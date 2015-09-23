@@ -2,6 +2,7 @@ package br.com.wjaa.ranchucrutes.service;
 
 import javax.security.auth.login.LoginException;
 
+import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
@@ -24,6 +25,7 @@ public interface LoginService {
 
     PacienteVo auth(String login, String senha) throws LoginException, RanchucrutesWSException;
 
-    PacienteVo auth(String key, LoginForm.AuthType type) throws LoginException, RanchucrutesWSException;
+    PacienteVo auth(String key, AuthType type) throws LoginException, RanchucrutesWSException;
 
+    void authLocal();
 }

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
     defaultConfig {
         applicationId "br.com.wjaa.ranchucrutes"
         minSdkVersion 17
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -27,19 +27,25 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    provided 'org.roboguice:roboblender:3.+'
-
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.google.android.gms:play-services-maps:7.8.0'
+    compile 'com.google.android.gms:play-services-location:7.8.0'
+    compile 'com.google.android.gms:play-services-plus:7.8.0'
     compile 'org.roboguice:roboguice:3.+'
+    provided 'org.roboguice:roboblender:3.+'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'aopalliance:aopalliance:1.0'
     compile 'com.android.support:multidex:1.0.0'
-    compile 'commons-io:commons-io:2.4'
-    compile 'com.android.support:support-v4:22.2.1'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
 }
 
 repositories {
     mavenCentral()
 }
+
+project.tasks.withType(JavaCompile) { task ->
+    options.compilerArgs << "-AguiceAnnotationDatabasePackageName=br.com.wjaa.ranchucrutes"
+}
+

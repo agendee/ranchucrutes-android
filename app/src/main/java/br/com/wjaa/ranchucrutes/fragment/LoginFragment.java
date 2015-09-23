@@ -1,5 +1,6 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -170,6 +171,14 @@ public class LoginFragment extends RoboFragment {
 
 
 
+
+    @Override
+    public void onDestroy() {
+        Fragment f = getActivity().getFragmentManager().findFragmentByTag(this.getClass().getSimpleName());
+        if (f != null){
+            getActivity().getFragmentManager().beginTransaction().remove(f).commit();
+        }
+    }
 
 
 }

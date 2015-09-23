@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RestException;
 import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
@@ -184,7 +185,7 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
         pacienteVo.setTelefone(edtCelular.getText().toString());
 
         if (!cadastroRedeSocial){
-            pacienteVo.setAuthType(LoginForm.AuthType.AUTH_RANCHUCRUTES);
+            pacienteVo.setAuthType(AuthType.AUTH_RANCHUCRUTES);
             pacienteVo.setSenha(edtSenha.getText().toString());
         }
 

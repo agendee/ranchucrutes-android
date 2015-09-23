@@ -1,7 +1,5 @@
 package br.com.wjaa.ranchucrutes.service;
 
-import java.util.List;
-
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 
 /**

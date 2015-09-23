@@ -2,9 +2,4 @@
 <menu  xmlns:android = "http://schemas.android.com/apk/res/android"
        xmlns:yourapp = "http://schemas.android.com/apk/res-auto">
 
-    <item  android:id = "@+id/action_menu2"
-        android:icon = "@drawable/ic_setting_dark"
-        android:title = "@string/action_menu"
-        yourapp:showAsAction="ifRoom"/>
-
 </menu>

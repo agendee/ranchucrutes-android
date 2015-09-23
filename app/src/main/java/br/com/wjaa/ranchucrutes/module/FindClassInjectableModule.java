@@ -2,8 +2,7 @@ package br.com.wjaa.ranchucrutes.module;
 
 import android.content.Context;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import com.google.inject.AbstractModule;
 
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.service.DataService;
@@ -17,10 +16,11 @@ import br.com.wjaa.ranchucrutes.service.MedicoServiceImpl;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesServiceImpl;
 
+
 /**
  * Created by wagner on 25/07/15.
  */
-public class FindClassInjectableModule implements Module {
+public class FindClassInjectableModule extends AbstractModule {
 
     private Context context;
 
@@ -29,12 +29,13 @@ public class FindClassInjectableModule implements Module {
     }
 
     @Override
-    public void configure(Binder binder) {
-        binder.bind(MedicoService.class).to(MedicoServiceImpl.class);
-        binder.bind(RanchucrutesService.class).to(RanchucrutesServiceImpl.class);
-        binder.bind(LoginService.class).to(LoginServiceImpl.class);
-        binder.bind(FacebookService.class).to(FacebookServiceImpl.class);
-        binder.bind(DataService.class).toInstance(new DataServiceImpl(this.context));
+    public void configure() {
+        superbind(MedicoService.class).to(MedicoServiceImpl.class);
+        superbind(RanchucrutesService.class).to(RanchucrutesServiceImpl.class);
+        superbind(LoginService.class).to(LoginServiceImpl.class);
+        superbind(FacebookService.class).to(FacebookServiceImpl.class);
+        superbind(RanchucrutesBuffer.class);
+        superbind(DataService.class).toInstance(new DataServiceImpl(this.context));
     }
 
 }

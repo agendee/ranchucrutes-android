@@ -13,6 +13,10 @@ import roboguice.RoboGuice;
  */
 public class AppConfig extends Application {
 
+    static {
+        RoboGuice.setUseAnnotationDatabases(false);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

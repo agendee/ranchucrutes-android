@@ -25,11 +25,21 @@ public class SplashActivity extends RoboActivity implements Runnable {
         super.onCreate(savedInstanceState);
         buffer.initializer();
         Handler handler = new Handler();
-        handler.postDelayed(this, 3000);
+        handler.postDelayed(this, 2000);
     }
 
     public void run(){
         startActivity(new Intent(this, MainActivity.class));
         finish();
+
+        //intervalo rapido depois de executar o pos.
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               buffer.posInitializer();
+            }
+        }, 2000);
+
     }
 }

@@ -30,6 +30,10 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
 
+        <meta-data android:name="roboguice.annotations.packages" android:value="br.com.wjaa.ranchucrutes"/>
+
+
+
         <activity
             android:name=".activity.SplashActivity"
             android:label="@string/title_activity_home"

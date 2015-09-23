@@ -7,8 +7,6 @@ import java.io.Serializable;
 
 public abstract class PersistenceBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     private String tabela = null;
     private String colunas[] = null;
 

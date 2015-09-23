@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import roboguice.fragment.provided.RoboFragment;
@@ -56,9 +57,9 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
     }
 
     public void initView() {
-        PacienteVo paciente = RanchucrutesSession.getPaciente();
-        if (paciente != null){
-            this.atualizarCampos(paciente);
+        UsuarioEntity usuario = RanchucrutesSession.getUsuario();
+        if (usuario != null){
+            this.atualizarCampos(usuario);
         }else{
             this.zerarCampos();
         }
@@ -66,19 +67,19 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
 
 
     @Override
-    public void pacienteChange(PacienteVo paciente) {
-        if (paciente == null){
+    public void usuarioChange(UsuarioEntity usuario) {
+        if (usuario == null){
             this.zerarCampos();
         }else{
-            this.atualizarCampos(paciente);
+            this.atualizarCampos(usuario);
         }
     }
 
-    private void atualizarCampos(PacienteVo paciente) {
+    private void atualizarCampos(UsuarioEntity usuario) {
         if (edtEmail != null) {
-            edtCelular.setText(paciente.getTelefone());
-            edtEmail.setText(paciente.getEmail());
-            edtNome.setText(paciente.getNome());
+            edtCelular.setText(usuario.getTelefone());
+            edtEmail.setText(usuario.getEmail());
+            edtNome.setText(usuario.getNome());
         }
 
     }

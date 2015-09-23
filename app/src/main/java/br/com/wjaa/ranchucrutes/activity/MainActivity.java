@@ -1,6 +1,5 @@
 package br.com.wjaa.ranchucrutes.activity;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -21,19 +20,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
 import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
 import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
 import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
 import br.com.wjaa.ranchucrutes.fragment.LoginFragment;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
-import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -90,22 +88,13 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         }
         initDrawer();
         displayView(0);
+
     }
 
     private void initView() {
         navigationDrawerAdapter = new MenuDefaultArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1);
         leftDrawerList.setAdapter(navigationDrawerAdapter);
-        leftDrawerList.setOnItemClickListener((MenuDefaultArrayAdapter)navigationDrawerAdapter);
-        getFragmentManager().addOnBackStackChangedListener(
-                new FragmentManager.OnBackStackChangedListener() {
-                    @Override
-                    public void onBackStackChanged() {
-
-                        syncActionBarArrowState();
-                    }
-                }
-        );
-
+        leftDrawerList.setOnItemClickListener((MenuDefaultArrayAdapter) navigationDrawerAdapter);
         footerView.setText(Html.fromHtml("<u>" + footerView.getText() + "</u>"));
         footerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,8 +162,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
                 break;
         }
 
-
-
         if (fragment != null){
             FragmentManager fragmentManager = getFragmentManager();
 
@@ -182,13 +169,15 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.main_frame, fragment,fragment.getClass().getSimpleName())
+                        .replace(R.id.main_frame, fragment, fragment.getClass().getSimpleName())
                         .commit();
+
             }
             else{
                 fragmentManager.beginTransaction()
-                        .replace(R.id.main_frame, fragment,fragment.getClass().getSimpleName())
+                        .replace(R.id.main_frame, fragment, fragment.getClass().getSimpleName())
                         .commit();
+
             }
 
 
@@ -203,12 +192,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         }
 
     }
-
-    private void syncActionBarArrowState() {
-        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-        drawerToggle.setDrawerIndicatorEnabled(backStackEntryCount == 0);
-    }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -254,21 +237,16 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     }
     @Override
     public void onBackPressed() {
-        final BuscaFragment fragment = (BuscaFragment) getFragmentManager().findFragmentByTag(BuscaFragment.class.getSimpleName());
-
-        /*if (fragment.allowBackPressed()) { // and then you define a method allowBackPressed with the logic to allow back pressed or not
-            super.onBackPressed();
-        }*/
-        Toast.makeText(this,"sair sair sair",Toast.LENGTH_SHORT);
+        displayView(0);
     }
 
     @Override
-    public void pacienteChange(PacienteVo paciente) {
+    public void usuarioChange(UsuarioEntity usuario) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (RanchucrutesSession.isPacienteLogado()){
-                    headerView.setText("  Olá " + RanchucrutesSession.getPaciente().getNome());
+                if (RanchucrutesSession.isUsuarioLogado()){
+                    headerView.setText("  Olá " + RanchucrutesSession.getUsuario().getNome());
                     navigationDrawerAdapter = new MenuLogadoArrayAdapter( MainActivity.this, android.R.layout.simple_list_item_1);
 
                 }else{
@@ -287,7 +265,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     class MenuLogadoArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener {
 
         public MenuLogadoArrayAdapter(Context context, int resource) {
-            super(context, resource, new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos","Logout (Sair)"});
+            super(context, resource, new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos","Configurações","Logout (Sair)"});
         }
 
         @Override
@@ -314,13 +292,13 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     class MenuDefaultArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener{
 
         public MenuDefaultArrayAdapter(Context context, int resource) {
-            super(context, resource, new String[]{"Pesquisar Médicos", "Fazer Login"});
+            super(context, resource, new String[]{"Pesquisar Médicos","Configurações", "Fazer Login"});
         }
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //TODO ARRUMAR ISSO AQUI É UMA GAMBIARRA PARA CONSEGUIR CHAMAR O MESMO METODO
-            if (position == 1){
+            //TODO ARRUMAR ESSA GAMBETA
+            if (position == 2){
                 displayView(4);
             }else{
                 displayView(position);

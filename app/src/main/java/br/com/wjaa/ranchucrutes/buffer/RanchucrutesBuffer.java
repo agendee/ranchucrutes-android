@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
-import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 
 /**
  * Created by wagner on 31/07/15.
@@ -15,29 +15,48 @@ import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 public class RanchucrutesBuffer {
 
     private static String TAG = RanchucrutesBuffer.class.getSimpleName();
-    
-    private static EspecialidadeVo[] especialidades;
 
+    private static EspecialidadeVo[] especialidades;
 
     @Inject
     private RanchucrutesService ranchucrutesService;
 
+    @Inject
+    private LoginService loginService;
+
+    public static EspecialidadeVo[] getEspecialidades(){
+        return especialidades;
+    }
+
     public void initializer(){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    especialidades = ranchucrutesService.getEspecialidades();
-                } catch (Exception ex) {
-                    Log.e(TAG,ex.getMessage(),ex);
-                }
+        new FindEspecialidade().start();
+    }
+
+
+    public void posInitializer(){
+        new AutoLogin().start();
+    }
+
+
+    class FindEspecialidade extends Thread{
+        @Override
+        public void run() {
+            try {
+                especialidades = ranchucrutesService.getEspecialidades();
+            } catch (Exception ex) {
+                Log.e(TAG,ex.getMessage(),ex);
             }
-        });
-        thread.start();
+        }
     }
 
-    public static EspecialidadeVo [] getEspecialidades(){
-        return RanchucrutesBuffer.especialidades;
+    class AutoLogin extends Thread{
+        @Override
+        public void run() {
+            try {
+                loginService.authLocal();
+            } catch (Exception ex) {
+                Log.e(TAG,ex.getMessage(),ex);
+            }
+        }
     }
-
 }

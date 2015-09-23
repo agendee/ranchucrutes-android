@@ -1,15 +1,12 @@
 package br.com.wjaa.ranchucrutes.form;
 
+import br.com.wjaa.ranchucrutes.commons.AuthType;
+
 /**
  * Created by wagner on 10/09/15.
  */
 public class LoginForm {
 
-    public enum AuthType{
-        AUTH_FACEBOOK,
-        AUTH_GPLUS,
-        AUTH_RANCHUCRUTES
-    }
 
 
     private String login;

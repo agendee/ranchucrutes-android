@@ -2,12 +2,12 @@ package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
 
@@ -33,8 +33,6 @@ import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
-import roboguice.RoboGuice;
-import roboguice.activity.RoboActionBarActivity;
 import roboguice.fragment.provided.RoboFragment;
 import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
@@ -42,10 +40,6 @@ import roboguice.util.RoboAsyncTask;
 public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
 
     private static final String TAG = BuscaFragment.class.getSimpleName();
-    static {
-        RoboGuice.setUseAnnotationDatabases(false);
-    }
-
     private EspecialidadeVo especSelecionada;
     @Inject
     private MedicoService medicoService;
@@ -55,19 +49,20 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     private EditText edtCep;
     @InjectView(R.id.btnProcurar)
     private Button btnProcurarMedicos;
-    private EspecialidadeVo [] especialidades;
+    private EspecialidadeVo[] especialidades;
     private RanchucrutesMaps ranchucrutesMaps;
     private Location myLocation;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ranchucrutesMaps = new RanchucrutesMaps(getActivity(), this);
+        ranchucrutesMaps = new RanchucrutesMaps(getActivity(),this, this);
         this.initActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.activity_home, container, false);
 
     }
@@ -75,7 +70,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        FragmentManager fm = ((FragmentActivity)getActivity()).getSupportFragmentManager();
+        FragmentManager fm = getChildFragmentManager();
         Fragment fragment = (fm.findFragmentById(R.id.map));
         FragmentTransaction ft = fm.beginTransaction();
         ft.remove(fragment);
@@ -111,8 +106,13 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     }
 
     private void createMaps() {
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) ((RoboActionBarActivity)getActivity()).getSupportFragmentManager().findFragmentById(R.id.map);
+        MapFragment mapFragment;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        }else{
+            mapFragment = (MapFragment)getActivity().getFragmentManager().findFragmentById(R.id.map);
+        }
+
         mapFragment.getMapAsync(this.ranchucrutesMaps);
     }
 
@@ -165,11 +165,27 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                                 ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
                                     @Override
                                     public View getView(int position, View convertView, ViewGroup parent) {
-                                        View v = getActivity().getLayoutInflater().inflate(R.layout.custom_item, null);
-                                        TextView t = (TextView) v.findViewById(R.id.txtViewItem);
-                                        t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
-                                        t.setText(especialidades[position].getNome());
-                                        return t;
+                                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+                                            View row;
+                                            LayoutInflater inflater = LayoutInflater.from(getContext());
+                                            if (convertView == null){
+                                                row = inflater.inflate(R.layout.custom_item, null);
+                                            }else{
+                                                row = convertView;
+                                            }
+                                            TextView t = (TextView) row.findViewById(R.id.txtViewItem333);
+                                            t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
+                                            t.setText(especialidades[position].getNome());
+                                            return t;
+                                        }else{
+                                            TextView t = new TextView(getContext());
+                                            t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
+                                            t.setText(especialidades[position].getNome());
+                                            t.setTextSize(20);
+                                            return t;
+
+                                        }
+
                                     }
                                 };
                                 modeList.setAdapter(modeAdapter);
@@ -224,6 +240,14 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
             especSelecionada = this.especialidadeVo;
             btnEspecilidade.setText(especSelecionada.getNome());
             dialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        Fragment f = getActivity().getFragmentManager().findFragmentByTag(this.getClass().getSimpleName());
+        if (f != null){
+            getActivity().getFragmentManager().beginTransaction().remove(f).commit();
         }
     }
 

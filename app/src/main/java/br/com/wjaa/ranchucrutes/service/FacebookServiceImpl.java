@@ -21,6 +21,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
 import com.google.inject.Inject;
 
 import org.json.JSONException;
@@ -32,11 +33,13 @@ import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.MainActivity;
+import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import br.com.wjaa.ranchucrutes.wrapper.NativeFragmentWrapper;
 
@@ -167,9 +170,32 @@ public class FacebookServiceImpl implements FacebookService {
                         JSONObject object,
                         GraphResponse response) {
                     try{
-                        new CriarUsuarioFacebook(object.get("id").toString(),
-                                object.get("name").toString(),
-                                object.get("email").toString()).start();
+
+                        String id = object.get("id").toString();
+                        String nome = object.get("name").toString();
+                        String email = object.get("email").toString();
+
+                        //se nao tiverem vazio pode criar um novo usuario
+                        if(StringUtils.isNotBlank(id) &&
+                                StringUtils.isNotBlank(nome) &&
+                                StringUtils.isNotBlank(email)){
+
+                            new CriarUsuarioFacebook(id,nome,email
+                            ).start();
+                        }else{
+
+
+                            //alguma informacao está vazia, entao usuário precisa completar os seus dados.
+                            AndroidUtils.closeWaitDlg();
+                            PacienteVo pacienteVo = new PacienteVo();
+                            pacienteVo.setKeySocial(id);
+                            pacienteVo.setAuthType(AuthType.AUTH_FACEBOOK);
+                            pacienteVo.setNome(nome);
+                            pacienteVo.setEmail(email);
+                            Bundle b = new Bundle();
+                            b.putSerializable("paciente",pacienteVo);
+                            AndroidUtils.openActivity(fragment.getActivity(),NovoPacienteActivity.class,b);
+                        }
 
                     }catch (JSONException e) {
                         Log.e(TAG,e.getMessage(),e);
@@ -226,7 +252,7 @@ public class FacebookServiceImpl implements FacebookService {
         public void run() {
             try {
                 //se estiver authenticado ele já envia o pacientevo para o buffer
-                loginService.auth(id, LoginForm.AuthType.AUTH_FACEBOOK);
+                loginService.auth(id, AuthType.AUTH_FACEBOOK);
                 AndroidUtils.closeWaitDlg();
 
                 //TODO MELHOR ISSO AQUI...TÁ MAIS FEIO QUE BATER NA MAE
@@ -273,7 +299,7 @@ public class FacebookServiceImpl implements FacebookService {
                 PacienteVo paciente = new PacienteVo();
                 paciente.setNome(nome);
                 paciente.setEmail(email);
-                paciente.setAuthType(LoginForm.AuthType.AUTH_FACEBOOK);
+                paciente.setAuthType(AuthType.AUTH_FACEBOOK);
                 paciente.setKeySocial(id);
 
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando usuário...", fragment.getActivity());

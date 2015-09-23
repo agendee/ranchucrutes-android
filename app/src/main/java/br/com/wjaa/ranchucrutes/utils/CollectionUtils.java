@@ -17,7 +17,7 @@ public class CollectionUtils {
      * @param c Collection
      * @return true caso a colecao tenha ao menus um objeto e false caso contrario.
      */
-    public static boolean isNotEmpty(Collection<?> c){
+    public static boolean isNotEmpty(Collection c){
         return c != null && !c.isEmpty();
     }
 
@@ -27,7 +27,7 @@ public class CollectionUtils {
      * @param c Collection
      * @return true caso esteja vazia e false caso contrario.
      */
-    public static boolean isEmpty(Collection<?> c){
+    public static boolean isEmpty(Collection c){
         return !isNotEmpty(c);
     }
 }

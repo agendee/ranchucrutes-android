@@ -21,14 +21,7 @@
         <item>Anúncios</item>
     </string-array>
 
-    <array name="nav_drawer_icons">
-        <item>@drawable/ic_media_play</item>
-        <item>@drawable/ic_media_pause</item>
-        <item>@drawable/ic_setting_dark</item>
-        <item>@drawable/ic_cast_dark</item>
-        <item>@drawable/ic_media_route_on_2_mono_dark</item>
-        <item>@drawable/ic_setting_light</item>
-    </array>
+
     <string name="title_activity_main2">Main2Activity</string>
 
     <string name="title_section1">Section 1</string>

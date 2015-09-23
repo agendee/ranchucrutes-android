@@ -5,6 +5,8 @@ import com.facebook.login.LoginManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.wjaa.ranchucrutes.commons.AuthType;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
@@ -14,19 +16,19 @@ import br.com.wjaa.ranchucrutes.vo.PacienteVo;
  */
 public class RanchucrutesSession {
 
-    private static PacienteVo paciente;
+    private static UsuarioEntity usuario;
     private static List<SessionChangedListener> sessionChangedListenerList;
 
-    public static PacienteVo getPaciente() {
-        return paciente;
+    public static UsuarioEntity getUsuario() {
+        return usuario;
     }
 
-    public static void setPaciente(PacienteVo paciente) {
-        RanchucrutesSession.paciente = paciente;
+    public static void setUsuario(UsuarioEntity usuario) {
+        RanchucrutesSession.usuario = usuario;
         //disparando o evento
         if (sessionChangedListenerList != null){
             for (SessionChangedListener listener: sessionChangedListenerList) {
-                listener.pacienteChange(paciente);
+                listener.usuarioChange(usuario);
             }
         }
     }
@@ -38,14 +40,14 @@ public class RanchucrutesSession {
         sessionChangedListenerList.add(listener);
     }
 
-    public static boolean isPacienteLogado() {
-        return paciente != null;
+    public static boolean isUsuarioLogado() {
+        return usuario != null;
     }
 
     public static void logoff() {
-        if (LoginForm.AuthType.AUTH_FACEBOOK.equals(paciente.getAuthType())){
+        if (AuthType.AUTH_FACEBOOK.equals(usuario.getAuthType())){
             LoginManager.getInstance().logOut();
         }
-        setPaciente(null);
+        setUsuario(null);
     }
 }

@@ -1,15 +1,13 @@
 package br.com.wjaa.ranchucrutes.maps;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +16,6 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +29,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -60,9 +56,11 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     private Marker mLastSelectedMarker;
     private Map<String,MedicoBasicoVo> medicos = new HashMap<String, MedicoBasicoVo>();
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener;
+    private Fragment fragment;
 
-    public RanchucrutesMaps(Context context, GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener){
+    public RanchucrutesMaps(Context context, Fragment fragment, GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener){
         this.context = (FragmentActivity)context;
+        this.fragment = fragment;
         this.onMyLocationButtonClickListener = onMyLocationButtonClickListener;
     }
 
@@ -180,7 +178,15 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
         // Pan to see all markers in view.
         // Cannot zoom to bounds until the map has a size.
-        final View mapView = context.getSupportFragmentManager().findFragmentById(R.id.map).getView();
+        View mapView = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
+        }else{
+            mapView = context.getFragmentManager().findFragmentById(R.id.map).getView();
+        }
+
+
+        final View mapViewf = mapView;
         if (mapView.getViewTreeObserver().isAlive()) {
             mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @SuppressWarnings("deprecation") // We use the new method when supported
@@ -191,9 +197,9 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                             .include(CENTER)
                             .build();
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        mapViewf.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     } else {
-                        mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        mapViewf.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 13));
                 }

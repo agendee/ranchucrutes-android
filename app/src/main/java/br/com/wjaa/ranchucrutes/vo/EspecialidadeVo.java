@@ -1,10 +1,11 @@
 package br.com.wjaa.ranchucrutes.vo;
 
-/**
- * Created by wagner on 26/07/15.
- */
-public class EspecialidadeVo {
+import java.io.Serializable;
 
+public class EspecialidadeVo implements Serializable{
+
+
+    private static final long serialVersionUID = -1602319229739751782L;
     private Integer id;
     private String nome;
     private Boolean popular;
