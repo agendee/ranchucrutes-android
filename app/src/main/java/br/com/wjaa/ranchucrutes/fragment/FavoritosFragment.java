@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.fragment.dummy.DummyContent;
-import roboguice.fragment.provided.RoboFragment;
+import roboguice.fragment.RoboFragment;
 
 /**
  * A fragment representing a list of Items.

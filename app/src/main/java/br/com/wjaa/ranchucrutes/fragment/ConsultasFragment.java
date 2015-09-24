@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import br.com.wjaa.ranchucrutes.R;
-import roboguice.fragment.provided.RoboFragment;
+import roboguice.fragment.RoboFragment;
 
 /**
  * A simple {@link Fragment} subclass.

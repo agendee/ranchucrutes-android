@@ -11,8 +11,7 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
-import br.com.wjaa.ranchucrutes.vo.PacienteVo;
-import roboguice.fragment.provided.RoboFragment;
+import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 /**

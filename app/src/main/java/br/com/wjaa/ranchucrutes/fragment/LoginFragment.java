@@ -23,7 +23,7 @@ import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
-import roboguice.fragment.provided.RoboFragment;
+import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 /**
@@ -166,17 +166,6 @@ public class LoginFragment extends RoboFragment {
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), getActivity());
             }
-        }
-    }
-
-
-
-
-    @Override
-    public void onDestroy() {
-        Fragment f = getActivity().getFragmentManager().findFragmentByTag(this.getClass().getSimpleName());
-        if (f != null){
-            getActivity().getFragmentManager().beginTransaction().remove(f).commit();
         }
     }
 

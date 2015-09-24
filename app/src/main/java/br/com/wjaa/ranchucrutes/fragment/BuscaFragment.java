@@ -2,12 +2,12 @@ package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
 
@@ -33,7 +34,7 @@ import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
-import roboguice.fragment.provided.RoboFragment;
+import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 
@@ -106,12 +107,8 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     }
 
     private void createMaps() {
-        MapFragment mapFragment;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        }else{
-            mapFragment = (MapFragment)getActivity().getFragmentManager().findFragmentById(R.id.map);
-        }
+        SupportMapFragment mapFragment;
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this.ranchucrutesMaps);
     }
@@ -240,14 +237,6 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
             especSelecionada = this.especialidadeVo;
             btnEspecilidade.setText(especSelecionada.getNome());
             dialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        Fragment f = getActivity().getFragmentManager().findFragmentByTag(this.getClass().getSimpleName());
-        if (f != null){
-            getActivity().getFragmentManager().beginTransaction().remove(f).commit();
         }
     }
 

@@ -1,13 +1,13 @@
 package br.com.wjaa.ranchucrutes.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -163,20 +163,20 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         }
 
         if (fragment != null){
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
             //removendo o fragmento atual do gerenciador.
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
                 fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.main_frame, fragment, fragment.getClass().getSimpleName())
-                        .commit();
+                        //.setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
+                        .replace(R.id.main_frame, fragment)
+                .commitAllowingStateLoss();
 
             }
             else{
                 fragmentManager.beginTransaction()
-                        .replace(R.id.main_frame, fragment, fragment.getClass().getSimpleName())
-                        .commit();
+                        .replace(R.id.main_frame, fragment)
+                        .commitAllowingStateLoss();
 
             }
 
@@ -265,7 +265,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     class MenuLogadoArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener {
 
         public MenuLogadoArrayAdapter(Context context, int resource) {
-            super(context, resource, new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos","Configurações","Logout (Sair)"});
+            super(context, resource, new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos","Logout (Sair)"});
         }
 
         @Override
@@ -292,7 +292,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     class MenuDefaultArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener{
 
         public MenuDefaultArrayAdapter(Context context, int resource) {
-            super(context, resource, new String[]{"Pesquisar Médicos","Configurações", "Fazer Login"});
+            super(context, resource, new String[]{"Pesquisar Médicos","Fazer Login"});
         }
 
         @Override
