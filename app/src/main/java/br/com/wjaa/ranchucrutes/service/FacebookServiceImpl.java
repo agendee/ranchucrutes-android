@@ -82,7 +82,8 @@ public class FacebookServiceImpl implements FacebookService {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        int resultC = resultCode > 0 ? -1 : resultCode;
+        mCallbackManager.onActivityResult(requestCode, resultC, data);
     }
 
     @Override
@@ -116,16 +117,6 @@ public class FacebookServiceImpl implements FacebookService {
     }
 
     private void setupLoginButton(View view) {
-        /*LoginButton mButtonLogin = (LoginButton) view.findViewById(R.id.login_button);
-        mButtonLogin.setFragment(new NativeFragmentWrapper(this.fragment));
-//        if (Build.VERSION.SDK_INT >= 16)
-//            mButtonLogin.setBackground(null);
-//        else
-//            mButtonLogin.setBackgroundDrawable(null);
-        mButtonLogin.setCompoundDrawables(null, null, null, null);
-        mButtonLogin.setReadPermissions("email", "public_profile", "user_friends");
-        mButtonLogin.registerCallback(mCallbackManager, mFacebookCallback);*/
-
         LoginManager.getInstance().registerCallback(mCallbackManager, mFacebookCallback);
         Button btn_fb_login = (Button)view.findViewById(R.id.btnFacebook);
 
@@ -149,12 +140,12 @@ public class FacebookServiceImpl implements FacebookService {
         }
         @Override
         public void onCancel() {
-            Log.d("VIVZ", "onCancel");
+            Log.e("VIVZ", "onCancel");
         }
 
         @Override
         public void onError(FacebookException e) {
-            Log.d("VIVZ", "onError " + e);
+            Log.e("VIVZ", "onError " + e,e);
         }
     };
 

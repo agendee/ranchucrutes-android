@@ -9,6 +9,8 @@ import br.com.wjaa.ranchucrutes.service.DataService;
 import br.com.wjaa.ranchucrutes.service.DataServiceImpl;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
 import br.com.wjaa.ranchucrutes.service.FacebookServiceImpl;
+import br.com.wjaa.ranchucrutes.service.GPlusService;
+import br.com.wjaa.ranchucrutes.service.GPlusServiceImpl;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.LoginServiceImpl;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
@@ -34,6 +36,7 @@ public class FindClassInjectableModule extends AbstractModule {
         superbind(RanchucrutesService.class).to(RanchucrutesServiceImpl.class);
         superbind(LoginService.class).to(LoginServiceImpl.class);
         superbind(FacebookService.class).to(FacebookServiceImpl.class);
+        superbind(GPlusService.class).to(GPlusServiceImpl.class);
         superbind(RanchucrutesBuffer.class);
         superbind(DataService.class).toInstance(new DataServiceImpl(this.context));
     }

@@ -29,13 +29,18 @@
         />
 
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:text="@string/btn.entrar"
+        android:id="@+id/btnGPlus"
+        android:drawableLeft="@drawable/ic_gplus"
         android:layout_gravity="center_horizontal"
-        android:padding="5dp"/>
+        style="@style/btn"
+        android:padding="10dp"
+        android:background="#E02F2F"
+
+        />
 
 
 

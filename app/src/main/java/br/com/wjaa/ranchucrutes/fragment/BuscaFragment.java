@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -170,15 +171,17 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                                             }else{
                                                 row = convertView;
                                             }
-                                            TextView t = (TextView) row.findViewById(R.id.txtViewItem333);
+                                            TextView t = (TextView) row.findViewById(R.id.txtViewItem);
                                             t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
                                             t.setText(especialidades[position].getNome());
                                             return t;
                                         }else{
                                             TextView t = new TextView(getContext());
-                                            t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
+                                            t.setOnClickListener(new EspecOnClickListener(especialidades[position], dialogEspecs));
                                             t.setText(especialidades[position].getNome());
-                                            t.setTextSize(20);
+                                            t.setTextSize(25);
+                                            t.setPadding(20, 20, 20, 20);
+                                            t.setBackgroundResource(R.drawable.edt_border);
                                             return t;
 
                                         }
@@ -263,6 +266,5 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
            return null;
         }
     }
-
 
 }

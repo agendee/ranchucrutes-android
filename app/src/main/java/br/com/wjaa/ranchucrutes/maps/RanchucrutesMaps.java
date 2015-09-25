@@ -179,11 +179,9 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         // Pan to see all markers in view.
         // Cannot zoom to bounds until the map has a size.
         View mapView = null;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
-        }else{
-            mapView = context.getFragmentManager().findFragmentById(R.id.map).getView();
-        }
+
+        mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
+
 
 
         final View mapViewf = mapView;

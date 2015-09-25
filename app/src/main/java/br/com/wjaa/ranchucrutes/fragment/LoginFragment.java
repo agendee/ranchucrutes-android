@@ -19,6 +19,7 @@ import br.com.wjaa.ranchucrutes.activity.MainActivity;
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
+import br.com.wjaa.ranchucrutes.service.GPlusService;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
@@ -35,11 +36,13 @@ public class LoginFragment extends RoboFragment {
     private FacebookService facebookService;
 
     @Inject
+    private GPlusService gPlusService;
+
+    @Inject
     private LoginService loginService;
 
     @InjectView(R.id.btnEntrar)
     private Button btnEntrar;
-
 
     @InjectView(R.id.txtNovoPaciente)
     private TextView txtNovoPaciente;
@@ -55,6 +58,7 @@ public class LoginFragment extends RoboFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         facebookService.onCreate(this);
+        gPlusService.onCreate(this.getActivity());
 
     }
 
@@ -69,6 +73,7 @@ public class LoginFragment extends RoboFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         facebookService.onViewCreated(view, savedInstanceState);
+        gPlusService.onViewCreated(view);
         initButtons();
 
     }

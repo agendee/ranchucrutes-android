@@ -167,17 +167,20 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
 
             //removendo o fragmento atual do gerenciador.
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
+
+                fragment.setRetainInstance(true);
                 fragmentManager.beginTransaction()
                         //.setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
                         .replace(R.id.main_frame, fragment)
-                .commitAllowingStateLoss();
+                .commit();
 
             }
             else{
+
+                fragment.setRetainInstance(true);
                 fragmentManager.beginTransaction()
                         .replace(R.id.main_frame, fragment)
-                        .commitAllowingStateLoss();
-
+                        .commit();
             }
 
 
@@ -298,7 +301,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             //TODO ARRUMAR ESSA GAMBETA
-            if (position == 2){
+            if (position == 1){
                 displayView(4);
             }else{
                 displayView(position);
@@ -308,7 +311,8 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        displayView(0);
+        super.onActivityResult(requestCode,requestCode,data);
+        //displayView(0);
     }
 
 
