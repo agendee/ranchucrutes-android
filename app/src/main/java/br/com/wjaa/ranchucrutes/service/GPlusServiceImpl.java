@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
@@ -32,6 +34,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
 
     private GoogleApiClient mClient;
     private Activity context;
+    private Fragment fragment;
     private boolean mIntentInProgress;
 
     private boolean mSignInClicked;
@@ -39,8 +42,9 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
     private ConnectionResult mConnectionResult;
 
     @Override
-    public void onCreate(Activity context) {
-        this.context = context;
+    public void onCreate(Fragment fragment) {
+        this.fragment = fragment;
+        this.context = fragment.getActivity();
         // Builds single client object that connects to Drive and Google+
         mClient = new GoogleApiClient.Builder(context)
                 .addApi(Plus.API)
@@ -48,6 +52,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        mClient.connect();
     }
 
 
@@ -57,10 +62,12 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Google+
-                mClient.connect();
-                signInWithGplus();
-
+                if (!mSignInClicked){
+                    signInWithGplus();
+                    mSignInClicked = true;
+                }else{
+                    mClient.connect();
+                }
             }
         });
 
@@ -98,12 +105,9 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
             // Store the ConnectionResult for later usage
             mConnectionResult = result;
 
-            if (mSignInClicked) {
-                // The user has already clicked 'sign-in' so we attempt to
-                // resolve all
-                // errors until the user is signed in, or they cancel.
-                resolveSignInError();
-            }
+
+            resolveSignInError();
+
         }
 
     }
@@ -114,7 +118,6 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
      * */
     private void signInWithGplus() {
         if (!mClient.isConnecting()) {
-            mSignInClicked = true;
             resolveSignInError();
         }
     }

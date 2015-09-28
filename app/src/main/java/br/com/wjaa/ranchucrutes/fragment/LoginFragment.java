@@ -58,7 +58,7 @@ public class LoginFragment extends RoboFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         facebookService.onCreate(this);
-        gPlusService.onCreate(this.getActivity());
+        gPlusService.onCreate(this);
 
     }
 
