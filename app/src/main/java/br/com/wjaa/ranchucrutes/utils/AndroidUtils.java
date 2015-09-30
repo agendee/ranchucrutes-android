@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -60,7 +62,7 @@ public class AndroidUtils {
         TextView tv = (TextView) v.findViewById(R.id.titleDefault);
         tv.setText(title);
         alertDialog.setCustomTitle(v);
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
+        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -87,7 +89,7 @@ public class AndroidUtils {
 
 
     public static ProgressDialog showWaitDlg(String msg, Context context){
-        if (dialog == null){
+        if (dialog == null || !dialog.getContext().equals(context)){
             dialog = new ProgressDialog(context);
         }
         if (dialog.isShowing()){
@@ -99,7 +101,11 @@ public class AndroidUtils {
         dialog.setCustomTitle(v);
 
         dialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
-        dialog.show();
+
+        //caso a activity nao estiver mais viva
+        if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed()){
+            dialog.show();
+        }
         return dialog;
     }
 

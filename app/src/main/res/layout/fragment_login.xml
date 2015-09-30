@@ -3,18 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="br.com.wjaa.ranchucrutes.fragment.LoginFragment"
+    tools:context="br.com.wjaa.ranchucrutes.activity.LoginActivity"
     android:weightSum="1">
 
-   <!-- <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_gravity="center_horizontal"
-        android:padding="20dp"
+    <include layout="@layout/toolbar" />
 
-         />-->
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

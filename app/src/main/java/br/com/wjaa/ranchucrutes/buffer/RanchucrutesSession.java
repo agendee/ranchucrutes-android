@@ -45,9 +45,6 @@ public class RanchucrutesSession {
     }
 
     public static void logoff() {
-        if (AuthType.AUTH_FACEBOOK.equals(usuario.getAuthType())){
-            LoginManager.getInstance().logOut();
-        }
         setUsuario(null);
     }
 }

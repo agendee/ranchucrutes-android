@@ -16,11 +16,10 @@ public class UsuarioEntity extends PersistenceBean {
     private String nome;
     private String email;
     private String telefone;
-    private Boolean ativo;
     private AuthType authType;
 
     public UsuarioEntity() {
-        super( "usuario", new String[] { "id","nome","email","telefone","ativo","auth_type"} );
+        super( "usuario", new String[] { "id","nome","email","telefone","auth_type"} );
     }
 
     public Integer getId() {
@@ -36,8 +35,7 @@ public class UsuarioEntity extends PersistenceBean {
         val.put("nome", this.getNome());
         val.put("email", this.getEmail());
         val.put("telefone", this.getTelefone());
-        val.put("ativo", this.getAtivo()? 1 : 0);
-        val.put("auth_type", this.getAuthType().ordinal());
+        val.put("auth_type", this.getAuthType() != null ? this.getAuthType().ordinal() : null);
         return val;
     }
 
@@ -46,8 +44,7 @@ public class UsuarioEntity extends PersistenceBean {
         this.setNome(cr.getString(1));
         this.setEmail(cr.getString(2));
         this.setTelefone(cr.getString(3));
-        this.setAtivo(cr.getInt(4) == 0 ? false : true);
-        this.setAuthType(AuthType.getByOrdinal(cr.getInt(5)));
+        this.setAuthType(AuthType.getByOrdinal(cr.getInt(4)));
     }
 
 
@@ -66,16 +63,6 @@ public class UsuarioEntity extends PersistenceBean {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
-    public Boolean getAtivo() {
-        return ativo != null ? ativo: false;
-    }
-
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
-    }
-
     public AuthType getAuthType() {
         return authType;
     }

@@ -99,14 +99,8 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private UsuarioEntity registrarUsuario(PacienteVo paciente) {
-        //desativando todos os usuarios, para registrar um novo.
-        List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
-        if (CollectionUtils.isNotEmpty(listUsuario)){
-            for (UsuarioEntity u :listUsuario) {
-                u.setAtivo(false);
-                dataService.insertOrUpdate(u);
-            }
-        }
+        //removendo os usuarios da tabela
+        this.deleteAll();
         //usuario autenticado com sucesso, inserindo usuario no banco como ativo.
         UsuarioEntity usuarioEntity = dataService.getById(UsuarioEntity.class, paciente.getId().intValue());
         if (usuarioEntity == null){
@@ -116,14 +110,19 @@ public class LoginServiceImpl implements LoginService {
             usuarioEntity.setNome(paciente.getNome());
             usuarioEntity.setTelefone(paciente.getTelefone());
             usuarioEntity.setAuthType(paciente.getAuthType());
-            usuarioEntity.setAtivo(true);
             dataService.insert(usuarioEntity);
-        }else{
-            usuarioEntity.setAtivo(true);
-            dataService.updateById(usuarioEntity);
         }
         return usuarioEntity;
 
+    }
+
+    private void deleteAll() {
+        List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
+        if (CollectionUtils.isNotEmpty(listUsuario)){
+            for (UsuarioEntity u :listUsuario) {
+                dataService.deleteById(u);
+            }
+        }
     }
 
     @Override
@@ -145,10 +144,16 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void authLocal() {
-        UsuarioEntity usuarioAtivo = dataService.findUniqueResult(UsuarioEntity.class, "ativo=?", new String[]{"1"});
-        if (usuarioAtivo != null){
-            RanchucrutesSession.setUsuario(usuarioAtivo);
+        List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
+        if (CollectionUtils.isNotEmpty(listUsuario)){
+            RanchucrutesSession.setUsuario(listUsuario.get(0));
         }
+    }
+
+    @Override
+    public void logoff() {
+        this.deleteAll();
+        RanchucrutesSession.logoff();
     }
 
     @Nullable
@@ -166,4 +171,6 @@ public class LoginServiceImpl implements LoginService {
             throw new NovoPacienteException(e.getErrorMessage().getErrorMessage());
         }
     }
+
+
 }

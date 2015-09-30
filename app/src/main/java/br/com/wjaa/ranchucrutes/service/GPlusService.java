@@ -1,16 +1,19 @@
 package br.com.wjaa.ranchucrutes.service;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.view.View;
 
 
 /**
  * Created by wagner on 25/09/15.
  */
-public interface GPlusService {
+public interface GPlusService extends View.OnClickListener {
 
-    void onCreate(Fragment fragment);
-    void onViewCreated(View view) ;
+    void onCreate(Activity context);
+    void onStart() ;
 
+    void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void onStop();
 }

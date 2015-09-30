@@ -28,4 +28,6 @@ public interface LoginService {
     PacienteVo auth(String key, AuthType type) throws LoginException, RanchucrutesWSException;
 
     void authLocal();
+
+    void logoff();
 }

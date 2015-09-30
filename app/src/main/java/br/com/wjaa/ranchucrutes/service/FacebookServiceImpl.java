@@ -1,12 +1,12 @@
 package br.com.wjaa.ranchucrutes.service;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -28,16 +28,14 @@ import java.util.Arrays;
 
 import javax.security.auth.login.LoginException;
 
-import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.activity.MainActivity;
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
-import br.com.wjaa.ranchucrutes.wrapper.NativeFragmentWrapper;
 
 /**
  * Created by wagner on 10/09/15.
@@ -51,14 +49,14 @@ public class FacebookServiceImpl implements FacebookService {
     private CallbackManager mCallbackManager;
     private AccessTokenTracker mTokenTracker;
     private ProfileTracker mProfileTracker;
-    private Fragment fragment;
+    private Activity context;
 
     @Inject
     private LoginService loginService;
 
     @Override
-    public void onCreate(Fragment frament) {
-        this.fragment = frament;
+    public void onCreate(Activity context) {
+        this.context = context;
         mCallbackManager = CallbackManager.Factory.create();
         setupTokenTracker();
         setupProfileTracker();
@@ -78,6 +76,7 @@ public class FacebookServiceImpl implements FacebookService {
     public void onStop() {
         mTokenTracker.stopTracking();
         mProfileTracker.stopTracking();
+        LoginManager.getInstance().logOut();
     }
 
     @Override
@@ -87,14 +86,14 @@ public class FacebookServiceImpl implements FacebookService {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        setupTextDetails(view);
-        setupLoginButton(view);
+    public void onStart() {
+        setupTextDetails();
+        setupLoginButton();
     }
 
 
-    private void setupTextDetails(View view) {
-        mTextDetails = (TextView) view.findViewById(R.id.info);
+    private void setupTextDetails() {
+       // mTextDetails = (TextView) context.findViewById(R.id.info);
     }
 
     private void setupTokenTracker() {
@@ -116,17 +115,8 @@ public class FacebookServiceImpl implements FacebookService {
         };
     }
 
-    private void setupLoginButton(View view) {
+    private void setupLoginButton() {
         LoginManager.getInstance().registerCallback(mCallbackManager, mFacebookCallback);
-        Button btn_fb_login = (Button)view.findViewById(R.id.btnFacebook);
-
-        btn_fb_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LoginManager.getInstance().logInWithReadPermissions(fragment, Arrays.asList("email", "public_profile", "user_friends"));
-            }
-        });
-
     }
 
 
@@ -134,7 +124,8 @@ public class FacebookServiceImpl implements FacebookService {
     private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            AndroidUtils.showWaitDlgOnUiThread("Autenticando, aguarde...", fragment.getActivity());
+            Toast.makeText(context, "Paciente conectado!", Toast.LENGTH_LONG).show();
+            AndroidUtils.showWaitDlgOnUiThread("Autenticando, aguarde...", context);
             AccessToken accessToken = loginResult.getAccessToken();
             loginFacebook(accessToken);
         }
@@ -181,7 +172,7 @@ public class FacebookServiceImpl implements FacebookService {
                             pacienteVo.setEmail(email);
                             Bundle b = new Bundle();
                             b.putSerializable("paciente",pacienteVo);
-                            AndroidUtils.openActivity(fragment.getActivity(),NovoPacienteActivity.class,b);
+                            AndroidUtils.openActivity(context,NovoPacienteActivity.class,b);
                         }
 
                     }catch (JSONException e) {
@@ -224,6 +215,11 @@ public class FacebookServiceImpl implements FacebookService {
         new LogarUsuarioFacebook(id,accessToken).start();
     }
 
+    @Override
+    public void onClick(View v) {
+        LoginManager.getInstance().logInWithReadPermissions(context, Arrays.asList("email", "public_profile", "user_friends"));
+    }
+
 
     class LogarUsuarioFacebook extends Thread{
         private String id;
@@ -239,29 +235,21 @@ public class FacebookServiceImpl implements FacebookService {
         public void run() {
             try {
                 //se estiver authenticado ele já envia o pacientevo para o buffer
-                loginService.auth(id, AuthType.AUTH_FACEBOOK);
+                PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_FACEBOOK);
                 AndroidUtils.closeWaitDlg();
-
-                //TODO MELHOR ISSO AQUI...TÁ MAIS FEIO QUE BATER NA MAE
-                fragment.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((MainActivity) fragment.getActivity()).displayView(0);
-                    }
-                });
-
+                saudarSair(pacienteVo);
 
             } catch (LoginException e) {
                 if (accessToken != null){
-                    AndroidUtils.showWaitDlgOnUiThread("Registrando paciente, aguarde...", fragment.getActivity());
+                    AndroidUtils.showWaitDlgOnUiThread("Registrando paciente, aguarde...", context);
                     //se paciente nao existe na base do ranchucrutes. Vamos cria-lo
                     criarPaciente(accessToken);
                 }else{
-                    AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), fragment.getActivity());
+                    AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), context);
                 }
             } catch (RanchucrutesWSException e) {
 
-                AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), fragment.getActivity());
+                AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), context);
             }
         }
     }
@@ -289,22 +277,35 @@ public class FacebookServiceImpl implements FacebookService {
                 paciente.setAuthType(AuthType.AUTH_FACEBOOK);
                 paciente.setKeySocial(id);
 
-                AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando usuário...", fragment.getActivity());
-                loginService.criarPaciente(paciente);
-
+                AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando paciente...", context);
+                PacienteVo pacienteVo = loginService.criarPaciente(paciente);
                 AndroidUtils.closeWaitDlg();
-                //TODO mais feio que bater na mae.
-                fragment.getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((MainActivity) fragment.getActivity()).displayView(0);
-                    }
-                });
+                Toast.makeText(context, "Paciente conectado!", Toast.LENGTH_LONG).show();
+                saudarSair(pacienteVo);
+
             }  catch (NovoPacienteException e) {
                 Log.e("LoginFrament",e.getMessage(),e);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), fragment.getActivity());
+                AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), context);
             }
+
+        }
+    }
+
+    private void saudarSair(PacienteVo pacienteVo) {
+        if (pacienteVo != null){
+            AndroidUtils.showMessageDlgOnUiThread("Sucesso", "Olá " + pacienteVo.getNome(), context, new DialogCallback() {
+
+                @Override
+                public void confirm() {
+                    context.finish();
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+            });
 
         }
     }

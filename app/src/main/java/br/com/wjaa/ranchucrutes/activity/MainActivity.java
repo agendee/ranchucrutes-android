@@ -24,14 +24,16 @@ import android.widget.TextView;
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
 import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
 import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
 import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
-import br.com.wjaa.ranchucrutes.fragment.LoginFragment;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
+import br.com.wjaa.ranchucrutes.service.LoginService;
+import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -65,9 +67,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     @Inject
     private ConsultasFragment consultasFragment;
 
-    @Inject
-    private LoginFragment loginFragment;
-
     @InjectView(R.id.headerView)
     private TextView headerView;
 
@@ -75,6 +74,9 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     private TextView footerView;
 
     private Fragment fragmentAtual;
+
+    @Inject
+    private LoginService loginService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -135,33 +137,34 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
 
         //TODO ARRUMAR ESSA GAMBIARRA
         // update the main content by replacing fragments
-        Fragment fragment = null;
-
         switch (position){
             case 0:
-                fragment = this.buscaFragment;
                 toolbar.setTitle("Procurar Médico");
+                openFragment(this.buscaFragment);
                 break;
             case 1:
-                fragment = this.dadosUsuarioFragment;
                 toolbar.setTitle("Meus Dados");
+                openFragment(this.dadosUsuarioFragment);
                 break;
             case 2:
-                fragment = this.consultasFragment;
+                openFragment(this.consultasFragment);
                 toolbar.setTitle("Minhas Consultas");
                 break;
             case 3:
-                fragment = this.favoritosFragment;
+                openFragment(this.favoritosFragment);
                 toolbar.setTitle("Médicos Favoritos");
                 break;
             case 4:
-                fragment = this.loginFragment;
-                toolbar.setTitle("Fazer Login");
+
+                AndroidUtils.openActivity(this,LoginActivity.class);
                 break;
             default:
                 break;
         }
 
+    }
+
+    private void openFragment(Fragment fragment) {
         if (fragment != null){
             FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -193,7 +196,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
             this.drawerLayout.closeDrawers();
             this.fragmentAtual = fragment;
         }
-
     }
 
     @Override
@@ -285,9 +287,24 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
             if (id != 4){
                 displayView(position);
             }else{
-                RanchucrutesSession.logoff();
-                drawerLayout.closeDrawers();
-                displayView(0);
+
+                AndroidUtils.showConfirmDlg("Sair", "Deseja realmente deslogar do aplicativo?",
+                        MainActivity.this, new DialogCallback() {
+
+                    @Override
+                    public void confirm() {
+                        loginService.logoff();
+                        drawerLayout.closeDrawers();
+                        displayView(0);
+                    }
+
+                    @Override
+                    public void cancel() {
+                        drawerLayout.closeDrawers();
+                    }
+                });
+
+
             }
         }
     }
