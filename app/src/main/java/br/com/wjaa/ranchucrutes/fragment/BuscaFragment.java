@@ -32,6 +32,9 @@ import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.view.SearchableListDialog;
+import br.com.wjaa.ranchucrutes.view.SearchableListDialogCallback;
+import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
@@ -137,74 +140,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     }
 
     private void createBtnEspec() {
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-
-                    btnEspecilidade.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            especialidades = RanchucrutesBuffer.getEspecialidades();
-
-                            if (especialidades != null){
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                                ListView modeList = new ListView(getActivity());
-                                modeList.setItemsCanFocus(true);
-                                View v = getActivity().getLayoutInflater().inflate(R.layout.custom_title,null);
-                                TextView tv = (TextView) v.findViewById(R.id.titleDefault);
-                                tv.setText("Selecione uma especilidade");
-                                builder.setCustomTitle(v);
-                                builder.setView(modeList);
-                                modeList.setBackgroundColor(getResources().getColor(android.support.v7.appcompat.R.color.primary_material_dark));
-                                final Dialog dialogEspecs = builder.create();
-                                ArrayAdapter<EspecialidadeVo> modeAdapter = new ArrayAdapter<EspecialidadeVo>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, especialidades){
-                                    @Override
-                                    public View getView(int position, View convertView, ViewGroup parent) {
-                                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                                            View row;
-                                            LayoutInflater inflater = LayoutInflater.from(getContext());
-                                            if (convertView == null){
-                                                row = inflater.inflate(R.layout.custom_item, null);
-                                            }else{
-                                                row = convertView;
-                                            }
-                                            TextView t = (TextView) row.findViewById(R.id.txtViewItem);
-                                            t.setOnClickListener(new EspecOnClickListener(especialidades[position],dialogEspecs));
-                                            t.setText(especialidades[position].getNome());
-                                            return t;
-                                        }else{
-                                            TextView t = new TextView(getContext());
-                                            t.setOnClickListener(new EspecOnClickListener(especialidades[position], dialogEspecs));
-                                            t.setText(especialidades[position].getNome());
-                                            t.setTextSize(25);
-                                            t.setPadding(20, 20, 20, 20);
-                                            t.setBackgroundResource(R.drawable.edt_border);
-                                            return t;
-
-                                        }
-
-                                    }
-                                };
-                                modeList.setAdapter(modeAdapter);
-                                dialogEspecs.show();
-                            }else{
-                                AndroidUtils.showMessageDlg("Ops!", "Ocorreu algum problema na comunicação com o servidor", getActivity());
-                                especialidades = RanchucrutesBuffer.getEspecialidades();
-                            }
-
-                        }
-                    });
-                    AndroidUtils.closeWaitDlg();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
+        btnEspecilidade.setOnClickListener(new DialogEspecialidade());
     }
 
     @Override
@@ -264,6 +200,22 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                 ranchucrutesMaps.realoadMarker(resultado);
             }
            return null;
+        }
+    }
+
+
+    class DialogEspecialidade implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            SearchableListDialog<EspecialidadeVo> dialog = new SearchableListDialog<>(new SearchableListDialogCallback<EspecialidadeVo>() {
+                @Override
+                public void onResult(EspecialidadeVo result) {
+                    especSelecionada = result;
+                    btnEspecilidade.setText(result.getNome());
+                }
+            }, getContext());
+            dialog.addTitle("Selecione uma Especialidade").openDialog(especialidades);
         }
     }
 

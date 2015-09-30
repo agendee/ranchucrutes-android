@@ -17,9 +17,10 @@ public class UsuarioEntity extends PersistenceBean {
     private String email;
     private String telefone;
     private AuthType authType;
+    private Integer idCategoria;
 
     public UsuarioEntity() {
-        super( "usuario", new String[] { "id","nome","email","telefone","auth_type"} );
+        super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria"} );
     }
 
     public Integer getId() {
@@ -36,6 +37,7 @@ public class UsuarioEntity extends PersistenceBean {
         val.put("email", this.getEmail());
         val.put("telefone", this.getTelefone());
         val.put("auth_type", this.getAuthType() != null ? this.getAuthType().ordinal() : null);
+        val.put("id_categoria", this.getIdCategoria());
         return val;
     }
 
@@ -45,6 +47,7 @@ public class UsuarioEntity extends PersistenceBean {
         this.setEmail(cr.getString(2));
         this.setTelefone(cr.getString(3));
         this.setAuthType(AuthType.getByOrdinal(cr.getInt(4)));
+        this.setIdCategoria(cr.getInt(5));
     }
 
 
@@ -77,6 +80,15 @@ public class UsuarioEntity extends PersistenceBean {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     @Override

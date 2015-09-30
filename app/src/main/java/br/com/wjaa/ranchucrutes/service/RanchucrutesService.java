@@ -1,5 +1,7 @@
 package br.com.wjaa.ranchucrutes.service;
 
+import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
+import br.com.wjaa.ranchucrutes.vo.ConvenioVo;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 
 /**
@@ -8,4 +10,6 @@ import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 public interface RanchucrutesService {
 
     EspecialidadeVo[] getEspecialidades();
+    ConvenioVo[] getConvenios();
+    ConvenioCategoriaVo[] getConvenioCategoriasByIdConvenio(Integer idConvenio);
 }

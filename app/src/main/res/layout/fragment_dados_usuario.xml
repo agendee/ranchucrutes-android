@@ -39,6 +39,24 @@
         style="@style/edt"
         />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
+        android:text="Selecione um plano"
+        android:id="@+id/btnSelectPlano"
+        android:drawableEnd="@android:drawable/arrow_up_float"
+        style="@style/btnOpenList" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:text="----------------"
+        android:id="@+id/btnSelectCategoria"
+        android:drawableEnd="@android:drawable/arrow_up_float"
+        style="@style/btnOpenList" />
+
 
     <Button
         android:layout_width="wrap_content"

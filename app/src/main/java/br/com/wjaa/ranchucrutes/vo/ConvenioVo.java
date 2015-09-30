@@ -1,13 +1,13 @@
 package br.com.wjaa.ranchucrutes.vo;
 
-import java.io.Serializable;
-
 import br.com.wjaa.ranchucrutes.view.SearchableListModel;
 
-public class EspecialidadeVo implements Serializable, SearchableListModel{
+/**
+ * Created by wagner on 30/09/15.
+ */
+public class ConvenioVo implements SearchableListModel{
 
 
-    private static final long serialVersionUID = -1602319229739751782L;
     private Integer id;
     private String nome;
     private Boolean popular;
@@ -34,6 +34,16 @@ public class EspecialidadeVo implements Serializable, SearchableListModel{
 
     public void setPopular(Boolean popular) {
         this.popular = popular;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ConvenioVo{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", popular=" + popular +
+                '}';
     }
 
     @Override

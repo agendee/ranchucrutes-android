@@ -68,16 +68,24 @@
 
     <style name="btn">
         <item name="android:textSize">14dp</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:padding">20dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:padding">15dp</item>
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="edt">
         <item name="android:layout_margin">10dp</item>
-        <item name="android:padding">20dp</item>
+        <item name="android:padding">15dp</item>
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="btnOpenList">
+        <item name="android:textSize">14dp</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:background">@drawable/button_gray_border</item>
+        <item name="android:textColor">#000</item>
     </style>
 
 </resources>

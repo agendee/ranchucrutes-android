@@ -18,6 +18,7 @@ public class PacienteVo implements Serializable {
     private String senha;
     private String keySocial;
     private AuthType authType;
+    private Integer idCategoria;
 
     public PacienteVo(){}
 
@@ -85,5 +86,13 @@ public class PacienteVo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
     }
 }
