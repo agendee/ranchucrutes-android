@@ -22,6 +22,7 @@ import br.com.wjaa.ranchucrutes.rest.RestUtils;
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
+import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoLoginVo;
 
@@ -30,10 +31,13 @@ import br.com.wjaa.ranchucrutes.vo.ResultadoLoginVo;
  */
 public class LoginServiceImpl implements LoginService {
 
-
+    private static String TAG = LoginService.class.getSimpleName();
 
     @Inject
     private DataService dataService;
+
+    @Inject
+    private RanchucrutesService ranchucrutesService;
 
     @Override
     public PacienteVo criarPacienteFacebook(String nome, String email, String telefone, String idFacebook)
@@ -81,7 +85,7 @@ public class LoginServiceImpl implements LoginService {
             if (ResultadoLoginVo.StatusLogin.SUCESSO.equals(resultadoLogin.getStatus())){
 
                 PacienteVo paciente = resultadoLogin.getPaciente();
-                UsuarioEntity usuario = this.registrarUsuario(paciente);
+                UsuarioEntity usuario = this.registrarAtualizarUsuario(paciente);
                 RanchucrutesSession.setUsuario(usuario);
                 return paciente;
             }else{
@@ -98,20 +102,34 @@ public class LoginServiceImpl implements LoginService {
 
     }
 
-    private UsuarioEntity registrarUsuario(PacienteVo paciente) {
+    private UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente) {
         //removendo os usuarios da tabela
         this.deleteAll();
         //usuario autenticado com sucesso, inserindo usuario no banco como ativo.
         UsuarioEntity usuarioEntity = dataService.getById(UsuarioEntity.class, paciente.getId().intValue());
+        boolean insert = false;
         if (usuarioEntity == null){
             usuarioEntity = new UsuarioEntity();
-            usuarioEntity.setId(paciente.getId().intValue());
-            usuarioEntity.setEmail(paciente.getEmail());
-            usuarioEntity.setNome(paciente.getNome());
-            usuarioEntity.setTelefone(paciente.getTelefone());
-            usuarioEntity.setAuthType(paciente.getAuthType());
-            dataService.insert(usuarioEntity);
+            insert = true;
         }
+        usuarioEntity.setId(paciente.getId().intValue());
+        usuarioEntity.setEmail(paciente.getEmail());
+        usuarioEntity.setNome(paciente.getNome());
+        usuarioEntity.setTelefone(paciente.getTelefone());
+        usuarioEntity.setAuthType(paciente.getAuthType());
+        usuarioEntity.setIdCategoria(paciente.getIdCategoria());
+        if (insert){
+            dataService.insert(usuarioEntity);
+        }else{
+            dataService.updateById(usuarioEntity);
+        }
+
+        if (usuarioEntity.getIdCategoria() != null){
+            ConvenioCategoriaVo convenioCategoriaVo = ranchucrutesService
+                    .getConvenioCategoriasById(usuarioEntity.getIdCategoria());
+            usuarioEntity.setCategoriaVo(convenioCategoriaVo);
+        }
+
         return usuarioEntity;
 
     }
@@ -146,7 +164,12 @@ public class LoginServiceImpl implements LoginService {
     public void authLocal() {
         List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
         if (CollectionUtils.isNotEmpty(listUsuario)){
-            RanchucrutesSession.setUsuario(listUsuario.get(0));
+            UsuarioEntity usuario = listUsuario.get(0);
+            if (usuario.getIdCategoria() != null){
+                ConvenioCategoriaVo convenioCategoriaVo = ranchucrutesService.getConvenioCategoriasById(usuario.getIdCategoria());
+                usuario.setCategoriaVo(convenioCategoriaVo);
+            }
+            RanchucrutesSession.setUsuario(usuario);
         }
     }
 
@@ -156,18 +179,37 @@ public class LoginServiceImpl implements LoginService {
         RanchucrutesSession.logoff();
     }
 
+    @Override
+    public void atualizarPaciente(PacienteVo pacienteVo) throws NovoPacienteException {
+        String pacienteJson = ObjectUtils.toJson(pacienteVo);
+        try {
+            PacienteVo pVo = RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,
+                    RanchucrutesConstants.END_POINT_ATUALIZAR_PACIENTE, pacienteJson);
+            UsuarioEntity u = registrarAtualizarUsuario(pVo);
+            RanchucrutesSession.setUsuario(u);
+        } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
+            Log.e(TAG,e.getMessage(),e);
+            throw new NovoPacienteException("Erro na comunicação com o servidor. Dados não foram atualizados!");
+        } catch (RestException e) {
+            Log.e(TAG,e.getMessage(),e);
+            throw new NovoPacienteException(e.getErrorMessage().getErrorMessage());
+        }
+    }
+
     @Nullable
     public PacienteVo criarPaciente(PacienteVo paciente) throws NovoPacienteException {
         String pacienteJson = ObjectUtils.toJson(paciente);
         try {
             PacienteVo pVo = RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,
                     RanchucrutesConstants.END_POINT_CRIAR_PACIENTE, pacienteJson);
-            UsuarioEntity u = registrarUsuario(pVo);
+            UsuarioEntity u = registrarAtualizarUsuario(pVo);
             RanchucrutesSession.setUsuario(u);
             return pVo;
         } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
+            Log.e(TAG,e.getMessage(),e);
             throw new NovoPacienteException("Erro na comunicação com o servidor, tente criar seu login mais tarde!");
         } catch (RestException e) {
+            Log.e(TAG,e.getMessage(),e);
             throw new NovoPacienteException(e.getErrorMessage().getErrorMessage());
         }
     }

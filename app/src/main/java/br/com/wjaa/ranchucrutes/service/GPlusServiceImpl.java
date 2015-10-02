@@ -89,6 +89,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        AndroidUtils.closeWaitDlg();
         mSignInClicked = false;
         Toast.makeText(context, "Paciente conectado!", Toast.LENGTH_LONG).show();
         getProfileInformation();
@@ -96,13 +97,14 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
 
     @Override
     public void onConnectionSuspended(int arg0) {
-
+        AndroidUtils.closeWaitDlg();
     }
 
 
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
+        AndroidUtils.closeWaitDlg();
         if (!result.hasResolution()) {
             GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), context,
                     0).show();
@@ -112,22 +114,10 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
         if (!mIntentInProgress) {
             // Store the ConnectionResult for later usage
             mConnectionResult = result;
-
-
             resolveSignInError();
 
         }
 
-    }
-
-
-    /**
-     * Sign-in into google
-     * */
-    private void signInWithGplus() {
-        if (!gplusClient.isConnecting()) {
-            resolveSignInError();
-        }
     }
 
     /**
@@ -164,6 +154,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
 
     @Override
     public void onClick(View v) {
+        AndroidUtils.showWaitDlg("Aguarde, comunicando com o GPlus...",context);
         gplusClient.connect();
 
         //signInWithGplus();

@@ -81,19 +81,14 @@ public class FacebookServiceImpl implements FacebookService {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //TODO ISSO É UMA GABIARRA PQ O RESULTCODE ESTAVA VINDO COM NUMERO MAIOR  QUE ZERO (EX:254778) MAS O RESULTADO ERA OK E NAO ERRO.
         int resultC = resultCode > 0 ? -1 : resultCode;
         mCallbackManager.onActivityResult(requestCode, resultC, data);
     }
 
     @Override
     public void onStart() {
-        setupTextDetails();
         setupLoginButton();
-    }
-
-
-    private void setupTextDetails() {
-       // mTextDetails = (TextView) context.findViewById(R.id.info);
     }
 
     private void setupTokenTracker() {
@@ -124,6 +119,7 @@ public class FacebookServiceImpl implements FacebookService {
     private FacebookCallback<LoginResult> mFacebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
+            AndroidUtils.closeWaitDlg();
             Toast.makeText(context, "Paciente conectado!", Toast.LENGTH_LONG).show();
             AndroidUtils.showWaitDlgOnUiThread("Autenticando, aguarde...", context);
             AccessToken accessToken = loginResult.getAccessToken();
@@ -131,11 +127,13 @@ public class FacebookServiceImpl implements FacebookService {
         }
         @Override
         public void onCancel() {
+            AndroidUtils.closeWaitDlg();
             Log.e("VIVZ", "onCancel");
         }
 
         @Override
         public void onError(FacebookException e) {
+            AndroidUtils.closeWaitDlg();
             Log.e("VIVZ", "onError " + e,e);
         }
     };
@@ -217,6 +215,7 @@ public class FacebookServiceImpl implements FacebookService {
 
     @Override
     public void onClick(View v) {
+        AndroidUtils.showWaitDlg("Aguarde, comunicando com o facebook...", context);
         LoginManager.getInstance().logInWithReadPermissions(context, Arrays.asList("email", "public_profile", "user_friends"));
     }
 

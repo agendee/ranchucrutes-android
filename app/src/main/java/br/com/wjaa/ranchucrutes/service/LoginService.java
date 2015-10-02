@@ -30,4 +30,6 @@ public interface LoginService {
     void authLocal();
 
     void logoff();
+
+    void atualizarPaciente(PacienteVo pacienteVo) throws NovoPacienteException;
 }

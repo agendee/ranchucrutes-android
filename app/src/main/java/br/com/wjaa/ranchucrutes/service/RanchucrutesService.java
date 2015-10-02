@@ -12,4 +12,5 @@ public interface RanchucrutesService {
     EspecialidadeVo[] getEspecialidades();
     ConvenioVo[] getConvenios();
     ConvenioCategoriaVo[] getConvenioCategoriasByIdConvenio(Integer idConvenio);
+    ConvenioCategoriaVo getConvenioCategoriasById(Integer idCategoria);
 }

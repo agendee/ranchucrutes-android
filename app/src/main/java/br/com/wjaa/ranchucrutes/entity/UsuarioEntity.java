@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.dao.PersistenceBean;
+import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 
 /**
  * Created by wagner on 20/09/15.
@@ -18,6 +19,7 @@ public class UsuarioEntity extends PersistenceBean {
     private String telefone;
     private AuthType authType;
     private Integer idCategoria;
+    private ConvenioCategoriaVo categoriaVo;
 
     public UsuarioEntity() {
         super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria"} );
@@ -89,6 +91,15 @@ public class UsuarioEntity extends PersistenceBean {
 
     public void setIdCategoria(Integer idCategoria) {
         this.idCategoria = idCategoria;
+    }
+
+
+    public ConvenioCategoriaVo getCategoriaVo() {
+        return categoriaVo;
+    }
+
+    public void setCategoriaVo(ConvenioCategoriaVo categoriaVo) {
+        this.categoriaVo = categoriaVo;
     }
 
     @Override

@@ -17,18 +17,18 @@ import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 /**
  * Created by wagner on 30/09/15.
  */
-public class SearchableListDialog<T extends SearchableListModel> implements View.OnClickListener {
+public class SearchingListDialog<T extends SearchingListModel> implements View.OnClickListener {
 
-    private SearchableListDialogCallback<T> callback;
+    private SearchingListDialogCallback<T> callback;
     private Context context;
     private String title;
     private T [] objects;
-    public SearchableListDialog(SearchableListDialogCallback callback, Context context){
+    public SearchingListDialog(SearchingListDialogCallback callback, Context context){
         this.callback = callback;
         this.context = context;
     }
 
-    public SearchableListDialog addTitle(String title){
+    public SearchingListDialog addTitle(String title){
         this.title = title;
         return this;
     }
@@ -47,7 +47,7 @@ public class SearchableListDialog<T extends SearchableListModel> implements View
             modeList.setBackgroundColor(context.getResources()
                     .getColor(android.support.v7.appcompat.R.color.primary_material_dark));
             final Dialog dialog = builder.create();
-            SearchableListAdapter<T> modeAdapter = new SearchableListAdapter(context,
+            SearchingListAdapter<T> modeAdapter = new SearchingListAdapter(context,
                     android.R.layout.simple_list_item_1, android.R.id.text1, list, dialog);
             modeList.setAdapter(modeAdapter);
             dialog.show();
@@ -63,11 +63,11 @@ public class SearchableListDialog<T extends SearchableListModel> implements View
     }
 
 
-    class SearchableListAdapter<T extends SearchableListModel> extends ArrayAdapter<T>{
+    class SearchingListAdapter<T extends SearchingListModel> extends ArrayAdapter<T>{
 
         private Dialog dialog;
-        public SearchableListAdapter(Context context, int resource, int textViewResourceId,
-                                     T[] objects, Dialog dialog) {
+        public SearchingListAdapter(Context context, int resource, int textViewResourceId,
+                                    T[] objects, Dialog dialog) {
             super(context, resource, textViewResourceId, objects);
             this.dialog = dialog;
         }
@@ -83,12 +83,12 @@ public class SearchableListDialog<T extends SearchableListModel> implements View
                     row = convertView;
                 }
                 TextView t = (TextView) row.findViewById(R.id.txtViewItem);
-                t.setOnClickListener(new SeachableListClickListener(objects[position],dialog));
+                t.setOnClickListener(new SeachingListClickListener(objects[position],dialog));
                 t.setText(objects[position].getName());
                 return t;
             }else{
                 TextView t = new TextView(getContext());
-                t.setOnClickListener(new SeachableListClickListener(objects[position], dialog));
+                t.setOnClickListener(new SeachingListClickListener(objects[position], dialog));
                 t.setText(objects[position].getName());
                 t.setTextSize(25);
                 t.setPadding(20, 20, 20, 20);
@@ -102,12 +102,12 @@ public class SearchableListDialog<T extends SearchableListModel> implements View
     }
 
 
-    class SeachableListClickListener implements View.OnClickListener{
+    class SeachingListClickListener implements View.OnClickListener{
 
         private T objectSelect;
         private Dialog dialog;
 
-        public SeachableListClickListener(T objectSelect, Dialog dialog){
+        public SeachingListClickListener(T objectSelect, Dialog dialog){
             this.objectSelect = objectSelect;
             this.dialog = dialog;
         }

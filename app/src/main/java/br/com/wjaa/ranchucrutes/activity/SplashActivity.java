@@ -17,6 +17,7 @@ import roboguice.inject.ContentView;
 @ContentView(R.layout.splash)
 public class SplashActivity extends RoboActivity implements Runnable {
 
+
     @Inject
     private RanchucrutesBuffer buffer;
 
@@ -25,7 +26,7 @@ public class SplashActivity extends RoboActivity implements Runnable {
         super.onCreate(savedInstanceState);
         buffer.initializer();
         Handler handler = new Handler();
-        handler.postDelayed(this, 2000);
+        handler.postDelayed(this, 2001);
     }
 
     public void run(){

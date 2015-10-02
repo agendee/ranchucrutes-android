@@ -60,4 +60,20 @@ public class RanchucrutesServiceImpl implements RanchucrutesService{
 
         return null;
     }
+
+    @Override
+    public ConvenioCategoriaVo getConvenioCategoriasById(Integer idCategoria) {
+        try {
+            return RestUtils.getJsonWithParamPath(ConvenioCategoriaVo.class,RanchucrutesConstants.WS_HOST,
+                    "categoria",idCategoria.toString());
+        } catch (RestResponseUnsatisfiedException e) {
+            e.printStackTrace();
+        } catch (RestException e) {
+            e.printStackTrace();
+        } catch (RestRequestUnstable restRequestUnstable) {
+            restRequestUnstable.printStackTrace();
+        }
+
+        return null;
+    }
 }

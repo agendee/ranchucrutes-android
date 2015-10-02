@@ -2,9 +2,9 @@ package br.com.wjaa.ranchucrutes.vo;
 
 import java.io.Serializable;
 
-import br.com.wjaa.ranchucrutes.view.SearchableListModel;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
-public class EspecialidadeVo implements Serializable, SearchableListModel{
+public class EspecialidadeVo implements Serializable, SearchingListModel {
 
 
     private static final long serialVersionUID = -1602319229739751782L;

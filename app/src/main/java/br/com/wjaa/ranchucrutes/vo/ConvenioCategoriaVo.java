@@ -1,15 +1,16 @@
 package br.com.wjaa.ranchucrutes.vo;
 
-import br.com.wjaa.ranchucrutes.view.SearchableListModel;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
  * Created by wagner on 30/09/15.
  */
-public class ConvenioCategoriaVo implements SearchableListModel{
+public class ConvenioCategoriaVo implements SearchingListModel {
 
     private Integer id;
     private String nome;
     private Integer idConvenio;
+    private ConvenioVo convenioVo;
 
 
     public Integer getId() {
@@ -40,4 +41,13 @@ public class ConvenioCategoriaVo implements SearchableListModel{
     public String getName() {
         return this.nome;
     }
+
+    public ConvenioVo getConvenioVo() {
+        return convenioVo;
+    }
+
+    public void setConvenioVo(ConvenioVo convenioVo) {
+        this.convenioVo = convenioVo;
+    }
+
 }

@@ -1,28 +1,21 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
@@ -32,9 +25,8 @@ import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.view.SearchableListDialog;
-import br.com.wjaa.ranchucrutes.view.SearchableListDialogCallback;
-import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
+import br.com.wjaa.ranchucrutes.view.SearchingListDialog;
+import br.com.wjaa.ranchucrutes.view.SearchingListDialogCallback;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
@@ -208,7 +200,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
 
         @Override
         public void onClick(View v) {
-            SearchableListDialog<EspecialidadeVo> dialog = new SearchableListDialog<>(new SearchableListDialogCallback<EspecialidadeVo>() {
+            SearchingListDialog<EspecialidadeVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<EspecialidadeVo>() {
                 @Override
                 public void onResult(EspecialidadeVo result) {
                     especSelecionada = result;

@@ -1,11 +1,11 @@
 package br.com.wjaa.ranchucrutes.vo;
 
-import br.com.wjaa.ranchucrutes.view.SearchableListModel;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
  * Created by wagner on 30/09/15.
  */
-public class ConvenioVo implements SearchableListModel{
+public class ConvenioVo implements SearchingListModel {
 
 
     private Integer id;
