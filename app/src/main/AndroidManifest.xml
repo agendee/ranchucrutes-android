@@ -44,7 +44,9 @@
 
         <meta-data
             android:name="android.app.default_searchable"
-            android:value=".activity.SearchingListActivity" />
+            android:value="br.com.wjaa.ranchucrutes.activity.SearchingListActivity" />
+
+
 
         <activity
             android:name=".activity.SplashActivity"
@@ -75,7 +77,8 @@
 
 
         <activity
-            android:name=".activity.SearchingListActivity"
+            android:windowSoftInputMode="adjustPan|adjustNothing"
+            android:name="br.com.wjaa.ranchucrutes.activity.SearchingListActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
             android:launchMode="singleTop">

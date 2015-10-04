@@ -2,20 +2,38 @@ package br.com.wjaa.ranchucrutes.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.internal.view.menu.MenuItemImpl;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.provider.SearchableProvider;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -23,151 +41,158 @@ import roboguice.inject.InjectView;
 /**
  * Created by wagner on 02/10/15.
  */
-@ContentView(R.layout.activity_searchable)
-public class SearchingListActivity extends RoboActionBarActivity {
+//@ContentView(R.layout.activity_searchable)
+public class SearchingListActivity extends AppCompatActivity {
 
     ArrayAdapter<String> myAdapter;
     ListView listView;
-    String[] dataArray = new String[] {"India", "Androidhub4you", "Pakistan", "Srilanka", "Nepal", "Japan"};
+    String[] dataArray = new String[] {"Indiaaaaaaaaa", "Androidhub4you", "Pakistan", "Srilanka", "Nepal", "Japan"};
+    private CoordinatorLayout clContainer;
+    private RecyclerView mRecyclerView;
+    private List<?> mList;
+    private List<?> mListAux;
 
-
-    @InjectView(R.id.toolbar)
+    //@InjectView(R.id.toolbar)
     private Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_searchable);
         //==========================
 
-        listView = (ListView) findViewById(R.id.listview);
-        myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataArray);
-        listView.setAdapter(myAdapter);
-        listView.setTextFilterEnabled(true);
+        toolbar = (Toolbar) findViewById(R.id.tb_main);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-
-                Log.i("searchi", arg2 + " --postion");
-            }
-        });
-
-
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+       /* if(savedInstanceState != null){
+            mList = savedInstanceState.getParcelableArrayList("mList");
+            mListAux = savedInstanceState.getParcelableArrayList("mListAux");
         }
+        else{
+            mList = (new MainActivity()).getSetCarList(10, 0);
+            mListAux = new ArrayList<>();
+        }*/
 
+        clContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_list);
+        mRecyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager llm = new LinearLayoutManager( this );
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(llm);
+
+/*
+        adapter = new CarAdapter(this, mListAux);
+        adapter.setRecyclerViewOnClickListenerHack(this);
+        mRecyclerView.setAdapter(adapter);
+*/
+
+        handleSearch(getIntent());
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search, menu);
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleSearch(intent);
+    }
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItemImpl menuItem = ((MenuItemImpl) menu.findItem(R.id.search));
+    public void handleSearch( Intent intent ){
+        if( Intent.ACTION_SEARCH.equalsIgnoreCase( intent.getAction() ) ){
+            String q = intent.getStringExtra( SearchManager.QUERY );
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
-        if (searchView != null){
+            toolbar.setTitle(q);
+            filter(q);
 
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setIconifiedByDefault(false);
+            SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this,
+                    SearchableProvider.AUTHORITY,
+                    SearchableProvider.MODE);
+            searchRecentSuggestions.saveRecentQuery(q, null);
+        }
+    }
 
-            SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener()
-            {
-                @Override
-                public boolean onQueryTextChange(String newText)
-                {
-                    // this is your adapter that will be filtered
-                    myAdapter.getFilter().filter(newText);
-                    System.out.println("on text chnge text: "+newText);
-                    return true;
-                }
-                @Override
-                public boolean onQueryTextSubmit(String query)
-                {
-                    // this is your adapter that will be filtered
-                    myAdapter.getFilter().filter(query);
-                    System.out.println("on query submit: "+query);
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(textChangeListener);
+
+    public void filter( String q ){
+        /*ListAux.clear();
+
+        for( int i = 0, tamI = mList.size(); i < tamI; i++ ){
+            if( mList.get(i).getModel().toLowerCase().startsWith( q.toLowerCase() ) ){
+                mListAux.add( mList.get(i) );
+            }
+        }
+        for( int i = 0, tamI = mList.size(); i < tamI; i++ ){
+            if( !mListAux.contains( mList.get(i) )
+                    && mList.get(i).getBrand().toLowerCase().startsWith( q.toLowerCase() ) ){
+                mListAux.add( mList.get(i) );
+            }
         }
 
-        return super.onCreateOptionsMenu(menu);
+        mRecyclerView.setVisibility(mListAux.isEmpty() ? View.GONE : View.VISIBLE);
+        if( mListAux.isEmpty() ){
+            TextView tv = new TextView( this );
+            tv.setText( "Nenhum carro encontrado." );
+            tv.setTextColor( getResources().getColor( R.color.colorPrimarytext ) );
+            tv.setId( 1 );
+            tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            tv.setGravity(Gravity.CENTER);
 
+            clContainer.addView(tv);
+        }
+        else if( clContainer.findViewById(1) != null ) {
+            clContainer.removeView( clContainer.findViewById(1) );
+        }
+
+       // adapter.notifyDataSetChanged();*/
     }
 
 
 
-
-
-
-   /* @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        *//*if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }*//*
-        handleIntent(getIntent());
-
-    }
-
-   *//* @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the options menu from XML
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
 
-        // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        if (searchView != null){
-            // Assumes current activity is the searchable activity
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        SearchView searchView;
+        MenuItem item = menu.findItem(R.id.search);
+
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ){
+            searchView = (SearchView) item.getActionView();
         }
+        else{
+            searchView = (SearchView) MenuItemCompat.getActionView( item );
+        }
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setQueryHint(getResources().getString(R.string.search_hint));
 
         return true;
-    }*//*
-
-
-
-
-    public void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleIntent(intent);
     }
 
-    public void onListItemClick(ListView l,
-                                View v, int position, long id) {
-        // call detail activity for clicked entry
-    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-    private void handleIntent(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query =
-                    intent.getStringExtra(SearchManager.QUERY);
-            doSearch(query);
+        if(id == android.R.id.home){
+            finish();
         }
+        /*else if( id == R.id.action_delete ){
+            SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this,
+                    SearchableProvider.AUTHORITY,
+                    SearchableProvider.MODE);
+
+            searchRecentSuggestions.clearHistory();
+
+            Toast.makeText(this, "Cookies removidos", Toast.LENGTH_SHORT).show();
+        }*/
+
+        return true;
     }
 
-    private void doSearch(String queryStr) {
-        // get a Cursor, prepare the ListAdapter
-        // and set it
-    }
-*/
+
+
 
 
 }
