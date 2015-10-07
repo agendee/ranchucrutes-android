@@ -212,11 +212,20 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
 
             Bundle b = new Bundle();
             ArrayList<Parcelable> parcelables = new ArrayList<>();
-            for (EspecialidadeVo e : especialidades){
-                parcelables.add(e);
+
+            if (especialidades == null){
+                especialidades = RanchucrutesBuffer.getEspecialidades();
             }
-            b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-            AndroidUtils.openActivityFromFragment(BuscaFragment.this,SearchingListActivity.class, b);
+
+            if (especialidades != null){
+                for (EspecialidadeVo e : especialidades){
+                    parcelables.add(e);
+                }
+                b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+                AndroidUtils.openActivityFromFragment(BuscaFragment.this, SearchingListActivity.class, b);
+            }else{
+                AndroidUtils.showMessageDlg("Ops!","Problemas na comunicação com o servidor.",getActivity());
+            }
 
 
             /*SearchingListDialog<EspecialidadeVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<EspecialidadeVo>() {

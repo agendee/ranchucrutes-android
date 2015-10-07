@@ -108,18 +108,21 @@ public class SearchingListActivity extends AppCompatActivity implements Recycler
 
         mRecyclerView.setVisibility(mListFilter.isEmpty() ? View.GONE : View.VISIBLE);
         if( mListFilter.isEmpty() ){
-            TextView tv = new TextView( this );
-            tv.setText( "Nenhum resultado encontrado." );
-            tv.setTextColor( getResources().getColor( R.color.primaryColor ) );
-           // tv.setId(1);
-            tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            tv.setGravity(Gravity.CENTER);
 
-            clContainer.addView(tv);
+            if (clContainer.findViewById(1) == null){
+                TextView tv = new TextView( this );
+                tv.setText( "Nenhum resultado encontrado." );
+                tv.setTextColor( getResources().getColor( R.color.primaryColor ) );
+                tv.setId(1);
+                tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+                tv.setGravity(Gravity.CENTER);
+
+                clContainer.addView(tv);
+            }
         }
-        /*else if( clContainer.findViewById(1) != null ) {
+        else if( clContainer.findViewById(1) != null ) {
             clContainer.removeView( clContainer.findViewById(1) );
-        }*/
+        }
 
        adapter.notifyDataSetChanged();
     }
