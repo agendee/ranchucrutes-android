@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -36,6 +38,14 @@ public class AndroidUtils {
         Intent i = new Intent(context, activity);
         i.putExtras(bundle);
         context.startActivityForResult(i, 1);
+        return i;
+    }
+
+    public static Intent openActivityFromFragment(Fragment fragment, Class<?> activity, Bundle bundle ){
+        FragmentActivity context = fragment.getActivity();
+        Intent i = new Intent(context, activity);
+        i.putExtras(bundle);
+        context.startActivityFromFragment(fragment,i, 1);
         return i;
     }
 

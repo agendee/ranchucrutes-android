@@ -1,15 +1,18 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.facebook.FacebookRequestError;
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchingListActivity;
@@ -18,12 +21,13 @@ import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.service.LoginService;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListDialog;
 import br.com.wjaa.ranchucrutes.view.SearchingListDialogCallback;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 import br.com.wjaa.ranchucrutes.vo.ConvenioVo;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
@@ -78,13 +82,12 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initButtons();
+        initView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initView();
-
     }
 
     private void initButtons() {
@@ -150,18 +153,43 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null){
+            SearchingListModel model = data.getExtras().getParcelable(RanchucrutesConstants.PARAM_RESULT_SEARCH);
+
+            if (model != null){
+
+                if (model instanceof  ConvenioCategoriaVo){
+                    ConvenioCategoriaVo convenioCategoriaVo = (ConvenioCategoriaVo)model;
+                    btnCategoria.setText(convenioCategoriaVo.getNome());
+                    this.categoriaSelected = convenioCategoriaVo;
+                }
+                if (model instanceof  ConvenioVo){
+                    ConvenioVo convenioVo = (ConvenioVo)model;
+                    btnConvenio.setText(convenioVo.getNome());
+                    new FindCategoria(convenioVo.getId()).start();
+                }
+
+            }
+        }
+    }
+
+
     class DialogConvenioClickListener implements View.OnClickListener{
 
         @Override
         public void onClick(View v) {
-            SearchingListDialog<ConvenioVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<ConvenioVo>() {
-                @Override
-                public void onResult(ConvenioVo result) {
-                    btnConvenio.setText(result.getNome());
-                    new FindCategoria(result.getId()).start();
-                }
-            }, getContext());
-            dialog.addTitle("Selecione um plano").openDialog(RanchucrutesBuffer.getConvenios());
+            Bundle b = new Bundle();
+            ArrayList<Parcelable> parcelables = new ArrayList<>();
+            for (ConvenioVo c : RanchucrutesBuffer.getConvenios()){
+                parcelables.add(c);
+            }
+            b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+            AndroidUtils.openActivityFromFragment(DadosUsuarioFragment.this,SearchingListActivity.class, b);
+
+
         }
     }
 
@@ -170,18 +198,17 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
 
         @Override
         public void onClick(View v) {
-            AndroidUtils.openActivity(getActivity(),SearchingListActivity.class);
+            Bundle b = new Bundle();
 
+            if (categorias != null){
 
-
-            /*SearchingListDialog<ConvenioCategoriaVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<ConvenioCategoriaVo>() {
-                @Override
-                public void onResult(ConvenioCategoriaVo result) {
-                    btnCategoria.setText(result.getNome());
-                    categoriaSelected = result;
+                ArrayList<Parcelable> parcelables = new ArrayList<>();
+                for (ConvenioCategoriaVo c : categorias){
+                    parcelables.add(c);
                 }
-            }, getContext());
-            dialog.addTitle("Selecione um Plano").openDialog(categorias);*/
+                b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+                AndroidUtils.openActivityFromFragment(DadosUsuarioFragment.this,SearchingListActivity.class, b);
+            }
         }
     }
 

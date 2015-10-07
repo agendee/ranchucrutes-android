@@ -1,5 +1,8 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
@@ -11,6 +14,13 @@ public class ConvenioVo implements SearchingListModel {
     private Integer id;
     private String nome;
     private Boolean popular;
+
+    public ConvenioVo() {}
+
+    public ConvenioVo(Parcel parcel) {
+        setId(parcel.readInt());
+        setNome(parcel.readString());
+    }
 
     public Integer getId() {
         return id;
@@ -50,4 +60,26 @@ public class ConvenioVo implements SearchingListModel {
     public String getName() {
         return this.nome;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(getId());
+        dest.writeString(getNome());
+    }
+
+    public static final Parcelable.Creator<ConvenioVo> CREATOR = new Parcelable.Creator<ConvenioVo>(){
+        @Override
+        public ConvenioVo createFromParcel(Parcel source) {
+            return new ConvenioVo(source);
+        }
+        @Override
+        public ConvenioVo[] newArray(int size) {
+            return new ConvenioVo[size];
+        }
+    };
 }

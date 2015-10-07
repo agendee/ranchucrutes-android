@@ -1,5 +1,8 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
@@ -11,6 +14,11 @@ public class EspecialidadeVo implements Serializable, SearchingListModel {
     private Integer id;
     private String nome;
     private Boolean popular;
+
+    public EspecialidadeVo(Parcel parcel) {
+        setId(parcel.readInt());
+        setNome(parcel.readString());
+    }
 
     public Integer getId() {
         return id;
@@ -40,4 +48,26 @@ public class EspecialidadeVo implements Serializable, SearchingListModel {
     public String getName() {
         return this.nome;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(getId());
+        dest.writeString(getNome());
+    }
+
+    public static final Parcelable.Creator<EspecialidadeVo> CREATOR = new Parcelable.Creator<EspecialidadeVo>(){
+        @Override
+        public EspecialidadeVo createFromParcel(Parcel source) {
+            return new EspecialidadeVo(source);
+        }
+        @Override
+        public EspecialidadeVo[] newArray(int size) {
+            return new EspecialidadeVo[size];
+        }
+    };
 }

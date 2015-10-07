@@ -5,54 +5,42 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
+import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.internal.view.menu.MenuItemImpl;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.provider.SearchableProvider;
-import roboguice.activity.RoboActionBarActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
+import br.com.wjaa.ranchucrutes.adapter.SearchingListAdapter;
+import br.com.wjaa.ranchucrutes.listener.RecyclerViewOnClickListenerHack;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
  * Created by wagner on 02/10/15.
  */
-//@ContentView(R.layout.activity_searchable)
-public class SearchingListActivity extends AppCompatActivity {
+public class SearchingListActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack {
 
-    ArrayAdapter<String> myAdapter;
-    ListView listView;
-    String[] dataArray = new String[] {"Indiaaaaaaaaa", "Androidhub4you", "Pakistan", "Srilanka", "Nepal", "Japan"};
+    SearchingListAdapter adapter;
     private CoordinatorLayout clContainer;
     private RecyclerView mRecyclerView;
-    private List<?> mList;
-    private List<?> mListAux;
+    private List<SearchingListModel> mList;
+    private List<SearchingListModel> mListFilter;
 
-    //@InjectView(R.id.toolbar)
     private Toolbar toolbar;
 
 
@@ -67,14 +55,11 @@ public class SearchingListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-       /* if(savedInstanceState != null){
-            mList = savedInstanceState.getParcelableArrayList("mList");
-            mListAux = savedInstanceState.getParcelableArrayList("mListAux");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            mList = bundle.getParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH);
+            mListFilter = cloneList(mList);
         }
-        else{
-            mList = (new MainActivity()).getSetCarList(10, 0);
-            mListAux = new ArrayList<>();
-        }*/
 
         clContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
 
@@ -85,67 +70,58 @@ public class SearchingListActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
 
-/*
-        adapter = new CarAdapter(this, mListAux);
-        adapter.setRecyclerViewOnClickListenerHack(this);
+
+        adapter = new SearchingListAdapter(this, mListFilter);
+        //adapter.setRecyclerViewOnClickListenerHack(this);
         mRecyclerView.setAdapter(adapter);
-*/
 
-        handleSearch(getIntent());
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleSearch(intent);
+    private List<SearchingListModel> cloneList(List<SearchingListModel> mList) {
+        List<SearchingListModel> clone = new ArrayList<>(mList.size());
+        return cloneList(mList,clone);
+
     }
 
-    public void handleSearch( Intent intent ){
-        if( Intent.ACTION_SEARCH.equalsIgnoreCase( intent.getAction() ) ){
-            String q = intent.getStringExtra( SearchManager.QUERY );
-
-            toolbar.setTitle(q);
-            filter(q);
-
-            SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this,
-                    SearchableProvider.AUTHORITY,
-                    SearchableProvider.MODE);
-            searchRecentSuggestions.saveRecentQuery(q, null);
+    private List<SearchingListModel> cloneList(List<SearchingListModel> mList, List<SearchingListModel> clone) {
+        for (SearchingListModel s : mList){
+            clone.add(s);
         }
-    }
+        return clone;
 
+    }
 
     public void filter( String q ){
-        /*ListAux.clear();
+        mListFilter.clear();
+        if (StringUtils.isBlank(q)){
+            cloneList(mList, mListFilter);
 
-        for( int i = 0, tamI = mList.size(); i < tamI; i++ ){
-            if( mList.get(i).getModel().toLowerCase().startsWith( q.toLowerCase() ) ){
-                mListAux.add( mList.get(i) );
-            }
-        }
-        for( int i = 0, tamI = mList.size(); i < tamI; i++ ){
-            if( !mListAux.contains( mList.get(i) )
-                    && mList.get(i).getBrand().toLowerCase().startsWith( q.toLowerCase() ) ){
-                mListAux.add( mList.get(i) );
-            }
+            adapter.notifyDataSetChanged();
+            return;
         }
 
-        mRecyclerView.setVisibility(mListAux.isEmpty() ? View.GONE : View.VISIBLE);
-        if( mListAux.isEmpty() ){
+        for( int i = 0, tamI = mList.size(); i < tamI; i++ ){
+            if(StringUtils.isNotBlank(mList.get(i).getName()) && mList.get(i).getName().toLowerCase().contains( q.toLowerCase() ) ){
+                mListFilter.add( mList.get(i) );
+            }
+        }
+
+        mRecyclerView.setVisibility(mListFilter.isEmpty() ? View.GONE : View.VISIBLE);
+        if( mListFilter.isEmpty() ){
             TextView tv = new TextView( this );
-            tv.setText( "Nenhum carro encontrado." );
-            tv.setTextColor( getResources().getColor( R.color.colorPrimarytext ) );
-            tv.setId( 1 );
+            tv.setText( "Nenhum resultado encontrado." );
+            tv.setTextColor( getResources().getColor( R.color.primaryColor ) );
+           // tv.setId(1);
             tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             tv.setGravity(Gravity.CENTER);
 
             clContainer.addView(tv);
         }
-        else if( clContainer.findViewById(1) != null ) {
+        /*else if( clContainer.findViewById(1) != null ) {
             clContainer.removeView( clContainer.findViewById(1) );
-        }
+        }*/
 
-       // adapter.notifyDataSetChanged();*/
+       adapter.notifyDataSetChanged();
     }
 
 
@@ -155,7 +131,7 @@ public class SearchingListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView;
+        final SearchView searchView;
         MenuItem item = menu.findItem(R.id.search);
 
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ){
@@ -166,7 +142,21 @@ public class SearchingListActivity extends AppCompatActivity {
         }
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setQueryHint(getResources().getString(R.string.search_hint));
+        searchView.setQueryHint("Pesquise aqui");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filter(newText);
+                return false;
+            }
+        });
+
 
         return true;
     }
@@ -192,7 +182,32 @@ public class SearchingListActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClickListener(View view, int position) {
+        Intent intent = new Intent(this, SearchingListModel.class);
+        intent.putExtra("car", mListFilter.get(position));
 
+        // TRANSITIONS
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
+
+           /* View ivCar = view.findViewById(R.id.tviv_car);
+            View tvModel = view.findViewById(R.id.tv_model);
+            View tvBrand = view.findViewById(R.id.tv_brand);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                    Pair.create(ivCar, "element1"),
+                    Pair.create( tvModel, "element2" ),
+                    Pair.create( tvBrand, "element3" ));*/
+
+            //*startActivity(intent, options.toBundle() );
+        }
+        else{
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onLongPressClickListener(View view, int position) {}
 
 
 }

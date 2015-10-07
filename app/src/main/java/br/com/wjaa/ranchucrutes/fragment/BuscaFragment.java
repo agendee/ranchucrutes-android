@@ -1,8 +1,10 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,13 +22,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
+
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.SearchingListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.MedicoService;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListDialog;
 import br.com.wjaa.ranchucrutes.view.SearchingListDialogCallback;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
+import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
+import br.com.wjaa.ranchucrutes.vo.ConvenioVo;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
@@ -200,14 +209,37 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
 
         @Override
         public void onClick(View v) {
-            SearchingListDialog<EspecialidadeVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<EspecialidadeVo>() {
+
+            Bundle b = new Bundle();
+            ArrayList<Parcelable> parcelables = new ArrayList<>();
+            for (EspecialidadeVo e : especialidades){
+                parcelables.add(e);
+            }
+            b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+            AndroidUtils.openActivityFromFragment(BuscaFragment.this,SearchingListActivity.class, b);
+
+
+            /*SearchingListDialog<EspecialidadeVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<EspecialidadeVo>() {
                 @Override
                 public void onResult(EspecialidadeVo result) {
                     especSelecionada = result;
                     btnEspecilidade.setText(result.getNome());
                 }
             }, getContext());
-            dialog.addTitle("Selecione uma Especialidade").openDialog(especialidades);
+            dialog.addTitle("Selecione uma Especialidade").openDialog(especialidades);*/
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null){
+            SearchingListModel model = data.getExtras().getParcelable(RanchucrutesConstants.PARAM_RESULT_SEARCH);
+
+            if (model != null){
+                especSelecionada = (EspecialidadeVo)model;
+                btnEspecilidade.setText(especSelecionada.getNome());
+            }
         }
     }
 
