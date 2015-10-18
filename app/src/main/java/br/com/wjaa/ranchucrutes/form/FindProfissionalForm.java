@@ -5,7 +5,7 @@ import br.com.wjaa.ranchucrutes.vo.LocationVo;
 /**
  * Created by wagner on 26/07/15.
  */
-public class FindMedicoForm {
+public class FindProfissionalForm {
 
     private Integer idEspecialidade;
     private Integer idCategoria;

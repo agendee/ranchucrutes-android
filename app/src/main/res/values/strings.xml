@@ -1,15 +1,15 @@
 <resources>
-    <string name="app_name">MarcMed</string>
-    <string name="title_activity_home">MarcMed</string>
-    <string name="bntProcurar">Procurar Médicos</string>
+    <string name="app_name">Agendee</string>
+    <string name="title_activity_home">Agendee</string>
+    <string name="bntProcurar">Procurar Profissionais</string>
     <string name="bntSelectEspec">Selecione uma especialidade</string>
     <string name="msg_warning">Ops!</string>
     <string name="msg_informeEspeciliade">Informe uma especilidade</string>
     <string name="msg_informeCep">Informe um cep</string>
-    <string name="msg_buscaMedico">Procurando médicos, aguarde!</string>
+    <string name="msg_buscaProfissional">Procurando profissionais, aguarde!</string>
     <string name="msg_voceAqui">Você está aqui</string>
     <string name="msg_aguarde">Aguarde carregando dados...</string>
-    <string name="msg_nenhumMedicoEncontrado">Nenhum médico encontrado para essa especialidade</string>
+    <string name="msg_nenhumProfissionalEncontrado">Nenhum profissional encontrado para essa especialidade</string>
     <string name="action_menu">Menu Principal</string>
 
     <string-array name="nav_drawer_items">

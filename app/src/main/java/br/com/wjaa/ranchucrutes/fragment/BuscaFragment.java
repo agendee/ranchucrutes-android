@@ -28,17 +28,13 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchingListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
-import br.com.wjaa.ranchucrutes.service.MedicoService;
+import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.view.SearchingListDialog;
-import br.com.wjaa.ranchucrutes.view.SearchingListDialogCallback;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
-import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
-import br.com.wjaa.ranchucrutes.vo.ConvenioVo;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
-import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaMedicoVo;
+import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
@@ -48,13 +44,13 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     private static final String TAG = BuscaFragment.class.getSimpleName();
     private EspecialidadeVo especSelecionada;
     @Inject
-    private MedicoService medicoService;
+    private ProfissionalService profissionalService;
     @InjectView(R.id.btnSelectEspec)
     private Button btnEspecilidade;
     @InjectView(R.id.edtCep)
     private EditText edtCep;
     @InjectView(R.id.btnProcurar)
-    private Button btnProcurarMedicos;
+    private Button btnProcurarProfissional;
     private EspecialidadeVo[] especialidades;
     private RanchucrutesMaps ranchucrutesMaps;
     private Location myLocation;
@@ -119,7 +115,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     }
 
     private void createBtnProcurar() {
-        btnProcurarMedicos.setOnClickListener(new View.OnClickListener() {
+        btnProcurarProfissional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -133,7 +129,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                     return;
                 }
                 AndroidUtils.showWaitDlg(getString(R.string.msg_aguarde), getActivity());
-                ProcurarMedicosTask t = new ProcurarMedicosTask(view);
+                ProcurarProfissionalTask t = new ProcurarProfissionalTask(view);
                 t.execute();
             }
 
@@ -181,20 +177,21 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
     }
 
     /**
-     * Task para procurar médicos
+     * Task para procurar profissionais
+     *
      */
-    class ProcurarMedicosTask extends RoboAsyncTask<Void>{
-        ProcurarMedicosTask(View v){
+    class ProcurarProfissionalTask extends RoboAsyncTask<Void>{
+        ProcurarProfissionalTask(View v){
             super(v.getContext());
         }
         @Override
         public Void call() throws Exception {
 
-            ResultadoBuscaMedicoVo resultado = null;
+            ResultadoBuscaProfissionalVo resultado = null;
             if ((edtCep.getText() == null || "".equals(edtCep.getText().toString())) && myLocation != null){
-                resultado = medicoService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
+                resultado = profissionalService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
             }else{
-                resultado = medicoService.find(especSelecionada.getId(), edtCep.getText().toString());
+                resultado = profissionalService.find(especSelecionada.getId(), edtCep.getText().toString());
             }
 
             if (resultado != null) {

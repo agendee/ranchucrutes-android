@@ -23,16 +23,16 @@ public class ResultadoLoginVo {
     }
 
 
-    private MedicoBasicoVo medico;
+    private ProfissionalBasicoVo profissional;
     private PacienteVo paciente;
     private StatusLogin status;
 
-    public MedicoBasicoVo getMedico() {
-        return medico;
+    public ProfissionalBasicoVo getProfissional() {
+        return profissional;
     }
 
-    public void setMedico(MedicoBasicoVo medico) {
-        this.medico = medico;
+    public void setProfissional(ProfissionalBasicoVo profissional) {
+        this.profissional = profissional;
     }
 
     public StatusLogin getStatus() {

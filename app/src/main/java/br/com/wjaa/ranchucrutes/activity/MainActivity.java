@@ -85,7 +85,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         RanchucrutesSession.addSessionChangedListener(dadosUsuarioFragment);
         initView();
         if (toolbar != null) {
-            toolbar.setTitle("MarcMed");
+            toolbar.setTitle("Agendee");
             setSupportActionBar(toolbar);
         }
         initDrawer();
@@ -101,7 +101,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         footerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = "http://www.marcmed.com.br/medico/cadastro";
+                String url = "http://www.agendee.com.br/profissional/cadastro";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
@@ -139,7 +139,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         // update the main content by replacing fragments
         switch (position){
             case 0:
-                toolbar.setTitle("Procurar Médico");
+                toolbar.setTitle("Procurar Profissional");
                 openFragment(this.buscaFragment);
                 break;
             case 1:
@@ -152,7 +152,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
                 break;
             case 3:
                 openFragment(this.favoritosFragment);
-                toolbar.setTitle("Médicos Favoritos");
+                toolbar.setTitle("Profissionais Favoritos");
                 break;
             case 4:
 
@@ -270,7 +270,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     class MenuLogadoArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener {
 
         public MenuLogadoArrayAdapter(Context context, int resource) {
-            super(context, resource, new String[]{"Pesquisar Médicos", "Meus Dados", "Minhas Consultas", "Médicos Favoritos","Logout (Sair)"});
+            super(context, resource, new String[]{"Pesquisar Profissionais", "Meus Dados", "Minhas Consultas", "Profissionais Favoritos","Logout (Sair)"});
         }
 
         @Override
@@ -312,7 +312,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     class MenuDefaultArrayAdapter extends ArrayAdapter<String> implements AdapterView.OnItemClickListener{
 
         public MenuDefaultArrayAdapter(Context context, int resource) {
-            super(context, resource, new String[]{"Pesquisar Médicos","Fazer Login"});
+            super(context, resource, new String[]{"Pesquisar Profissionais","Fazer Login"});
         }
 
         @Override

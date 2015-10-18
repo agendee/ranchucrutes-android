@@ -5,18 +5,18 @@ import java.util.List;
 /**
  * Created by wagner on 25/07/15.
  */
-public class ResultadoBuscaMedicoVo {
+public class ResultadoBuscaProfissionalVo {
 
-    private List<MedicoBasicoVo> medicos;
+    private List<ProfissionalBasicoVo> profissionais;
     private Double latitude;
     private Double longitude;
 
-    public List<MedicoBasicoVo> getMedicos() {
-        return medicos;
+    public List<ProfissionalBasicoVo> getProfissionais() {
+        return profissionais;
     }
 
-    public void setMedicos(List<MedicoBasicoVo> medicos) {
-        this.medicos = medicos;
+    public void setProfissionais(List<ProfissionalBasicoVo> profissionais) {
+        this.profissionais = profissionais;
     }
 
     public Double getLatitude() {

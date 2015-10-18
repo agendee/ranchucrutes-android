@@ -3,7 +3,7 @@ package br.com.wjaa.ranchucrutes.vo;
 /**
  * Created by wagner on 25/07/15.
  */
-public class MedicoBasicoVo {
+public class ProfissionalBasicoVo {
 
     private String nome;
     private Integer crm;
@@ -12,6 +12,7 @@ public class MedicoBasicoVo {
     private Double longitude;
     private String endereco;
     private String telefone;
+    private ClinicaVo clinicaVo;
 
     public String getNome() {
         return nome;
@@ -69,4 +70,11 @@ public class MedicoBasicoVo {
         this.telefone = telefone;
     }
 
+    public ClinicaVo getClinicaVo() {
+        return clinicaVo;
+    }
+
+    public void setClinicaVo(ClinicaVo clinicaVo) {
+        this.clinicaVo = clinicaVo;
+    }
 }
