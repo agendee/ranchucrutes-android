@@ -1,10 +1,15 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.List;
+
 /**
  * Created by wagner on 25/07/15.
  */
-public class ProfissionalBasicoVo {
-
+public class ProfissionalBasicoVo implements Parcelable {
+    private Long id;
     private String nome;
     private Integer crm;
     private String espec;
@@ -12,7 +17,48 @@ public class ProfissionalBasicoVo {
     private Double longitude;
     private String endereco;
     private String telefone;
-    private ClinicaVo clinicaVo;
+    private ClinicaVo[] clinicas;
+
+    public ProfissionalBasicoVo() {
+
+    }
+
+
+    public ProfissionalBasicoVo(Parcel source) {
+        this.id = source.readLong();
+        this.nome = source.readString();
+        this.crm = source.readInt();
+        this.espec = source.readString();
+        this.latitude = source.readDouble();
+        this.longitude = source.readDouble();
+        this.endereco = source.readString();
+        this.telefone = source.readString();
+        this.clinicas = (ClinicaVo[]) source.readParcelableArray(ClinicaVo.class.getClassLoader());
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.nome);
+        if (this.crm != null){
+            dest.writeInt(this.crm);
+        }
+        dest.writeString(this.espec);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+        dest.writeString(this.endereco);
+        dest.writeString(this.telefone);
+        dest.writeParcelableArray(clinicas, PARCELABLE_WRITE_RETURN_VALUE);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -70,11 +116,27 @@ public class ProfissionalBasicoVo {
         this.telefone = telefone;
     }
 
-    public ClinicaVo getClinicaVo() {
-        return clinicaVo;
+    public ClinicaVo[] getClinicas() {
+        return clinicas;
     }
 
-    public void setClinicaVo(ClinicaVo clinicaVo) {
-        this.clinicaVo = clinicaVo;
+    public void setClinicas(ClinicaVo[] clinicas) {
+        this.clinicas = clinicas;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<ProfissionalBasicoVo> CREATOR = new Parcelable.Creator<ProfissionalBasicoVo>(){
+        @Override
+        public ProfissionalBasicoVo createFromParcel(Parcel source) {
+            return new ProfissionalBasicoVo(source);
+        }
+        @Override
+        public ProfissionalBasicoVo[] newArray(int size) {
+            return new ProfissionalBasicoVo[size];
+        }
+    };
 }

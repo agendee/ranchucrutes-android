@@ -225,14 +225,6 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
             }
 
 
-            /*SearchingListDialog<EspecialidadeVo> dialog = new SearchingListDialog<>(new SearchingListDialogCallback<EspecialidadeVo>() {
-                @Override
-                public void onResult(EspecialidadeVo result) {
-                    especSelecionada = result;
-                    btnEspecilidade.setText(result.getNome());
-                }
-            }, getContext());
-            dialog.addTitle("Selecione uma Especialidade").openDialog(especialidades);*/
         }
     }
 

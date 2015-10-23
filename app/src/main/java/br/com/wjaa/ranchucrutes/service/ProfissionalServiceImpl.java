@@ -7,6 +7,7 @@ import br.com.wjaa.ranchucrutes.form.FindProfissionalForm;
 import br.com.wjaa.ranchucrutes.rest.RestUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
+import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 
 /**
@@ -41,6 +42,22 @@ public class ProfissionalServiceImpl implements ProfissionalService {
         String json = ObjectUtils.toJson(form);
         try {
             return RestUtils.postJson(ResultadoBuscaProfissionalVo.class,RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_PROCURAR_PROFISSIONAL,json);
+        } catch (RestResponseUnsatisfiedException e) {
+            e.printStackTrace();
+        } catch (RestException e) {
+            e.printStackTrace();
+        } catch (RestRequestUnstable restRequestUnstable) {
+            restRequestUnstable.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ProfissionalBasicoVo getProfissionalById(Long idProfissional) {
+        try {
+            return RestUtils.getJsonWithParamPath(ProfissionalBasicoVo.class,
+                    RanchucrutesConstants.WS_HOST,
+                    RanchucrutesConstants.END_POINT_GET_PROFISSIONAL, idProfissional.toString());
         } catch (RestResponseUnsatisfiedException e) {
             e.printStackTrace();
         } catch (RestException e) {

@@ -1,6 +1,7 @@
 package br.com.wjaa.ranchucrutes.service;
 
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
+import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 
 /**
@@ -12,4 +13,5 @@ public interface ProfissionalService {
 
     ResultadoBuscaProfissionalVo find(Integer idEspecialidade, LocationVo location);
 
+    ProfissionalBasicoVo getProfissionalById(Long idProfissional);
 }

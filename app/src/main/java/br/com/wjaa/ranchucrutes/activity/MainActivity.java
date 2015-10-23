@@ -30,7 +30,7 @@ import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
 import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
 import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
-import br.com.wjaa.ranchucrutes.fragment.FavoritosFragment;
+import br.com.wjaa.ranchucrutes.fragment.FavoritoFragment;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
@@ -59,7 +59,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     private BuscaFragment buscaFragment;
 
     @Inject
-    private FavoritosFragment favoritosFragment;
+    private FavoritoFragment favoritoFragment;
 
     @Inject
     private DadosUsuarioFragment dadosUsuarioFragment;
@@ -151,7 +151,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
                 toolbar.setTitle("Minhas Consultas");
                 break;
             case 3:
-                openFragment(this.favoritosFragment);
+                openFragment(this.favoritoFragment);
                 toolbar.setTitle("Profissionais Favoritos");
                 break;
             case 4:

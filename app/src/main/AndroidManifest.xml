@@ -23,30 +23,24 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/myAppTheme" >
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
-
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-
-
-        <meta-data android:name="roboguice.annotations.packages" android:value="br.com.wjaa.ranchucrutes"/>
-
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="roboguice.annotations.packages"
+            android:value="br.com.wjaa.ranchucrutes" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="android.app.default_searchable"
             android:value="br.com.wjaa.ranchucrutes.activity.SearchingListActivity" />
-
-
 
         <activity
             android:name=".activity.SplashActivity"
@@ -66,43 +60,41 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.NovoPacienteActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait" >
         </activity>
-
-
-
-
         <activity
-            android:windowSoftInputMode="adjustPan|adjustNothing"
-            android:name="br.com.wjaa.ranchucrutes.activity.SearchingListActivity"
+            android:name=".activity.SearchingListActivity"
             android:label="@string/title_activity_home"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop">
-
-            <intent-filter >
+            android:windowSoftInputMode="adjustPan|adjustNothing" >
+            <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
-            <meta-data android:name="android.app.searchable" android:resource="@xml/searching" />
-
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searching" />
         </activity>
-
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait" >
         </activity>
-
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
-
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.AgendamentoActivity"
+            android:label="@string/title_activity_profissional_detalhes"
+            android:screenOrientation="portrait"
+            android:theme="@style/myAppTheme" >
+        </activity>
     </application>
 
 </manifest>

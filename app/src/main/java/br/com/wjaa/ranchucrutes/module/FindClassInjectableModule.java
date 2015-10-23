@@ -5,6 +5,8 @@ import android.content.Context;
 import com.google.inject.AbstractModule;
 
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
+import br.com.wjaa.ranchucrutes.service.AgendamentoService;
+import br.com.wjaa.ranchucrutes.service.AgendamentoServiceImpl;
 import br.com.wjaa.ranchucrutes.service.DataService;
 import br.com.wjaa.ranchucrutes.service.DataServiceImpl;
 import br.com.wjaa.ranchucrutes.service.FacebookService;
@@ -37,6 +39,7 @@ public class FindClassInjectableModule extends AbstractModule {
         superbind(LoginService.class).to(LoginServiceImpl.class);
         superbind(FacebookService.class).to(FacebookServiceImpl.class);
         superbind(GPlusService.class).to(GPlusServiceImpl.class);
+        superbind(AgendamentoService.class).to(AgendamentoServiceImpl.class);
         superbind(RanchucrutesBuffer.class);
         superbind(DataService.class).toInstance(new DataServiceImpl(this.context));
     }

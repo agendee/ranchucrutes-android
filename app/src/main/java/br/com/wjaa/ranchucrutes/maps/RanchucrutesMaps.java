@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.SpannableString;
@@ -35,7 +36,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
@@ -113,24 +116,14 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     public void onInfoWindowClick(Marker marker) {
 
         try{
-
             ProfissionalBasicoVo m = profissionais.get(marker.getId());
-
-            if (m != null && m.getTelefone() != null && !"".equals(m.getTelefone())){
-
-                AndroidUtils.showConfirmDlg("Ligar", "Esse profissional não possui agenda online. \n Deseja ligar?",
-                        context, new DialogInfoWindowCallback(m));
-
-            }else{
-                AndroidUtils.showMessageDlg("Ops!", "Esse profissional não possui agenda e telefone.", context);
-            }
-
+            Bundle b = new Bundle();
+            b.putParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL,m);
+            AndroidUtils.openActivity(context,AgendamentoActivity.class, b);
         }
-
         catch(ActivityNotFoundException act){
             Log.e("Exemplo de chamada", "falha", act);
         }
-
 
     }
 
