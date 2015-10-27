@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.fragment.dummy.DummyContent;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
@@ -36,7 +37,7 @@ public class FavoritoFragment extends RoboListFragment {
 
         // TODO: Change Adapter to display your content
         setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+                R.layout.item_list_default, R.id.textItemList, DummyContent.ITEMS));
     }
 
 

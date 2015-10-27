@@ -3,6 +3,7 @@ package br.com.wjaa.ranchucrutes.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,7 +34,13 @@ public class ProfissionalBasicoVo implements Parcelable {
         this.longitude = source.readDouble();
         this.endereco = source.readString();
         this.telefone = source.readString();
-        this.clinicas = (ClinicaVo[]) source.readParcelableArray(ClinicaVo.class.getClassLoader());
+
+        Parcelable[] parcelableArray =
+                source.readParcelableArray(ClinicaVo.class.getClassLoader());
+
+        if (parcelableArray != null) {
+            clinicas = Arrays.copyOf(parcelableArray, parcelableArray.length, ClinicaVo[].class);
+        }
 
     }
 

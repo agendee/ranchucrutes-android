@@ -17,6 +17,7 @@ import java.net.URL;
 import br.com.wjaa.ranchucrutes.exception.RestException;
 import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
 import br.com.wjaa.ranchucrutes.exception.RestResponseUnsatisfiedException;
+import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.vo.ErrorMessageVo;
 
 /**
@@ -25,8 +26,6 @@ import br.com.wjaa.ranchucrutes.vo.ErrorMessageVo;
 public class RestUtils {
 
     private static final String TAG = RestUtils.class.getSimpleName();
-    private static final Gson gson = new GsonBuilder().create();
-
 
     public static <T>T getJsonWithParamPath(Class<T> clazzReturn, String targetUrl, String ... params) throws
             RestResponseUnsatisfiedException, RestException, RestRequestUnstable {
@@ -49,7 +48,7 @@ public class RestUtils {
             if (statusCode >= 500 && statusCode < 600){
                 InputStream in = new BufferedInputStream(conn.getErrorStream());
                 String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-                throw new RestException(gson.fromJson(response, ErrorMessageVo.class));
+                throw new RestException(ObjectUtils.fromJson(response, ErrorMessageVo.class));
             }
             InputStream in = new BufferedInputStream(conn.getInputStream());
             String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
@@ -58,7 +57,7 @@ public class RestUtils {
 
             Log.d(TAG,"m=getJsonWithParamPath Response: " + response);
 
-            return gson.fromJson(response, clazzReturn);
+            return ObjectUtils.fromJson(response, clazzReturn);
 
         }catch (JsonParseException e) {
             throw new RestResponseUnsatisfiedException(e.getMessage(), e);
@@ -98,14 +97,14 @@ public class RestUtils {
             if (statusCode >= 500 && statusCode < 600){
                 in = new BufferedInputStream(conn.getErrorStream());
                 String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-                throw new RestException(gson.fromJson(response, ErrorMessageVo.class));
+                throw new RestException(ObjectUtils.fromJson(response, ErrorMessageVo.class));
             }
             in = new BufferedInputStream(conn.getInputStream());
             String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
             System.out.println(response);
 
 
-            return gson.fromJson(response, clazzReturn);
+            return ObjectUtils.fromJson(response, clazzReturn);
 
         }catch (JsonParseException e) {
             throw new RestResponseUnsatisfiedException(e.getMessage(), e);

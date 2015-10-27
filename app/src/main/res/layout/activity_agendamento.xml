@@ -5,8 +5,8 @@
     xmlns:fresco="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
-    tools:context=".CarActivity">
+    android:background="@color/primaryColor"
+    tools:context=".AgendamentoActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -49,24 +49,37 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <br.com.wjaa.ranchucrutes.view.SlidingTabLayout
-        android:id="@+id/tabLayout"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:paddingTop="2dp"
+        android:fillViewport="true"
+        android:paddingTop="0dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </br.com.wjaa.ranchucrutes.view.SlidingTabLayout>
+            <br.com.wjaa.ranchucrutes.view.SlidingTabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:fillViewport="true"
+                android:paddingTop="2dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            </br.com.wjaa.ranchucrutes.view.SlidingTabLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vpTabs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="50dp"/>
 
 
 

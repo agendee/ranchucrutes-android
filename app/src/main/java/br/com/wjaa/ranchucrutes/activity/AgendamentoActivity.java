@@ -1,5 +1,6 @@
 package br.com.wjaa.ranchucrutes.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -7,8 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -24,10 +23,17 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.adapter.TabsAdapter;
+import br.com.wjaa.ranchucrutes.adapter.AgendamentoTabsAdapter;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.fragment.ProfissionalAgendaFragment;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
@@ -67,43 +73,32 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
         profissional = b.getParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL);
-        this.init();
-        this.criarAgenda();
+        if (profissional != null){
+            this.init();
+            this.criarAgenda();
+        }
 
     }
 
     private void init() {
         this.initMenu();
-        this.initButtons();
         this.initTabs();
+        this.initButtons();
     }
 
     private void initTabs() {
-        viewPager.setAdapter(new TabsAdapter(getSupportFragmentManager(), this));
 
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
-        tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primaryColorDark));
-        tabLayout.setCustomTabView(R.layout.tab_view, R.id.tv_tab);
-        /*slidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+        new FindAgendamento(profissional).start();
 
-            @Override
-            public void onPageSelected(int position) {
-                navigationDrawerLeft.setSelection(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });*/
-        tabLayout.setViewPager(viewPager);
 
     }
 
     private void initButtons() {
+        criarBotaoLigar();
 
+    }
+
+    private void criarBotaoLigar() {
         // FAB
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -123,8 +118,6 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
             }
         });
-
-
     }
 
     private void initMenu() {
@@ -185,9 +178,6 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         //this.criarBotoesAgenda(child, profissional);
     }
 
-    private void criarBotoesAgenda(GridLayout child, ProfissionalBasicoVo profissional) {
-       new FindAgendamento(profissional,child).start();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -199,13 +189,11 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         return true;
     }
 
+
     class FindAgendamento extends Thread{
         private ProfissionalBasicoVo profissional;
-        private GridLayout layout;
-
-        public FindAgendamento(ProfissionalBasicoVo profissional, GridLayout layout){
+        public FindAgendamento(ProfissionalBasicoVo profissional){
             this.profissional = profissional;
-            this.layout = layout;
         }
 
 
@@ -213,42 +201,84 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         public void run() {
 
             try {
+                final List<ProfissionalAgendaFragment> profissionalAgendaFragments = new ArrayList<>();
                 AgendaVo agendaVo = agendamentoService.getAgendamentoByIdProfissional(
                         profissional.getId(), profissional.getClinicas()[0].getId());
-
+                Map<Date,List<Date>> datasAgrupadas = new TreeMap<>();
                 if (agendaVo != null){
-                    String text = "";
+                    Collections.sort(agendaVo.getHorariosDisponiveis());
                     for (Date date : agendaVo.getHorariosDisponiveis() ){
-                        text += DateUtils.formatHHmm(date) + " | ";
+                        String dateStr = DateUtils.formatddMMyyyy(date);
+                        Date key = DateUtils.parseddMMyyyy(dateStr);
+
+                        List<Date> listDatas = datasAgrupadas.get(key);
+
+                        if (listDatas == null){
+                            listDatas = new ArrayList<>();
+                            datasAgrupadas.put(key,listDatas);
+                        }
+                        listDatas.add(date);
+                    }
+
+                    for (Date key : datasAgrupadas.keySet()){
+                        profissionalAgendaFragments.add(new ProfissionalAgendaFragment(DateUtils.formatddMMyyyy(key)
+                                ,datasAgrupadas.get(key)));
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewPager.setAdapter(new AgendamentoTabsAdapter(getSupportFragmentManager(), profissionalAgendaFragments));
+                            tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+                            tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primaryColorDark));
+                            tabLayout.setCustomTabView(R.layout.tab_view, R.id.tv_tab);
+                            //aqui pra deixar apenas uma data por pagina.
+                            //tabLayout.setCustomTabView();
+                            tabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                                @Override
+                                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                }
+
+                                @Override
+                                public void onPageSelected(int position) {
+                                   // viewPager.destroyDrawingCache();
+                                    //viewPager.invalidate();
+                                }
+
+                                @Override
+                                public void onPageScrollStateChanged(int state) {
+                                }
+                            });
+
+                            tabLayout.setViewPager(viewPager);
+                        }
+                    });
+
+
+
+                }else{
+                    //criarMsg("Profissional não possui agenda em nosso cadastro");
+                }
+                //atualizando as tabelas
+                /*((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AgendamentoTabsAdapter.this.notifyDataSetChanged();
 
                     }
-                    criarMsg(text);
-                }else{
-                    criarMsg("Profissional não possui agenda em nosso cadastro");
-                }
+                });*/
 
 
             } catch (AgendamentoServiceException e) {
-                criarMsg(e.getMessage());
+                // criarMsg(e.getMessage());
 
             }
 
 
         }
 
-        private void criarMsg(String msg) {
-            final TextView tv = new TextView( AgendamentoActivity.this );
-            tv.setText(msg);
-            tv.setTextColor(getResources().getColor(R.color.primaryColor));
-            tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            tv.setGravity(Gravity.CENTER);
 
-            AgendamentoActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    layout.addView(tv);
-                }
-            });
-        }
     }
+
+
 }

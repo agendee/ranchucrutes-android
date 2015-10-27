@@ -1,59 +1,49 @@
 package br.com.wjaa.ranchucrutes.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.fragment.ProfissionalAgendaFragment;
+import br.com.wjaa.ranchucrutes.service.AgendamentoService;
+import br.com.wjaa.ranchucrutes.utils.DateUtils;
+import br.com.wjaa.ranchucrutes.vo.AgendaVo;
+import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
+import roboguice.RoboGuice;
 
 /**
  * Created by viniciusthiengo on 5/18/15.
  */
-public class TabsAdapter extends FragmentPagerAdapter {
-    private Context mContext;
-    private String[] titles = {"01/01/2015", "02/01/2015", "03/01/2015", "04/01/2015", "05/01/2015"};
+public class AgendamentoTabsAdapter extends FragmentPagerAdapter {
+    private List<ProfissionalAgendaFragment> profissionalAgendaFragments = new ArrayList<>();
 
-
-    public TabsAdapter(FragmentManager fm, Context c) {
+    public AgendamentoTabsAdapter(FragmentManager fm, List<ProfissionalAgendaFragment> profissionalAgendaFragments) {
         super(fm);
-
-        mContext = c;
-        double scale = c.getResources().getDisplayMetrics().density;
+        this.profissionalAgendaFragments = profissionalAgendaFragments;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment frag = null;
-
-        if(position == 0){ // ALL CARS
-            frag = new ProfissionalAgendaFragment();
-        }
-        else if(position == 1){ // LUXURY CAR
-            frag = new ProfissionalAgendaFragment();
-        }
-        else if(position == 2){ // SPORT CAR
-            frag = new ProfissionalAgendaFragment();
-        }
-        else if(position == 3){ // OLD CAR
-            frag = new ProfissionalAgendaFragment();
-        }
-        else if(position == 4){ // POPULAR CAR
-            frag = new ProfissionalAgendaFragment();
-        }
-
+        Fragment frag = profissionalAgendaFragments.get(position);
         Bundle b = new Bundle();
         b.putInt("position", position);
-
         frag.setArguments(b);
-
         return frag;
     }
 
     @Override
     public int getCount() {
-        return titles.length;
+        return profissionalAgendaFragments.size();
     }
 
 
@@ -69,6 +59,9 @@ public class TabsAdapter extends FragmentPagerAdapter {
 
 
         return ( sp );*/
-        return ( titles[position] );
+        return ( profissionalAgendaFragments.get(position).getTitle());
     }
+
+
+
 }

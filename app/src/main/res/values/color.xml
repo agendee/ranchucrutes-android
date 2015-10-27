@@ -4,7 +4,7 @@
 
     <color name="grey">#ddd</color>
     <color name="primaryColor">#0079bf</color>
-    <color name="primaryColorDark">#ec0066a1</color>
+    <color name="primaryColorDark">#ec01507e</color>
 
     <color name="pressed_color">#4d90fe</color>
     <color name="focused_color">#4d90fe</color>
