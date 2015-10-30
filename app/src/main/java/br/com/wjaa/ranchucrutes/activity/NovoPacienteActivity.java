@@ -114,12 +114,12 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
 
     private boolean validateForm() {
         if (StringUtils.isBlank(edtNome.getText().toString())){
-            AndroidUtils.showMessageDlg("Ops!","O nome é obrigatório!",this);
+            AndroidUtils.showMessageErroDlg("O nome é obrigatório!", this);
             edtNome.requestFocus();
             return false;
         }
         if (StringUtils.isBlank(edtEmail.getText().toString())){
-            AndroidUtils.showMessageDlg("Ops!","O email é obrigatório!",this);
+            AndroidUtils.showMessageErroDlg("O email é obrigatório!", this);
             edtEmail.requestFocus();
             return false;
         }
@@ -127,19 +127,19 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
         /* Entra aqui apenas quando for um cadastro direto. */
         if (pacienteRedeSocial == null){
             if (StringUtils.isBlank(edtSenha.getText().toString())){
-                AndroidUtils.showMessageDlg("Ops!","A senha é obrigatória!",this);
+                AndroidUtils.showMessageErroDlg("A senha é obrigatória!", this);
                 edtSenha.requestFocus();
                 return false;
             }
 
             if (StringUtils.isBlank(edtConfSenha.getText().toString())){
-                AndroidUtils.showMessageDlg("Ops!","Confirme sua senha",this);
+                AndroidUtils.showMessageErroDlg("Confirme sua senha", this);
                 edtConfSenha.requestFocus();
                 return false;
             }
 
             if (edtConfSenha.getText().toString().equals(edtSenha.getText())){
-                AndroidUtils.showMessageDlg("Ops!", "Confirmação de senha inválida!", this);
+                AndroidUtils.showMessageErroDlg("Confirmação de senha inválida!", this);
                 edtConfSenha.requestFocus();
                 return false;
             }
@@ -205,11 +205,12 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
             try {
                 loginService.criarPaciente(pacienteVo);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Sucesso!", "Cadastro criado com sucesso!", NovoPacienteActivity.this, new DialogCallback() {
+                AndroidUtils.showMessageSuccessDlgOnUiThread("Cadastro criado com sucesso!", NovoPacienteActivity.this, new DialogCallback() {
                     @Override
                     public void confirm() {
                         finish();
                     }
+
                     @Override
                     public void cancel() {
 
@@ -218,7 +219,7 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
             } catch (NovoPacienteException e) {
                 Log.e(NovoPacienteActivity.class.getSimpleName(),"Erro ao criar um novo paciente", e);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Ops!", e.getMessage(), NovoPacienteActivity.this);
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), NovoPacienteActivity.this);
             }
         }
     }

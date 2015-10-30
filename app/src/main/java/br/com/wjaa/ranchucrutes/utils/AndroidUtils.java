@@ -6,9 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
@@ -26,6 +24,25 @@ public class AndroidUtils {
 
 
     private static ProgressDialog dialog;
+    public enum AlertType{
+        ALERT_ERRO(R.id.titleErro, R.layout.custom_title_error),
+        ALERT_SUCESSO(R.id.titleSucesso,R.layout.custom_title_success),
+        ALERT_WARNING(R.id.titleWarning,R.layout.custom_title_warning);
+        private int resource;
+        private int layout;
+        AlertType(int resource, int layout){
+            this.resource = resource;
+            this.layout = layout;
+        }
+
+        public int getLayout() {
+            return layout;
+        }
+
+        public int getResource() {
+            return resource;
+        }
+    }
 
     public static Intent openActivity(Activity context, Class<?> activity ){
         Intent i = new Intent(context, activity);
@@ -45,48 +62,44 @@ public class AndroidUtils {
         FragmentActivity context = fragment.getActivity();
         Intent i = new Intent(context, activity);
         i.putExtras(bundle);
-        context.startActivityFromFragment(fragment,i, 1);
+        context.startActivityFromFragment(fragment, i, 1);
         return i;
     }
 
 
-    public static void showMessageDlg(String title, String msg, Context context){
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
-        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
-        tv.setText(title);
-        alertDialog.setCustomTitle(v);
-        alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg +"</font>"));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        alertDialog.show();
+    public static void showMessageDlg(String title, String msg, Context context, AlertType alertType){
+        showMessageDlg(title, msg, context, alertType, null);
     }
 
-    public static void showMessageDlg(String title, String msg, Context context, final DialogCallback dialogCallback){
+    public static void showMessageDlg(String title, String msg, Context context, AlertType alertType, final DialogCallback dialogCallback){
+        if ( alertType == null ){
+            alertType = AlertType.ALERT_SUCESSO;
+        }
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
-        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        View v = ((Activity)context).getLayoutInflater().inflate(alertType.getLayout(), null);
+        TextView tv = (TextView) v.findViewById(alertType.getResource());
         tv.setText(title);
         alertDialog.setCustomTitle(v);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
+
+
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                dialogCallback.confirm();
+                if (dialogCallback != null) {
+                    dialogCallback.confirm();
+                }
             }
         });
+
         alertDialog.show();
     }
 
     public static void showConfirmDlg(String title, String msg, Context context, DialogCallback callback ){
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
-        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        View v = ((Activity)context).getLayoutInflater().inflate(AlertType.ALERT_SUCESSO.getLayout(), null);
+        TextView tv = (TextView) v.findViewById(AlertType.ALERT_SUCESSO.getResource());
         tv.setText(title);
         alertDialog.setCustomTitle(v);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
@@ -94,6 +107,16 @@ public class AndroidUtils {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Sim", listener);
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Não", listener);
         alertDialog.show();
+    }
+
+    public static void showConfirmDlgOnUiThread(final String title, final String msg,
+                                                final Activity context, final DialogCallback callback ){
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showConfirmDlg(title,msg,context,callback);
+            }
+        });
     }
 
 
@@ -105,8 +128,8 @@ public class AndroidUtils {
         if (dialog.isShowing()){
             closeWaitDlg();
         }
-        View v = ((Activity)context).getLayoutInflater().inflate(R.layout.custom_title, null);
-        TextView tv = (TextView) v.findViewById(R.id.titleDefault);
+        View v = ((Activity)context).getLayoutInflater().inflate(AlertType.ALERT_SUCESSO.getLayout(), null);
+        TextView tv = (TextView) v.findViewById(AlertType.ALERT_SUCESSO.getResource());
         tv.setText("Aguarde!");
         dialog.setCustomTitle(v);
 
@@ -126,20 +149,22 @@ public class AndroidUtils {
     }
 
 
-    public static void showMessageDlgOnUiThread(final String titulo, final String msg, final Activity activity) {
+    public static void showMessageDlgOnUiThread(final String titulo, final String msg, final Activity activity,
+                                                final AlertType alertType) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AndroidUtils.showMessageDlg(titulo,msg,activity);
+                AndroidUtils.showMessageDlg(titulo, msg, activity, alertType);
             }
         });
     }
 
-    public static void showMessageDlgOnUiThread(final String titulo, final String msg, final Activity activity, final DialogCallback dialogCallback) {
+    public static void showMessageDlgOnUiThread(final String titulo, final String msg, final Activity activity,
+                                                final AlertType alertType, final DialogCallback dialogCallback) {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AndroidUtils.showMessageDlg(titulo,msg,activity, dialogCallback);
+                AndroidUtils.showMessageDlg(titulo,msg,activity, alertType, dialogCallback);
             }
         });
     }
@@ -148,8 +173,43 @@ public class AndroidUtils {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AndroidUtils.showWaitDlg(s,activity);
+                AndroidUtils.showWaitDlg(s, activity);
             }
         });
+    }
+
+    public static void showMessageSuccessDlg(String msg, Context context){
+        showMessageDlg(context.getResources().getString(R.string.titulo_sucesso), msg, context, AlertType.ALERT_SUCESSO);
+    }
+    public static void showMessageErroDlg(String msg, Context context){
+        showMessageDlg(context.getResources().getString(R.string.titulo_erro), msg, context, AlertType.ALERT_ERRO);
+    }
+    public static void showMessageWarningDlg(String msg, Context context){
+        showMessageDlg(context.getResources().getString(R.string.titulo_warning), msg, context, AlertType.ALERT_WARNING);
+    }
+
+    public static void showMessageSuccessDlgOnUiThread(String msg, Activity context){
+        showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_sucesso), msg,
+                context, AlertType.ALERT_SUCESSO);
+    }
+    public static void showMessageErroDlgOnUiThread(String msg, Activity context){
+        showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_erro), msg,
+                context, AlertType.ALERT_ERRO);
+    }
+    public static void showMessageWarningDlgOnUiThread(String msg, Activity context){
+        showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_warning), msg,
+                context, AlertType.ALERT_WARNING);
+    }
+    public static void showMessageSuccessDlgOnUiThread(String msg, Activity context, DialogCallback dialogCallback){
+        showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_sucesso), msg,
+                context, AlertType.ALERT_SUCESSO, dialogCallback);
+    }
+    public static void showMessageErroDlgOnUiThread(String msg, Activity context, DialogCallback dialogCallback){
+        showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_erro), msg,
+                context, AlertType.ALERT_ERRO, dialogCallback);
+    }
+    public static void showMessageWarningDlgOnUiThread(String msg, Activity context, DialogCallback dialogCallback){
+        showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_warning), msg,
+                context, AlertType.ALERT_WARNING, dialogCallback);
     }
 }

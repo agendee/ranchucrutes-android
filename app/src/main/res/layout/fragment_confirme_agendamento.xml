@@ -1,0 +1,56 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="br.com.wjaa.ranchucrutes.fragment.ConfirmeAgendamentoFragment">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="15dp"
+        android:textSize="15dp"
+        android:textColor="#e2201e1e"
+        android:layout_gravity="center"
+        android:text="Por segurança, precisamos que confirme a consulta digitando o código abaixo e depois pressionado o botão confirmar. \nEm seguida você receberá um email com a confirmação da sua consulta e poderá ver mais detalhes acessando o menu Minhas Consultas" />
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/txtVwCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="15dp"
+        android:textSize="60dp"
+        android:textColor="#e2413c3c"
+        android:layout_gravity="center">
+
+    </TextView>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:hint="Confirme aqui o código"
+        android:layout_gravity="center"
+        style="@style/edt"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirmar"
+        android:id="@+id/btnConfirmar"
+        android:layout_gravity="center_horizontal"
+        android:background="?attr/colorPrimary"
+        style="@style/btn"/>
+
+    <!--<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/textView"
+        android:layout_gravity="center" />-->
+
+</LinearLayout>

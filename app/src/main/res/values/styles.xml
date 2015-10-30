@@ -41,7 +41,7 @@
             <selector xmlns:android="http://schemas.android.com/apk/res/android">
                 <item android:drawable="@color/pressed_color" android:state_pressed="true"/>
                 <item android:drawable="@color/focused_color" android:state_focused="true"/>
-                <item android:drawable="@color/default_color"/>
+                <item android:drawable="@color/item_list_color"/>
             </selector>
         </item>
     </style>
@@ -94,7 +94,6 @@
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="android:textColorHint">@android:color/white</item>
         <item name="colorControlActivated">@android:color/white</item>
-        <!-- item name="autoCompleteTextViewStyle">@style/AutoCompleteTextViewHoloLight</item -->
     </style>
     <style name="myAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="myAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

@@ -37,11 +37,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:drawableLeft="@drawable/logo"
+
                 android:gravity="center_vertical"
                 android:padding="25dp"
                 android:textSize="16dp"
                 android:text="  Paciente não autenticado" />
+            <!--android:drawableLeft="@drawable/logo"-->
 
             <TextView
                 android:id="@+id/footerView"

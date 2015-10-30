@@ -120,11 +120,11 @@ public class LoginActivity extends RoboActionBarActivity {
                 String email = edtLoginEmail.getText().toString();
                 String pass = edtLoginPass.getText().toString();
                 if (StringUtils.isBlank(email)) {
-                    AndroidUtils.showMessageDlg("Erro", "Preencha seu email.", LoginActivity.this);
+                    AndroidUtils.showMessageErroDlg("Preencha seu email.", LoginActivity.this);
                     return;
                 }
                 if (StringUtils.isBlank(pass)) {
-                    AndroidUtils.showMessageDlg("Erro", "Preencha sua senha.", LoginActivity.this);
+                    AndroidUtils.showMessageErroDlg("Preencha sua senha.", LoginActivity.this);
                     return;
                 }
 
@@ -176,9 +176,6 @@ public class LoginActivity extends RoboActionBarActivity {
         public void run() {
 
             try {
-
-
-
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, autenticando usuário", LoginActivity.this);
                 PacienteVo pacienteVo = loginService.auth(email, senha);
                 AndroidUtils.closeWaitDlg();
@@ -187,7 +184,7 @@ public class LoginActivity extends RoboActionBarActivity {
             } catch (Exception e) {
                 Log.e("LoginFrament",e.getMessage(),e);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), LoginActivity.this);
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), LoginActivity.this);
             }
         }
     }
@@ -222,7 +219,7 @@ public class LoginActivity extends RoboActionBarActivity {
             });
 
 
-            AndroidUtils.showMessageDlgOnUiThread("Sucesso", "Olá " + pacienteVo.getNome(), this, new DialogCallback() {
+            AndroidUtils.showMessageSuccessDlgOnUiThread("Olá " + pacienteVo.getNome(), this, new DialogCallback() {
 
                 @Override
                 public void confirm() {

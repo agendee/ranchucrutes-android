@@ -190,11 +190,11 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                     criarPaciente(currentPerson);
                     AndroidUtils.closeWaitDlg();
                 }else{
-                    AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), context);
+                    AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), context);
                 }
             } catch (RanchucrutesWSException e) {
 
-                AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), context);
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), context);
             }
         }
     }
@@ -255,7 +255,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
             }  catch (NovoPacienteException e) {
                 Log.e("LoginFrament",e.getMessage(),e);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), context);
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), context);
             }
 
         }
@@ -264,7 +264,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
 
     private void saudarSair(PacienteVo pacienteVo) {
         if (pacienteVo != null){
-            AndroidUtils.showMessageDlgOnUiThread("Sucesso", "Olá " + pacienteVo.getNome(), context, new DialogCallback() {
+            AndroidUtils.showMessageSuccessDlgOnUiThread("Olá " + pacienteVo.getNome(), context, new DialogCallback() {
 
                 @Override
                 public void confirm() {

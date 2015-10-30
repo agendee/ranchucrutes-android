@@ -8,6 +8,8 @@
     android:background="@color/primaryColor"
     tools:context=".AgendamentoActivity">
 
+
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_height="300dp"
@@ -97,5 +99,14 @@
         android:layout_marginRight="@dimen/fab_margin_right"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end"/>
+
+
+    <FrameLayout
+        android:id="@+id/frameConfirmeAgendamento"
+        android:layout_width="match_parent"
+        android:background="#fff"
+        android:visibility="invisible"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -5,9 +5,15 @@
     <color name="grey">#ddd</color>
     <color name="primaryColor">#0079bf</color>
     <color name="primaryColorDark">#ec01507e</color>
+    <color name="errorColor">#a33433</color>
+    <color name="warningColor">#cab308</color>
+
 
     <color name="pressed_color">#4d90fe</color>
     <color name="focused_color">#4d90fe</color>
     <color name="default_color">#000000</color>
+    <color name="item_list_color">#bf000000</color>
+
+
 
 </resources>

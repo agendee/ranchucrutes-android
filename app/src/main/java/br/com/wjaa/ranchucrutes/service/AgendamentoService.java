@@ -15,4 +15,5 @@ public interface AgendamentoService {
 
     ConfirmarAgendamentoVo criarAgendamento(Long idProfissional,Long idClinica, Long idPaciente, Date date, boolean particular) throws AgendamentoServiceException;
 
+    void confirmarAgendamento(ConfirmarAgendamentoVo confirmarAgendamento) throws AgendamentoServiceException;
 }

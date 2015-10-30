@@ -25,8 +25,6 @@ import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
-import br.com.wjaa.ranchucrutes.view.SearchingListDialog;
-import br.com.wjaa.ranchucrutes.view.SearchingListDialogCallback;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 import br.com.wjaa.ranchucrutes.vo.ConvenioVo;
@@ -237,16 +235,16 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
             UsuarioEntity usuarioEntity = RanchucrutesSession.getUsuario();
 
             if (usuarioEntity == null){
-                AndroidUtils.showMessageDlg("Ops!", "Usuário não está autenticado!",getContext());
+                AndroidUtils.showMessageErroDlg("Usuário não está autenticado!", getContext());
                 return;
             }
             if (StringUtils.isBlank(edtEmail.getText().toString())){
-                AndroidUtils.showMessageDlg("Ops!", "Campo email não pode ser vazio.",getContext());
+                AndroidUtils.showMessageErroDlg("Campo email não pode ser vazio.",getContext());
                 return;
             }
 
             if (StringUtils.isBlank(edtNome.getText().toString())){
-                AndroidUtils.showMessageDlg("Ops!", "Campo nome não pode ser vazio.",getContext());
+                AndroidUtils.showMessageErroDlg("Campo nome não pode ser vazio.", getContext());
                 return;
             }
             PacienteVo pacienteVo = new PacienteVo();
@@ -276,10 +274,10 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
             try{
                 loginService.atualizarPaciente(pacienteVo);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Sucesso!", "Dados atualizados.", (Activity) getContext());
+                AndroidUtils.showMessageSuccessDlgOnUiThread("Dados atualizados.", (Activity) getContext());
             }catch (Exception ex){
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Ops!", ex.getMessage(), (Activity) getContext());
+                AndroidUtils.showMessageErroDlgOnUiThread(ex.getMessage(), (Activity) getContext());
             }
         }
     }

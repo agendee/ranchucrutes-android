@@ -391,8 +391,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 AndroidUtils.closeWaitDlg();
                 
                 if (resultado.getProfissionais() == null || resultado.getProfissionais().size() == 0){
-                    AndroidUtils.showMessageDlg(context.getString(R.string.msg_warning),
-                            context.getString(R.string.msg_nenhumProfissionalEncontrado), context);
+                    AndroidUtils.showMessageErroDlg(context.getString(R.string.msg_nenhumProfissionalEncontrado), context);
                 }else{
                     Toast.makeText(context,resultado.getProfissionais().size() + " Profissionals foram encontrados", Toast.LENGTH_SHORT);
                 }

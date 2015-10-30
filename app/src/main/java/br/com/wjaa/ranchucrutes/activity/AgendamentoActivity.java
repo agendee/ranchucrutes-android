@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -75,7 +78,6 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         profissional = b.getParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL);
         if (profissional != null){
             this.init();
-            this.criarAgenda();
         }
 
     }
@@ -112,7 +114,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                     AgendamentoActivity.this.startActivity(chamada);
 
                 }else{
-                    AndroidUtils.showMessageDlg("Ops!", "Esse profissional não divulgou seu telefone.",
+                    AndroidUtils.showMessageErroDlg("Esse profissional não divulgou seu telefone.",
                             AgendamentoActivity.this);
                 }
 
@@ -165,20 +167,6 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
     }
 
-    private void criarAgenda() {
-       /* ProfissionalAgendaFragment fragment = new ProfissionalAgendaFragment();
-        paneLayout.addView(fragment.getView());
-        fragment = new ProfissionalAgendaFragment();
-        paneLayout.addView(fragment.getView());
-        fragment = new ProfissionalAgendaFragment();
-        paneLayout.addView(fragment.getView());
-*/
-
-
-        //this.criarBotoesAgenda(child, profissional);
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -222,7 +210,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
                     for (Date key : datasAgrupadas.keySet()){
                         profissionalAgendaFragments.add(new ProfissionalAgendaFragment(DateUtils.formatddMMyyyy(key)
-                                ,datasAgrupadas.get(key)));
+                                ,datasAgrupadas.get(key),AgendamentoActivity.this,profissional));
                     }
 
                     runOnUiThread(new Runnable() {
@@ -279,6 +267,4 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
 
     }
-
-
 }

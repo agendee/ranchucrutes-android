@@ -52,4 +52,9 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         }
 
     }
+
+    @Override
+    public void confirmarAgendamento(ConfirmarAgendamentoVo confirmarAgendamento) throws AgendamentoServiceException {
+
+    }
 }

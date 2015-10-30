@@ -19,6 +19,10 @@ public class DateUtils {
     private static final SimpleDateFormat HHmm =
             new SimpleDateFormat("HH:mm", Locale.getDefault());
 
+
+    private static final SimpleDateFormat sdfddMMyyyyHHmm =
+            new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
     public static String formatddMMyyyy(Date date){
         return sdfddMMyyyy.format(date);
     }
@@ -34,5 +38,9 @@ public class DateUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String formatddMMyyyyHHmm(Date date) {
+        return sdfddMMyyyyHHmm.format(date);
     }
 }

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/primary_material_dark">
+    android:background="@android:color/white">
 
     <TextView
         android:layout_width="wrap_content"
@@ -11,6 +11,7 @@
         android:layout_gravity="bottom|center"
         android:paddingBottom="30dp"
         android:text="Aguarde carregando..."
+        android:textColor="@android:color/black"
         android:textSize="25dp"
         android:textStyle="bold|italic"
        />
@@ -19,7 +20,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:src="@drawable/img_splash" android:layout_marginBottom="30dp"
+        android:src="@drawable/img_splash"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
         android:layout_gravity="center_horizontal|bottom" />
 
 

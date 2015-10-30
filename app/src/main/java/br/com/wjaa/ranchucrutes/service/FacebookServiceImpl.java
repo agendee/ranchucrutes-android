@@ -244,11 +244,11 @@ public class FacebookServiceImpl implements FacebookService {
                     //se paciente nao existe na base do ranchucrutes. Vamos cria-lo
                     criarPaciente(accessToken);
                 }else{
-                    AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), context);
+                    AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), context);
                 }
             } catch (RanchucrutesWSException e) {
 
-                AndroidUtils.showMessageDlgOnUiThread("Erro!", e.getMessage(), context);
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), context);
             }
         }
     }
@@ -285,7 +285,7 @@ public class FacebookServiceImpl implements FacebookService {
             }  catch (NovoPacienteException e) {
                 Log.e("LoginFrament",e.getMessage(),e);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageDlgOnUiThread("Erro", e.getMessage(), context);
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), context);
             }
 
         }
@@ -293,7 +293,7 @@ public class FacebookServiceImpl implements FacebookService {
 
     private void saudarSair(PacienteVo pacienteVo) {
         if (pacienteVo != null){
-            AndroidUtils.showMessageDlgOnUiThread("Sucesso", "Olá " + pacienteVo.getNome(), context, new DialogCallback() {
+            AndroidUtils.showMessageSuccessDlgOnUiThread("Olá " + pacienteVo.getNome(), context, new DialogCallback() {
 
                 @Override
                 public void confirm() {

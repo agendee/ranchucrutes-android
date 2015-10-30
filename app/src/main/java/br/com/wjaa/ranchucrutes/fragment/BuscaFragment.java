@@ -120,12 +120,12 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
             public void onClick(View view) {
 
                 if (especSelecionada == null) {
-                    AndroidUtils.showMessageDlg(getString(R.string.msg_warning), getString(R.string.msg_informeEspeciliade), getActivity());
+                    AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeEspeciliade), getActivity());
                     return;
                 }
 
                 if (myLocation == null && (edtCep.getText() == null || edtCep.getText().toString().trim().equals(""))) {
-                    AndroidUtils.showMessageDlg(getString(R.string.msg_warning), getString(R.string.msg_informeCep), getActivity());
+                    AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeCep), getActivity());
                     return;
                 }
                 AndroidUtils.showWaitDlg(getString(R.string.msg_aguarde), getActivity());
@@ -145,7 +145,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
         this.myLocation = this.ranchucrutesMaps.getmMap().getMyLocation();
 
         if (this.myLocation == null){
-            AndroidUtils.showMessageDlg(getString(R.string.msg_warning),
+            AndroidUtils.showMessageErroDlg(
                     "Não foi possível pegar sua localização. \n Verique se o GPS está ativo.", getActivity());
         }else{
             this.edtCep.setText("");
@@ -221,7 +221,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                 b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
                 AndroidUtils.openActivityFromFragment(BuscaFragment.this, SearchingListActivity.class, b);
             }else{
-                AndroidUtils.showMessageDlg("Ops!","Problemas na comunicação com o servidor.",getActivity());
+                AndroidUtils.showMessageErroDlg("Problemas na comunicação com o servidor.",getActivity());
             }
 
 

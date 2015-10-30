@@ -6,7 +6,7 @@
     tools:context="br.com.wjaa.ranchucrutes.fragment.ProfissionalAgendaFragment"
     android:background="@android:color/white"
     android:rowCount="10"
-    android:columnCount="3"
+    android:columnCount="4"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 </GridLayout>
