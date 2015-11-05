@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.vo.AgendamentoVo;
 import br.com.wjaa.ranchucrutes.vo.ConfirmarAgendamentoVo;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
@@ -28,6 +30,9 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
 
     @InjectView(R.id.txtVwCode)
     private TextView txtVwCode;
+
+    @InjectView(R.id.edtConfirmeCode)
+    private EditText edtConfirmeCode;
 
     @InjectView(R.id.btnConfirmar)
     private Button btnConfirmar;
@@ -64,13 +69,31 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
 
         @Override
         public void onClick(View v) {
-            new ConfirmarAgendamentoClickListener().start();
+
+            if ( !confirmarAgendamento.getCodigoConfirmacao().equalsIgnoreCase(edtConfirmeCode.getText().toString()) ){
+                AndroidUtils.showMessageErroDlg("Código de confirmação inválido!", getActivity(), new DialogCallback() {
+                    @Override
+                    public void confirm() {
+                        edtConfirmeCode.requestFocus();
+                    }
+
+                    @Override
+                    public void cancel() {
+
+                    }
+                });
+
+            }else{
+                new ConfirmarAgendamentoClickListener().start();
+            }
+
         }
 
         @Override
         public void run() {
             try {
-                agendamentoService.confirmarAgendamento(confirmarAgendamento);
+
+                agendamentoService.confirmarAgendamento(confirmarAgendamento.getAgendamentoVo().getId(), edtConfirmeCode.getText().toString());
                 AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \nVeja detalhes em Minhas Consultas.", getActivity(), new DialogCallback() {
                     @Override
                     public void confirm() {

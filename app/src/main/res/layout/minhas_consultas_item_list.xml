@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    style="@style/itemListView">
+
+    <ImageView
+        android:id="@+id/icStep1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginRight="5dp"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:src="@drawable/ic_panorama_fish_eye_white_24dp" >
+    </ImageView>
+    <ImageView
+        android:id="@+id/icStep2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginRight="5dp"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:src="@drawable/ic_panorama_fish_eye_white_24dp" >
+    </ImageView>
+    <ImageView
+        android:id="@+id/icStep3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginRight="10dp"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:src="@drawable/ic_panorama_fish_eye_white_24dp" >
+    </ImageView>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/lbEspecialidadeData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="22dp"
+
+            android:text="Nutricionista em 01/01/2015"/>
+
+        <TextView
+            android:id="@+id/lbNomeMedico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+
+            android:text="Dr Ranchucrutes "/>
+
+        <TextView
+            android:id="@+id/lbEndereco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="Rua xxx"/>
+
+        <TextView
+            android:id="@+id/lbDetalhes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="Consulta cancelada"/>
+
+    </LinearLayout>
+
+</LinearLayout> 

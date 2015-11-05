@@ -9,16 +9,20 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.fragment.dummy.DummyContent;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.vo.ItemListVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import roboguice.fragment.RoboListFragment;
 
-public class FavoritoFragment extends RoboListFragment {
+public class ProfissionaisFavoritosFragment extends RoboListFragment {
 
     @Inject
     private ProfissionalService profissionalService;
@@ -27,17 +31,20 @@ public class FavoritoFragment extends RoboListFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public FavoritoFragment() {
+    public ProfissionaisFavoritosFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //TODO AQUI TRAZER OS FAVORITOS DA BASE
+        List<ItemListVo> items = new ArrayList<>();
+        items.add(new ItemListVo("18868", "Dr. Wagner Jeronimo"));
 
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                R.layout.item_list_default, R.id.textItemList, DummyContent.ITEMS));
+
+        setListAdapter(new ArrayAdapter<ItemListVo>(getActivity(),
+                R.layout.item_list_default, R.id.textItemList, items));
     }
 
 
@@ -48,16 +55,22 @@ public class FavoritoFragment extends RoboListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        AndroidUtils.showWaitDlg("Aguarde abrindo agenda",getActivity());
-        new FindProfissional().start();
+        ItemListVo vo = (ItemListVo) l.getItemAtPosition(position);
+        AndroidUtils.showWaitDlg("Aguarde abrindo agenda do profissional " + id,getActivity());
+        new FindProfissional(new Long(vo.getId())).start();
     }
 
     class FindProfissional extends Thread{
+        private Long idProfissional;
+        public FindProfissional(Long idProfissional) {
+            this.idProfissional = idProfissional;
+        }
+
         @Override
         public void run() {
             try{
                 //profissionalService.
-                final ProfissionalBasicoVo profissional = profissionalService.getProfissionalById(18868l);
+                final ProfissionalBasicoVo profissional = profissionalService.getProfissionalById(idProfissional);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

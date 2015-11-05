@@ -35,7 +35,7 @@ import br.com.wjaa.ranchucrutes.view.SearchingListModel;
  */
 public class SearchingListActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack {
 
-    SearchingListAdapter adapter;
+    private SearchingListAdapter adapter;
     private CoordinatorLayout clContainer;
     private RecyclerView mRecyclerView;
     private List<SearchingListModel> mList;

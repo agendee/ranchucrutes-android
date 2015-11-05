@@ -24,6 +24,9 @@ public class AndroidUtils {
 
 
     private static ProgressDialog dialog;
+
+
+
     public enum AlertType{
         ALERT_ERRO(R.id.titleErro, R.layout.custom_title_error),
         ALERT_SUCESSO(R.id.titleSucesso,R.layout.custom_title_success),
@@ -114,7 +117,7 @@ public class AndroidUtils {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showConfirmDlg(title,msg,context,callback);
+                showConfirmDlg(title, msg, context, callback);
             }
         });
     }
@@ -184,6 +187,11 @@ public class AndroidUtils {
     public static void showMessageErroDlg(String msg, Context context){
         showMessageDlg(context.getResources().getString(R.string.titulo_erro), msg, context, AlertType.ALERT_ERRO);
     }
+
+    public static void showMessageErroDlg(String msg, Activity context, DialogCallback dialogCallback) {
+        showMessageDlg(context.getResources().getString(R.string.titulo_erro), msg, context, AlertType.ALERT_ERRO, dialogCallback);
+    }
+
     public static void showMessageWarningDlg(String msg, Context context){
         showMessageDlg(context.getResources().getString(R.string.titulo_warning), msg, context, AlertType.ALERT_WARNING);
     }

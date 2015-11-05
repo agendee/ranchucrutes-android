@@ -19,6 +19,7 @@ public class ProfissionalBasicoVo implements Parcelable {
     private String endereco;
     private String telefone;
     private ClinicaVo[] clinicas;
+    private Boolean temAgenda;
 
     public ProfissionalBasicoVo() {
 
@@ -34,6 +35,7 @@ public class ProfissionalBasicoVo implements Parcelable {
         this.longitude = source.readDouble();
         this.endereco = source.readString();
         this.telefone = source.readString();
+        this.temAgenda = new Boolean(source.readString());
 
         Parcelable[] parcelableArray =
                 source.readParcelableArray(ClinicaVo.class.getClassLoader());
@@ -56,6 +58,7 @@ public class ProfissionalBasicoVo implements Parcelable {
         dest.writeDouble(this.longitude);
         dest.writeString(this.endereco);
         dest.writeString(this.telefone);
+        dest.writeString(this.temAgenda == null ? "false" : this.temAgenda.toString());
         dest.writeParcelableArray(clinicas, PARCELABLE_WRITE_RETURN_VALUE);
     }
 
@@ -129,6 +132,14 @@ public class ProfissionalBasicoVo implements Parcelable {
 
     public void setClinicas(ClinicaVo[] clinicas) {
         this.clinicas = clinicas;
+    }
+
+    public Boolean getTemAgenda() {
+        return temAgenda == null ? false : temAgenda;
+    }
+
+    public void setTemAgenda(Boolean temAgenda) {
+        this.temAgenda = temAgenda;
     }
 
     @Override

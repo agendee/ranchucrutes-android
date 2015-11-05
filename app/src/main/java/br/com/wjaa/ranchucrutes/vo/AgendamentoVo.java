@@ -11,6 +11,54 @@ public class AgendamentoVo {
     private ProfissionalBasicoVo profissional;
     private PacienteVo paciente;
     private Date dataAgendamento;
+    private Date dataCriacao;
+    private Date dataConfirmacao;
+    private Date dataConfirmacaoProfissional;
+    private String codigoConfirmacao;
+    private Boolean cancelado;
+    private Boolean finalizado;
+
+    public Date getDataConfirmacaoConsulta() {
+        return dataConfirmacaoConsulta;
+    }
+
+    public void setDataConfirmacaoConsulta(Date dataConfirmacaoConsulta) {
+        this.dataConfirmacaoConsulta = dataConfirmacaoConsulta;
+    }
+
+    public Boolean getCancelado() {
+        return cancelado;
+    }
+
+    public void setCancelado(Boolean cancelado) {
+        this.cancelado = cancelado;
+    }
+
+    public String getCodigoConfirmacao() {
+        return codigoConfirmacao;
+    }
+
+    public void setCodigoConfirmacao(String codigoConfirmacao) {
+        this.codigoConfirmacao = codigoConfirmacao;
+    }
+
+    public Date getDataConfirmacao() {
+        return dataConfirmacao;
+    }
+
+    public void setDataConfirmacao(Date dataConfirmacao) {
+        this.dataConfirmacao = dataConfirmacao;
+    }
+
+    public Date getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(Date dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    private Date dataConfirmacaoConsulta;
 
     public ProfissionalBasicoVo getProfissional() {
         return profissional;
@@ -43,5 +91,21 @@ public class AgendamentoVo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Date getDataConfirmacaoProfissional() {
+        return dataConfirmacaoProfissional;
+    }
+
+    public void setDataConfirmacaoProfissional(Date dataConfirmacaoProfissional) {
+        this.dataConfirmacaoProfissional = dataConfirmacaoProfissional;
+    }
+
+    public Boolean getFinalizado() {
+        return finalizado;
+    }
+
+    public void setFinalizado(Boolean finalizado) {
+        this.finalizado = finalizado;
     }
 }

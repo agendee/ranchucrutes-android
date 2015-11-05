@@ -11,14 +11,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.LayoutDirection;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -64,6 +68,10 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.vpTabs)
     private ViewPager viewPager;
+
+    @InjectView(R.id.scrollBody)
+    private NestedScrollView nestedScrollView;
+
 
     @Inject
     private AgendamentoService agendamentoService;
@@ -245,26 +253,41 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
 
                 }else{
-                    //criarMsg("Profissional não possui agenda em nosso cadastro");
-                }
-                //atualizando as tabelas
-                /*((Activity)mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AgendamentoTabsAdapter.this.notifyDataSetChanged();
+                    criarMsg("Profissional não possui agenda online.");
 
-                    }
-                });*/
+                }
 
 
             } catch (AgendamentoServiceException e) {
-                // criarMsg(e.getMessage());
-
+                criarMsg(e.getMessage());
             }
 
 
         }
 
 
+    }
+
+    private void criarMsg(String s) {
+
+      /*  final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        lp.setMargins(20, 20, 20, 20);
+        final LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final TextView tv = new TextView(this);
+        //b.setLayoutParams(lp);
+        tv.setText(s);
+        tv.setTextColor(getResources().getColor(android.R.color.white));
+        tv.setTextSize(30);
+        linearLayout.addView(tv);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                nestedScrollView.addView(linearLayout, lp);
+
+            }
+        });
+*/
     }
 }

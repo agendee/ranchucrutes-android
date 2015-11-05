@@ -35,7 +35,7 @@ import roboguice.inject.InjectView;
 /**
  *
  */
-public class DadosUsuarioFragment extends RoboFragment implements SessionChangedListener{
+public class MeusDadosFragment extends RoboFragment implements SessionChangedListener{
 
 
     @InjectView(R.id.edtDadosEmail)
@@ -185,7 +185,7 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
                 parcelables.add(c);
             }
             b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-            AndroidUtils.openActivityFromFragment(DadosUsuarioFragment.this,SearchingListActivity.class, b);
+            AndroidUtils.openActivityFromFragment(MeusDadosFragment.this,SearchingListActivity.class, b);
 
 
         }
@@ -205,7 +205,7 @@ public class DadosUsuarioFragment extends RoboFragment implements SessionChanged
                     parcelables.add(c);
                 }
                 b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-                AndroidUtils.openActivityFromFragment(DadosUsuarioFragment.this,SearchingListActivity.class, b);
+                AndroidUtils.openActivityFromFragment(MeusDadosFragment.this,SearchingListActivity.class, b);
             }
         }
     }

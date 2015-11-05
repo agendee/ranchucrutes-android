@@ -27,10 +27,10 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
-import br.com.wjaa.ranchucrutes.fragment.BuscaFragment;
-import br.com.wjaa.ranchucrutes.fragment.ConsultasFragment;
-import br.com.wjaa.ranchucrutes.fragment.DadosUsuarioFragment;
-import br.com.wjaa.ranchucrutes.fragment.FavoritoFragment;
+import br.com.wjaa.ranchucrutes.fragment.PesquisaProfissionalFragment;
+import br.com.wjaa.ranchucrutes.fragment.MinhasConsultasFragment;
+import br.com.wjaa.ranchucrutes.fragment.MeusDadosFragment;
+import br.com.wjaa.ranchucrutes.fragment.ProfissionaisFavoritosFragment;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
@@ -56,16 +56,16 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     private ArrayAdapter<String> navigationDrawerAdapter;
 
     @Inject
-    private BuscaFragment buscaFragment;
+    private PesquisaProfissionalFragment pesquisaProfissionalFragment;
 
     @Inject
-    private FavoritoFragment favoritoFragment;
+    private ProfissionaisFavoritosFragment profissionaisFavoritosFragment;
 
     @Inject
-    private DadosUsuarioFragment dadosUsuarioFragment;
+    private MeusDadosFragment meusDadosFragment;
 
     @Inject
-    private ConsultasFragment consultasFragment;
+    private MinhasConsultasFragment minhasConsultasFragment;
 
     @InjectView(R.id.headerView)
     private TextView headerView;
@@ -82,7 +82,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         RanchucrutesSession.addSessionChangedListener(this);
-        RanchucrutesSession.addSessionChangedListener(dadosUsuarioFragment);
+        RanchucrutesSession.addSessionChangedListener(meusDadosFragment);
         initView();
         if (toolbar != null) {
             toolbar.setTitle("Agendee");
@@ -140,18 +140,18 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         switch (position){
             case 0:
                 toolbar.setTitle("Procurar Profissional");
-                openFragment(this.buscaFragment);
+                openFragment(this.pesquisaProfissionalFragment);
                 break;
             case 1:
                 toolbar.setTitle("Meus Dados");
-                openFragment(this.dadosUsuarioFragment);
+                openFragment(this.meusDadosFragment);
                 break;
             case 2:
-                openFragment(this.consultasFragment);
+                openFragment(this.minhasConsultasFragment);
                 toolbar.setTitle("Minhas Consultas");
                 break;
             case 3:
-                openFragment(this.favoritoFragment);
+                openFragment(this.profissionaisFavoritosFragment);
                 toolbar.setTitle("Profissionais Favoritos");
                 break;
             case 4:

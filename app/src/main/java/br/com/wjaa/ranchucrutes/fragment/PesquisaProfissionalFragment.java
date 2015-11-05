@@ -39,9 +39,9 @@ import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 
-public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
+public class PesquisaProfissionalFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
 
-    private static final String TAG = BuscaFragment.class.getSimpleName();
+    private static final String TAG = PesquisaProfissionalFragment.class.getSimpleName();
     private EspecialidadeVo especSelecionada;
     @Inject
     private ProfissionalService profissionalService;
@@ -219,7 +219,7 @@ public class BuscaFragment extends RoboFragment implements GoogleMap.OnMyLocatio
                     parcelables.add(e);
                 }
                 b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-                AndroidUtils.openActivityFromFragment(BuscaFragment.this, SearchingListActivity.class, b);
+                AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchingListActivity.class, b);
             }else{
                 AndroidUtils.showMessageErroDlg("Problemas na comunicação com o servidor.",getActivity());
             }

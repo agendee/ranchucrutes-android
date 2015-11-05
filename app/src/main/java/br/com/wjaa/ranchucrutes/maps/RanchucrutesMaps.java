@@ -370,17 +370,23 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
             try {
                 mMap.clear();
                 profissionais.clear();
+
                 Marker you = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(resultado.getLatitude(), resultado.getLongitude()))
                         .title(context.getString(R.string.msg_voceAqui))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_black_36dp)));//defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
                 try{
 
                     for (ProfissionalBasicoVo profissional : resultado.getProfissionais()) {
+
                         Marker m = mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(profissional.getLatitude(), profissional.getLongitude()))
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                .icon(BitmapDescriptorFactory.defaultMarker(
+                                        profissional.getTemAgenda() ?
+                                                BitmapDescriptorFactory.HUE_BLUE
+                                            : BitmapDescriptorFactory.HUE_RED)));
+
                         profissionais.put(m.getId(), profissional);
 
                     }

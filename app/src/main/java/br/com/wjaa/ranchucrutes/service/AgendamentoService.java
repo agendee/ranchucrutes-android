@@ -4,6 +4,7 @@ import java.util.Date;
 
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.vo.AgendaVo;
+import br.com.wjaa.ranchucrutes.vo.AgendamentoVo;
 import br.com.wjaa.ranchucrutes.vo.ConfirmarAgendamentoVo;
 
 /**
@@ -15,5 +16,7 @@ public interface AgendamentoService {
 
     ConfirmarAgendamentoVo criarAgendamento(Long idProfissional,Long idClinica, Long idPaciente, Date date, boolean particular) throws AgendamentoServiceException;
 
-    void confirmarAgendamento(ConfirmarAgendamentoVo confirmarAgendamento) throws AgendamentoServiceException;
+    AgendamentoVo confirmarAgendamento(Long idAgendamento, String codigo) throws AgendamentoServiceException;
+
+    AgendamentoVo[] getAgendamentos(Long idPaciente) throws AgendamentoServiceException;
 }
