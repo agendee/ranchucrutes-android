@@ -92,8 +92,9 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
         @Override
         public void run() {
             try {
-
+                AndroidUtils.showWaitDlgOnUiThread("Aguarde, enviando confirmação...", getActivity());
                 agendamentoService.confirmarAgendamento(confirmarAgendamento.getAgendamentoVo().getId(), edtConfirmeCode.getText().toString());
+                AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \nVeja detalhes em Minhas Consultas.", getActivity(), new DialogCallback() {
                     @Override
                     public void confirm() {
@@ -106,6 +107,7 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
                     }
                 });
             } catch (AgendamentoServiceException e) {
+                AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), getActivity());
             }
         }
