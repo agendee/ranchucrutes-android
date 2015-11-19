@@ -2,11 +2,9 @@ package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,24 +12,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.ConfirmeAgendamentoActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.DateUtils;
 import br.com.wjaa.ranchucrutes.vo.ConfirmarAgendamentoVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import roboguice.RoboGuice;
 import roboguice.fragment.RoboFragment;
-import roboguice.inject.InjectView;
 
 /**
  *
@@ -75,14 +74,23 @@ public class ProfissionalAgendaFragment extends RoboFragment {
     private void initButtons(GridLayout gridLayout) {
         for (Date date : horarios){
             Button b = new Button(gridLayout.getContext());
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT);
+
+           GridLayout.MarginLayoutParams lp = new GridLayout.MarginLayoutParams(GridLayout.MarginLayoutParams.WRAP_CONTENT,
+                   GridLayout.MarginLayoutParams.WRAP_CONTENT);
             lp.setMargins(20, 20, 20, 20);
-            //b.setLayoutParams(lp);
+            /*LinearLayout l = new LinearLayout(gridLayout.getContext());
+            LinearLayout.LayoutParams linearParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+            linearParam.setMargins(30,30,30,20);
+            l.setLayoutParams(linearParam);*/
+            b.setLayoutParams(lp);
             b.setText(DateUtils.formatHHmm(date));
-            b.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+            //b.setBackgroundColor(android.R.color.holo_green_dark);
             b.setOnClickListener(new BtnAgendarClickListener(date));
-            gridLayout.addView(b,lp);
+            b.requestLayout();
+            b.setTextColor(getResources().getColor(android.R.color.background_dark));
+            //l.addView(b);
+            //l.requestLayout();
+            gridLayout.addView(b);
         }
         gridLayout.requestLayout();
 
@@ -147,31 +155,14 @@ public class ProfissionalAgendaFragment extends RoboFragment {
 
 
     private void openConfirmeAgendamentoFragment(ConfirmarAgendamentoVo confirmarAgendamentoVo) {
-        ConfirmeAgendamentoFragment fragment = new ConfirmeAgendamentoFragment(confirmarAgendamentoVo);
-        if (fragment != null){
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            FrameLayout frame = (FrameLayout) getActivity().findViewById(R.id.frameConfirmeAgendamento);
-            frame.setVisibility(View.VISIBLE);
-            //removendo o fragmento atual do gerenciador.
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
-
-                fragmentManager.beginTransaction()
-                        //.setCustomAnimations(R.anim.fadein, R.anim.fadeout, R.anim.fadein, R.anim.fadeout)
-                        .replace(R.id.frameConfirmeAgendamento, fragment)
-                        .commit();
-
-            }
-            else{
-
-                fragmentManager.beginTransaction()
-                        .replace(R.id.frameConfirmeAgendamento, fragment)
-                        .commit();
-            }
-
-
-
-        }
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(RanchucrutesConstants.PARAM_CONFIMAR_AGENDAMENTO, confirmarAgendamentoVo);
+        AndroidUtils.openActivity(getActivity(),ConfirmeAgendamentoActivity.class, bundle);
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getActivity().finish();
+    }
 }

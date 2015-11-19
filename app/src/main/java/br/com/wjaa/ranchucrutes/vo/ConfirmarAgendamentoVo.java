@@ -1,9 +1,11 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import java.io.Serializable;
+
 /**
  * Created by wagner on 20/10/15.
  */
-public class ConfirmarAgendamentoVo {
+public class ConfirmarAgendamentoVo implements Serializable {
 
     private String codigoConfirmacao;
     private AgendamentoVo agendamentoVo;

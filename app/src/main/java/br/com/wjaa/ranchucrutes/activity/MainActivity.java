@@ -288,7 +288,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
                 displayView(position);
             }else{
 
-                AndroidUtils.showConfirmDlg("Sair", "Deseja realmente deslogar do aplicativo?",
+                AndroidUtils.showConfirmDlg("Sair", "Deseja realmente sair do aplicativo?",
                         MainActivity.this, new DialogCallback() {
 
                     @Override

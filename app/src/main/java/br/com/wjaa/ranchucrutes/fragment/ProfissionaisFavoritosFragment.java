@@ -56,7 +56,7 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         ItemListVo vo = (ItemListVo) l.getItemAtPosition(position);
-        AndroidUtils.showWaitDlg("Aguarde abrindo agenda do profissional " + id,getActivity());
+        AndroidUtils.showWaitDlg("Aguarde abrindo agenda do profissional...",getActivity());
         new FindProfissional(new Long(vo.getId())).start();
     }
 

@@ -1,8 +1,10 @@
-package br.com.wjaa.ranchucrutes.fragment;
+package br.com.wjaa.ranchucrutes.activity;
 
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,22 +12,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.zip.Inflater;
+
 import javax.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.vo.AgendamentoVo;
 import br.com.wjaa.ranchucrutes.vo.ConfirmarAgendamentoVo;
+import roboguice.activity.RoboActionBarActivity;
+import roboguice.activity.RoboActivity;
 import roboguice.fragment.RoboFragment;
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ConfirmeAgendamentoFragment extends RoboFragment {
+@ContentView(R.layout.fragment_confirme_agendamento)
+public class ConfirmeAgendamentoActivity extends RoboActionBarActivity {
 
 
     @InjectView(R.id.txtVwCode)
@@ -42,27 +51,23 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
 
     private ConfirmarAgendamentoVo confirmarAgendamento;
 
-    public ConfirmeAgendamentoFragment() {
-
-    }
-
-    public ConfirmeAgendamentoFragment(ConfirmarAgendamentoVo confirmarAgendamentoVo) {
-        this.confirmarAgendamento = confirmarAgendamentoVo;
-    }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_confirme_agendamento, container, false);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        confirmarAgendamento = (ConfirmarAgendamentoVo) getIntent().getExtras()
+                .get(RanchucrutesConstants.PARAM_CONFIMAR_AGENDAMENTO);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         txtVwCode.setText(confirmarAgendamento.getCodigoConfirmacao());
         btnConfirmar.setOnClickListener(new ConfirmarAgendamentoClickListener());
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_activity_confirme_agendamento);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(false);
+
     }
 
     class ConfirmarAgendamentoClickListener extends Thread implements View.OnClickListener{
@@ -71,7 +76,7 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
         public void onClick(View v) {
 
             if ( !confirmarAgendamento.getCodigoConfirmacao().equalsIgnoreCase(edtConfirmeCode.getText().toString()) ){
-                AndroidUtils.showMessageErroDlg("Código de confirmação inválido!", getActivity(), new DialogCallback() {
+                AndroidUtils.showMessageErroDlg("Código de confirmação inválido!", ConfirmeAgendamentoActivity.this, new DialogCallback() {
                     @Override
                     public void confirm() {
                         edtConfirmeCode.requestFocus();
@@ -92,13 +97,14 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
         @Override
         public void run() {
             try {
-                AndroidUtils.showWaitDlgOnUiThread("Aguarde, enviando confirmação...", getActivity());
+                AndroidUtils.showWaitDlgOnUiThread("Aguarde, enviando confirmação...", ConfirmeAgendamentoActivity.this);
                 agendamentoService.confirmarAgendamento(confirmarAgendamento.getAgendamentoVo().getId(), edtConfirmeCode.getText().toString());
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \nVeja detalhes em Minhas Consultas.", getActivity(), new DialogCallback() {
+                AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \nVeja detalhes em Minhas Consultas.",
+                        ConfirmeAgendamentoActivity.this, new DialogCallback() {
                     @Override
                     public void confirm() {
-                        getActivity().finish();
+                        finish();
                     }
 
                     @Override
@@ -108,7 +114,7 @@ public class ConfirmeAgendamentoFragment extends RoboFragment {
                 });
             } catch (AgendamentoServiceException e) {
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), getActivity());
+                AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), ConfirmeAgendamentoActivity.this);
             }
         }
     }

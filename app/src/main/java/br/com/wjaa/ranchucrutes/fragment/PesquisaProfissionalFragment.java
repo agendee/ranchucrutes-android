@@ -25,12 +25,14 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.activity.SearchingListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;

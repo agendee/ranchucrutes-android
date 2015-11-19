@@ -22,4 +22,5 @@ public class RanchucrutesConstants {
     public static final String PARAM_LIST_SEARCH = "listSearch";
     public static final String PARAM_RESULT_SEARCH = "resultSearch";
     public static final String PARAM_PROFISSIONAL = "profissionalParam";
+    public static final String PARAM_CONFIMAR_AGENDAMENTO = "confirmarAgendamentoParam";
 }

@@ -1,6 +1,7 @@
 package br.com.wjaa.ranchucrutes.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,33 +35,31 @@ public class MinhasConsultasListAdapter extends ArrayAdapter<AgendamentoVo> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.minhas_consultas_item_list, parent, false);
 
-        ImageView icStep1 = (ImageView) rowView.findViewById(R.id.icStep1);
-        ImageView icStep2 = (ImageView) rowView.findViewById(R.id.icStep2);
-        ImageView icStep3 = (ImageView) rowView.findViewById(R.id.icStep3);
-        String statusConsulta = "Essa consulta está aguardando sua confirmação.";
+        ImageView icStatus = (ImageView) rowView.findViewById(R.id.icStatus);
+        String statusConsulta = "Você não confirmou essa solicitação.";
+        int colorStatus = R.color.warningTextColor;
         if (agendamentoVo.getCancelado()){
-            icStep1.setImageResource(R.drawable.ic_cancel_red_36dp);
-            icStep2.setVisibility(View.INVISIBLE);
-            icStep3.setVisibility(View.INVISIBLE);
+            icStatus.setImageResource(R.drawable.ic_cancel);
             statusConsulta = "Essa consulta foi cancelada!";
+            colorStatus = R.color.errorTextColor;
         }else{
             if (agendamentoVo.getDataConfirmacao() != null){
-                icStep1.setImageResource(R.drawable.ic_panorama_fish_eye_green_24dp);
+                icStatus.setImageResource(R.drawable.ic_warning);
                 statusConsulta = "Essa consulta está aguardando a confirmação do profissional.";
-            }
-            if (agendamentoVo.getDataConfirmacaoProfissional() != null){
-                icStep2.setImageResource(R.drawable.ic_panorama_fish_eye_green_24dp);
-                statusConsulta = "Consulta agendada.";
-            }
-            if (agendamentoVo.getDataConfirmacaoConsulta() != null){
-                icStep3.setImageResource(R.drawable.ic_panorama_fish_eye_green_24dp);
-                statusConsulta = "Consulta agendada e confirmada.";
+                colorStatus = R.color.warningTextColor;
             }
             if (agendamentoVo.getFinalizado()){
-                icStep1.setImageResource(R.drawable.ic_check_circle_green_24dp);
-                icStep2.setVisibility(View.INVISIBLE);
-                icStep3.setVisibility(View.INVISIBLE);
-                statusConsulta = "Consulta agendada e confirmada.";
+                icStatus.setImageResource(R.drawable.ic_success);
+                statusConsulta = "Consulta realizada!";
+                colorStatus = R.color.successTextColor;
+            }else if (agendamentoVo.getDataConfirmacaoConsulta() != null){
+                icStatus.setImageResource(R.drawable.ic_success);
+                statusConsulta = "Consulta confirmada!";
+                colorStatus = R.color.successTextColor;
+            }else if (agendamentoVo.getDataConfirmacaoProfissional() != null){
+                icStatus.setImageResource(R.drawable.ic_success);
+                statusConsulta = "Solicitação confirmada pelo profissional.";
+                colorStatus = R.color.successTextColor;
             }
         }
 
@@ -76,6 +75,7 @@ public class MinhasConsultasListAdapter extends ArrayAdapter<AgendamentoVo> {
 
         TextView lbStatus = (TextView) rowView.findViewById(R.id.lbDetalhes);
         lbStatus.setText(statusConsulta);
+        lbStatus.setTextColor(context.getResources().getColor(colorStatus));
 
         return rowView;
     }

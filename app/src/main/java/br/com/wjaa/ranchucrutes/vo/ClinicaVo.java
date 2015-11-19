@@ -3,10 +3,12 @@ package br.com.wjaa.ranchucrutes.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by wagner on 18/10/15.
  */
-public class ClinicaVo implements Parcelable{
+public class ClinicaVo implements Parcelable, Serializable{
     private Long id;
     private String nome;
     private String endereco;

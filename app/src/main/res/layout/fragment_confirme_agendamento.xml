@@ -2,8 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="br.com.wjaa.ranchucrutes.fragment.ConfirmeAgendamentoFragment">
+    tools:context="br.com.wjaa.ranchucrutes.activity.ConfirmeAgendamentoActivity">
 
+    <include layout="@layout/toolbar"/>
 
     <TextView
         android:layout_width="wrap_content"

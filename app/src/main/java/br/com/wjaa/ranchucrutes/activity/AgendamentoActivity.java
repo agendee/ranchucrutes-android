@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -224,7 +225,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            viewPager.setAdapter(new AgendamentoTabsAdapter(getSupportFragmentManager(), profissionalAgendaFragments));
+                            viewPager.setAdapter(new AgendamentoTabsAdapter(getSupportFragmentManager(), profissionalAgendaFragments, AgendamentoActivity.this));
                             tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
                             tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primaryColorDark));
                             tabLayout.setCustomTabView(R.layout.tab_view, R.id.tv_tab);
@@ -233,6 +234,20 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                             tabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                                 @Override
                                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                    ImageView iant = (ImageView) tabLayout.getRootView().findViewById(R.id.icAgendaAnterior);
+                                    ImageView ipr = (ImageView) tabLayout.getRootView().findViewById(R.id.icAgendaProximo);
+                                    if (position == 0){
+                                       ipr.setVisibility(View.VISIBLE);
+                                       iant.setVisibility(View.INVISIBLE);
+
+                                    }else if (position == profissionalAgendaFragments.size() -1){
+                                        iant.setVisibility(View.VISIBLE);
+                                        ipr.setVisibility(View.INVISIBLE);
+                                    }else{
+                                        iant.setVisibility(View.VISIBLE);
+                                        ipr.setVisibility(View.VISIBLE);
+                                    }
+
                                 }
 
                                 @Override
@@ -266,6 +281,12 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         }
 
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        finish();
     }
 
     private void criarMsg(String s) {

@@ -1,11 +1,12 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by wagner on 20/10/15.
  */
-public class AgendamentoVo {
+public class AgendamentoVo implements Serializable {
 
     private Long id;
     private ProfissionalBasicoVo profissional;

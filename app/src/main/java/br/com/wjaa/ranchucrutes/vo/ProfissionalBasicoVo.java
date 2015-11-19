@@ -3,13 +3,14 @@ package br.com.wjaa.ranchucrutes.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by wagner on 25/07/15.
  */
-public class ProfissionalBasicoVo implements Parcelable {
+public class ProfissionalBasicoVo implements Parcelable, Serializable {
     private Long id;
     private String nome;
     private Integer crm;

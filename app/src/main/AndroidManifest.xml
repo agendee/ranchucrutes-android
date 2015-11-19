@@ -95,6 +95,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/myAppTheme" >
         </activity>
+
+        <activity
+            android:name=".activity.ConfirmeAgendamentoActivity"
+            android:label="@string/title_activity_confirme_agendamento"
+            android:screenOrientation="portrait"
+            android:theme="@style/myAppTheme" >
+        </activity>
     </application>
 
 </manifest>

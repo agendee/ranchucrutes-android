@@ -6,15 +6,20 @@
     <color name="primaryColor">#0079bf</color>
     <color name="primaryColorDark">#ec01507e</color>
     <color name="errorColor">#a33433</color>
-    <color name="warningColor">#cab308</color>
+    <color name="warningColor">#978711</color>
+    <color name="successColor">#237c18</color>
+
+
+    <color name="errorTextColor">#f25655</color>
+    <color name="warningTextColor">#e6cf2c</color>
+    <color name="successTextColor">#43df30</color>
 
 
     <color name="pressed_color">#4d90fe</color>
     <color name="focused_color">#4d90fe</color>
     <color name="default_color">#000000</color>
-    <color name="item_list_color">#bf000000</color>
+    <color name="item_list_color">#b319191b</color>
     <color name="vidro_black">#8f000000</color>
 
-
-
 </resources>
+

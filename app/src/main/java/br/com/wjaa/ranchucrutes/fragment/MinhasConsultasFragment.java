@@ -43,7 +43,7 @@ public class MinhasConsultasFragment extends RoboListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         AgendamentoVo vo = (AgendamentoVo) l.getItemAtPosition(position);
-        AndroidUtils.showWaitDlg("Detalhes do profissional " + vo.getProfissional().getNome(), getActivity());
+        //AndroidUtils.showWaitDlg("Detalhes do profissional " + vo.getProfissional().getNome(), getActivity());
 
     }
 

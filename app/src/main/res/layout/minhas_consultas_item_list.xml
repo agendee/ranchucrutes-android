@@ -6,33 +6,15 @@
     style="@style/itemListView">
 
     <ImageView
-        android:id="@+id/icStep1"
+        android:id="@+id/icStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="15dp"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:src="@drawable/ic_panorama_fish_eye_white_24dp" >
-    </ImageView>
-    <ImageView
-        android:id="@+id/icStep2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginRight="5dp"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:src="@drawable/ic_panorama_fish_eye_white_24dp" >
-    </ImageView>
-    <ImageView
-        android:id="@+id/icStep3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginRight="10dp"
-        android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:src="@drawable/ic_panorama_fish_eye_white_24dp" >
-    </ImageView>
 
+        android:src="@drawable/ic_warning" >
+    </ImageView>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -72,7 +54,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="Consulta cancelada"/>
+            android:text="Consulta cancelada"
+            android:textStyle="bold"
+            android:textColor="@color/successColor"/>
 
     </LinearLayout>
 
