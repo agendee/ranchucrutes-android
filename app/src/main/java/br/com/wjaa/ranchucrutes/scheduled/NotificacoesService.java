@@ -10,8 +10,12 @@ import roboguice.service.RoboIntentService;
 public class NotificacoesService extends RoboIntentService{
 
 
+    public NotificacoesService(String name) {
+        super(name);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
-        
+
     }
 }

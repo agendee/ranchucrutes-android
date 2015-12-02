@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.vo.AgendamentoVo;
 
 /**
  * Created by wagner on 19/11/15.
@@ -26,7 +25,7 @@ public class NotificationUtils {
         PendingIntent p = PendingIntent.getActivity(context, 0, new Intent(context, activity), 0);
 
         Notification notification = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.icone)
                 .setTicker(mensagemBarraStatus)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(p)

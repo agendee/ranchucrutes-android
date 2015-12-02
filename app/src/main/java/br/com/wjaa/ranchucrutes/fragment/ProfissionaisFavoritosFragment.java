@@ -41,6 +41,7 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
         //TODO AQUI TRAZER OS FAVORITOS DA BASE
         List<ItemListVo> items = new ArrayList<>();
         items.add(new ItemListVo("18868", "Dr. Wagner Jeronimo"));
+        items.add(new ItemListVo("18878", "Dra. Luiza Donizetti"));
 
 
         setListAdapter(new ArrayAdapter<ItemListVo>(getActivity(),
@@ -89,7 +90,5 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
             }
         }
     }
-
-
 
 }
