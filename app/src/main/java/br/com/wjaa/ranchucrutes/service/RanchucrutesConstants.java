@@ -16,11 +16,12 @@ public class RanchucrutesConstants {
     public static final String END_POINT_CONFIRMAR_SOLICITACAO = "agendamento/confirmarSolicitacao";
     public static final String END_POINT_GET_PROFISSIONAL = "profissional/basico";
     public static final String END_POINT_GET_AGENDAMENTOS = "agendamento/list";
-
+    public static final String END_POINT_REGISTRO_GCM = "gcm/registro";
 
 
     public static final String PARAM_LIST_SEARCH = "listSearch";
     public static final String PARAM_RESULT_SEARCH = "resultSearch";
     public static final String PARAM_PROFISSIONAL = "profissionalParam";
     public static final String PARAM_CONFIMAR_AGENDAMENTO = "confirmarAgendamentoParam";
+
 }

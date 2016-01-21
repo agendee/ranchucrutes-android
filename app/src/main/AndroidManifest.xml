@@ -9,12 +9,21 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    
+    <!-- PERMISSAO PARA APENAS ESSA APLICACAO RECEBER AS MENSAGENS -->
+    <permission android:name="br.com.wjaa.ranchucrutes.permission.C2D_MESSAGE"
+                android:protectionLevel="signature" />
+
+
     <!--
  The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but are recommended.
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="br.com.wjaa.ranchucrutes.permission.C2D_MESSAGE" />
 
     <application
         android:name=".AppConfig"
@@ -102,6 +111,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/myAppTheme" >
         </activity>
+        
+        <receiver android:name=".gcm.GcmBroadcastReceiver"
+                  android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="br.com.wjaa.ranchucrutes" />
+            </intent-filter>
+        </receiver>
+        
+        <service android:name=".gcm.GcmIntentService"/>
     </application>
 
 </manifest>

@@ -21,6 +21,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
+import br.com.wjaa.ranchucrutes.utils.GcmUtils;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
@@ -84,6 +87,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         RanchucrutesSession.addSessionChangedListener(this);
         RanchucrutesSession.addSessionChangedListener(meusDadosFragment);
         initView();
+        initGcm();
         if (toolbar != null) {
             toolbar.setTitle("Agendee");
             setSupportActionBar(toolbar);
@@ -91,6 +95,16 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         initDrawer();
         displayView(0);
 
+    }
+
+    private void initGcm() {
+        if(GcmUtils.checkPlayServices(this)){
+            String regId = AndroidSystemUtil.getRegistrationId(MainActivity.this);
+            //TODO SE JÁ ESTIVER REGISTRO...PRECISA VER SE O USUARIO LOGADO JÁ ESTÁ COM O REGISTRO NO SERVIDOR.
+            if(regId.trim().length() == 0){
+                GcmUtils.registerIdInBackground(this);
+            }
+        }
     }
 
     private void initView() {
@@ -233,6 +247,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     @Override
     protected void onResume() {
         super.onResume();
+        GcmUtils.checkPlayServices(this);
     }
 
     @Override
