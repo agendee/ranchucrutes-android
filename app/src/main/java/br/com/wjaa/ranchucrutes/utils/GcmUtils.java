@@ -1,6 +1,7 @@
 package br.com.wjaa.ranchucrutes.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -9,6 +10,17 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.exception.RestException;
+import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
+import br.com.wjaa.ranchucrutes.exception.RestResponseUnsatisfiedException;
+import br.com.wjaa.ranchucrutes.rest.RestUtils;
+import br.com.wjaa.ranchucrutes.service.LoginService;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
+import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 
 /**
  * Created by wagner on 21/01/16.
@@ -36,41 +48,23 @@ public class GcmUtils {
     }
 
 
-    public static void registerIdInBackground(final Activity context){
-        new AsyncTask(){
-            @Override
-            protected Object doInBackground(Object... params) {
-                String msg = "";
-                GoogleCloudMessaging gcm;
-                String regId;
-                try{
+    public static String registerIdDevice(final Context context){
+        String msg = "";
+        GoogleCloudMessaging gcm;
+        String regId = "";
+        try{
 
-                    gcm = GoogleCloudMessaging.getInstance(context);
+            gcm = GoogleCloudMessaging.getInstance(context);
+            regId = gcm.register(SENDER_ID);
+            msg = "Register Id: "+regId;
+            Log.i("GcmUtils", regId);
+            AndroidSystemUtil.storeRegistrationId(context, regId);
+        }
+        catch(IOException e){
+            Log.i("GcmUtils", e.getMessage());
+        }
 
-
-                    regId = gcm.register(SENDER_ID);
-
-                    msg = "Register Id: "+regId;
-                    Log.i("GcmUtils", regId);
-                    //String feedback = RestUtils.postJson(RegistroGcmVo.class, RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_REGISTRO_GCM, )//HttpConnectionUtil.sendRegistrationIdToBackend(regId);
-                    //Log.i("GcmUtils", feedback);
-
-                    AndroidSystemUtil.storeRegistrationId(context, regId);
-                }
-                catch(IOException e){
-                    Log.i("GcmUtils", e.getMessage());
-                }
-
-                return msg;
-            }
-
-            @Override
-            public void onPostExecute(Object msg){
-                Log.i("GcmUtils", (String)msg);
-                //tvRegistrationId.setText((String)msg);
-            }
-
-        }.execute(null, null, null);
+        return regId;
     }
 
 }

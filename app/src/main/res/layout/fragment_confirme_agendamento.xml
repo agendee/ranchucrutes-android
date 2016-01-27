@@ -35,6 +35,7 @@
         android:id="@+id/edtConfirmeCode"
         android:hint="Confirme aqui o código"
         android:layout_gravity="center"
+        android:singleLine="true"
         style="@style/edt"/>
 
     <Button

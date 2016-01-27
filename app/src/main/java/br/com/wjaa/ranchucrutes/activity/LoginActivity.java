@@ -178,6 +178,9 @@ public class LoginActivity extends RoboActionBarActivity {
             try {
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, autenticando usuário", LoginActivity.this);
                 PacienteVo pacienteVo = loginService.auth(email, senha);
+                if ( StringUtils.isBlank(pacienteVo.getKeyDeviceGcm()) ){
+                    loginService.registerKeyDevice(LoginActivity.this);
+                }
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 

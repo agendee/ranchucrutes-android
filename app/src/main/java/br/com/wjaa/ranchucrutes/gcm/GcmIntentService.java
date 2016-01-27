@@ -1,6 +1,10 @@
 package br.com.wjaa.ranchucrutes.gcm;
 
+import br.com.wjaa.ranchucrutes.activity.FacadeActivity;
+import br.com.wjaa.ranchucrutes.activity.MainActivity;
 import br.com.wjaa.ranchucrutes.utils.NotificationCustomUtil;
+import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import android.app.IntentService;
 import android.content.Intent;
@@ -19,7 +23,7 @@ public class GcmIntentService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(GcmIntentService.this);
-		String title, author, message, messageType = gcm.getMessageType(intent);
+		String messageType = gcm.getMessageType(intent);
 		
 		
 		if(extras != null){
@@ -30,12 +34,21 @@ public class GcmIntentService extends IntentService {
 				Log.i(TAG, "Deleted: "+extras.toString());
 			}
 			else if(GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)){
-				title = extras.getString("title");
-				author = extras.getString("author");
-				message = extras.getString("message");
-				
-				NotificationCustomUtil.sendNotification(GcmIntentService.this,GcmIntentService.class,
-						title, author, message);
+				String status = extras.getString("status");
+				String msg = extras.getString("msg");
+
+				String titulo = "";
+				if ("CANCELLATION".equalsIgnoreCase(status)){
+					titulo = "Consulta Cancelada!";
+				}else if ("CONFIRMATION".equalsIgnoreCase(status)){
+					titulo = "Consulta Confirmada!";
+				}
+
+
+				NotificationUtils.criarNotificacao(GcmIntentService.this,"Notificação Agendee",titulo,msg, FacadeActivity.class);
+
+				//NotificationCustomUtil.sendNotification(GcmIntentService.this,GcmIntentService.class,
+						//title, author, message);
 			}
 		}
 		

@@ -1,8 +1,11 @@
 package br.com.wjaa.ranchucrutes.service;
 
+import android.content.Context;
+
 import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.commons.AuthType;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
@@ -27,9 +30,13 @@ public interface LoginService {
 
     PacienteVo auth(String key, AuthType type) throws LoginException, RanchucrutesWSException;
 
-    void authLocal();
+    void authLocal(Context context);
 
     void logoff();
 
     void atualizarPaciente(PacienteVo pacienteVo) throws NovoPacienteException;
+
+    UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente);
+
+    void registerKeyDevice(Context context);
 }

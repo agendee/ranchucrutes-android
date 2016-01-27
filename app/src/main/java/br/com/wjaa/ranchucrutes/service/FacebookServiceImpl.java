@@ -33,6 +33,7 @@ import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
+import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
@@ -235,6 +236,9 @@ public class FacebookServiceImpl implements FacebookService {
             try {
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_FACEBOOK);
+                if ( StringUtils.isBlank(pacienteVo.getKeyDeviceGcm()) ){
+                    loginService.registerKeyDevice(context);
+                }
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 
@@ -277,6 +281,8 @@ public class FacebookServiceImpl implements FacebookService {
                 paciente.setKeySocial(id);
 
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando paciente...", context);
+                String regId = AndroidSystemUtil.getRegistrationId(context);
+                paciente.setKeyDeviceGcm(regId);
                 PacienteVo pacienteVo = loginService.criarPaciente(paciente);
                 AndroidUtils.closeWaitDlg();
                 Toast.makeText(context, "Paciente conectado!", Toast.LENGTH_LONG).show();

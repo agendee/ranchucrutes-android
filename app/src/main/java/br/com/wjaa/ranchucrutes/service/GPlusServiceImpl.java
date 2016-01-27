@@ -22,6 +22,7 @@ import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
+import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.PacienteVo;
@@ -176,6 +177,10 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde autenticando paciente.", context);
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_GPLUS);
+                if ( StringUtils.isBlank(pacienteVo.getKeyDeviceGcm()) ){
+                    loginService.registerKeyDevice(context);
+                }
+
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 
@@ -249,6 +254,8 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 paciente.setKeySocial(id);
 
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando paciente...", context);
+                String regId = AndroidSystemUtil.getRegistrationId(context);
+                paciente.setKeyDeviceGcm(regId);
                 PacienteVo pacienteVo = loginService.criarPaciente(paciente);
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);

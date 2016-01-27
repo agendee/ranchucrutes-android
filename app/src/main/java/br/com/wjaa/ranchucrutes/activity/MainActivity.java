@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.GcmUtils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -37,6 +38,7 @@ import br.com.wjaa.ranchucrutes.fragment.ProfissionaisFavoritosFragment;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -84,26 +86,26 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+
         RanchucrutesSession.addSessionChangedListener(this);
         RanchucrutesSession.addSessionChangedListener(meusDadosFragment);
         initView();
-        initGcm();
+
+        //verificando se o play service está ativado.
+        GcmUtils.checkPlayServices(this);
+
         if (toolbar != null) {
             toolbar.setTitle("Agendee");
             setSupportActionBar(toolbar);
         }
         initDrawer();
-        displayView(0);
 
-    }
-
-    private void initGcm() {
-        if(GcmUtils.checkPlayServices(this)){
-            String regId = AndroidSystemUtil.getRegistrationId(MainActivity.this);
-            //TODO SE JÁ ESTIVER REGISTRO...PRECISA VER SE O USUARIO LOGADO JÁ ESTÁ COM O REGISTRO NO SERVIDOR.
-            if(regId.trim().length() == 0){
-                GcmUtils.registerIdInBackground(this);
-            }
+        if (getIntent() != null && getIntent().getExtras() !=null){
+            Integer openFragment = getIntent().getExtras().getInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY,0);
+            displayView(openFragment);
+        }else{
+            displayView(0);
         }
     }
 

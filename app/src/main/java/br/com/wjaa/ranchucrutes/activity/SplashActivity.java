@@ -38,7 +38,7 @@ public class SplashActivity extends RoboActivity implements Runnable {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-               buffer.posInitializer();
+               buffer.posInitializer(SplashActivity.this);
             }
         }, 2000);
 

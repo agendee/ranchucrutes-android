@@ -1,11 +1,15 @@
 package br.com.wjaa.ranchucrutes.service;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.inject.Inject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.security.auth.login.LoginException;
 
@@ -19,7 +23,9 @@ import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
 import br.com.wjaa.ranchucrutes.exception.RestResponseUnsatisfiedException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.rest.RestUtils;
+import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
+import br.com.wjaa.ranchucrutes.utils.GcmUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
@@ -85,6 +91,7 @@ public class LoginServiceImpl implements LoginService {
             if (ResultadoLoginVo.StatusLogin.SUCESSO.equals(resultadoLogin.getStatus())){
 
                 PacienteVo paciente = resultadoLogin.getPaciente();
+
                 UsuarioEntity usuario = this.registrarAtualizarUsuario(paciente);
                 RanchucrutesSession.setUsuario(usuario);
                 return paciente;
@@ -102,7 +109,8 @@ public class LoginServiceImpl implements LoginService {
 
     }
 
-    private UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente) {
+    @Override
+    public UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente) {
         //removendo os usuarios da tabela
         this.deleteAll();
         //usuario autenticado com sucesso, inserindo usuario no banco como ativo.
@@ -118,6 +126,7 @@ public class LoginServiceImpl implements LoginService {
         usuarioEntity.setTelefone(paciente.getTelefone());
         usuarioEntity.setAuthType(paciente.getAuthType());
         usuarioEntity.setIdCategoria(paciente.getIdCategoria());
+        usuarioEntity.setDeviceKey(paciente.getKeyDeviceGcm());
         if (insert){
             dataService.insert(usuarioEntity);
         }else{
@@ -161,7 +170,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public void authLocal() {
+    public void authLocal(Context context) {
         List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
         if (CollectionUtils.isNotEmpty(listUsuario)){
             UsuarioEntity usuario = listUsuario.get(0);
@@ -170,6 +179,8 @@ public class LoginServiceImpl implements LoginService {
                 usuario.setCategoriaVo(convenioCategoriaVo);
             }
             RanchucrutesSession.setUsuario(usuario);
+
+            initGcm(context);
         }
     }
 
@@ -211,6 +222,41 @@ public class LoginServiceImpl implements LoginService {
         } catch (RestException e) {
             Log.e(TAG,e.getMessage(),e);
             throw new NovoPacienteException(e.getErrorMessage().getErrorMessage());
+        }
+    }
+
+
+    private void initGcm(Context context) {
+
+        UsuarioEntity user = RanchucrutesSession.getUsuario();
+        if (StringUtils.isBlank(user.getDeviceKey())){
+            this.registerKeyDevice(context);
+        }
+
+    }
+
+    public void registerKeyDevice(Context context) {
+        Log.i("LoginServiceImpl","Tentando registrar o device do cliente");
+        String regId = AndroidSystemUtil.getRegistrationId(context);
+
+        if (StringUtils.isBlank(regId)){
+            regId = GcmUtils.registerIdDevice(context);
+        }
+
+        if(StringUtils.isNotBlank(regId)){
+
+            Log.i("LoginServiceImpl","DeviceKey = " + regId);
+            try {
+                Map<String,String> mapParam = new HashMap<String,String>();
+                mapParam.put("idLogin", RanchucrutesSession.getUsuario().getId().toString());
+                mapParam.put("keyDevice", regId);
+                PacienteVo pacienteVo = RestUtils.post(PacienteVo.class, RanchucrutesConstants.WS_HOST, RanchucrutesConstants.END_POINT_REGISTRO_GCM, mapParam);
+                Log.i("LoginServiceImpl","DeviceKey registrado com sucesso!! ");
+                registrarAtualizarUsuario(pacienteVo);
+                Log.i("GcmUtils", pacienteVo.toString());
+            } catch (Exception e) {
+                Log.e("LoginServiceImpl", "Erro ao registrar o id do device", e);
+            }
         }
     }
 

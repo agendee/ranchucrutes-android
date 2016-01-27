@@ -23,6 +23,7 @@ import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.rest.RestUtils;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
+import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
@@ -203,6 +204,8 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
         public void run() {
             AndroidUtils.showWaitDlgOnUiThread("Aguarde enviando dados",  NovoPacienteActivity.this);
             try {
+                String regId = AndroidSystemUtil.getRegistrationId(NovoPacienteActivity.this);
+                pacienteVo.setKeyDeviceGcm(regId);
                 loginService.criarPaciente(pacienteVo);
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageSuccessDlgOnUiThread("Cadastro criado com sucesso!", NovoPacienteActivity.this, new DialogCallback() {

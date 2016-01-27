@@ -1,5 +1,6 @@
 package br.com.wjaa.ranchucrutes.buffer;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -40,8 +41,8 @@ public class RanchucrutesBuffer {
     }
 
 
-    public void posInitializer(){
-        new AutoLogin().start();
+    public void posInitializer(Context context){
+        new AutoLogin(context).start();
     }
 
 
@@ -68,10 +69,15 @@ public class RanchucrutesBuffer {
     }
 
     class AutoLogin extends Thread{
+        private Context context;
+        public AutoLogin(Context context) {
+            this.context = context;
+        }
+
         @Override
         public void run() {
             try {
-                loginService.authLocal();
+                loginService.authLocal(this.context);
             } catch (Exception ex) {
                 Log.e(TAG,ex.getMessage(),ex);
             }

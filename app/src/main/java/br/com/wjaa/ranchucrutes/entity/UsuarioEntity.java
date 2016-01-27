@@ -19,10 +19,12 @@ public class UsuarioEntity extends PersistenceBean {
     private String telefone;
     private AuthType authType;
     private Integer idCategoria;
+    private String deviceKey;
     private ConvenioCategoriaVo categoriaVo;
 
+
     public UsuarioEntity() {
-        super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria"} );
+        super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria","device_key"} );
     }
 
     public Integer getId() {
@@ -40,6 +42,7 @@ public class UsuarioEntity extends PersistenceBean {
         val.put("telefone", this.getTelefone());
         val.put("auth_type", this.getAuthType() != null ? this.getAuthType().ordinal() : null);
         val.put("id_categoria", this.getIdCategoria());
+        val.put("device_key", this.getDeviceKey());
         return val;
     }
 
@@ -50,6 +53,7 @@ public class UsuarioEntity extends PersistenceBean {
         this.setTelefone(cr.getString(3));
         this.setAuthType(AuthType.getByOrdinal(cr.getInt(4)));
         this.setIdCategoria(cr.getInt(5));
+        this.setDeviceKey(cr.getString(6));
     }
 
 
@@ -102,6 +106,14 @@ public class UsuarioEntity extends PersistenceBean {
         this.categoriaVo = categoriaVo;
     }
 
+    public String getDeviceKey() {
+        return deviceKey;
+    }
+
+    public void setDeviceKey(String deviceKey) {
+        this.deviceKey = deviceKey;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -122,4 +134,6 @@ public class UsuarioEntity extends PersistenceBean {
         result = 31 * result + email.hashCode();
         return result;
     }
+
+
 }

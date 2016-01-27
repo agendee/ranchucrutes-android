@@ -19,6 +19,7 @@ public class PacienteVo implements Serializable {
     private String keySocial;
     private AuthType authType;
     private Integer idCategoria;
+    private String keyDeviceGcm;
 
     public PacienteVo(){}
 
@@ -94,5 +95,13 @@ public class PacienteVo implements Serializable {
 
     public void setIdCategoria(Integer idCategoria) {
         this.idCategoria = idCategoria;
+    }
+
+    public String getKeyDeviceGcm() {
+        return keyDeviceGcm;
+    }
+
+    public void setKeyDeviceGcm(String keyDeviceGcm) {
+        this.keyDeviceGcm = keyDeviceGcm;
     }
 }
