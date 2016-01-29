@@ -227,15 +227,11 @@ public class LoginServiceImpl implements LoginService {
 
 
     private void initGcm(Context context) {
-
         UsuarioEntity user = RanchucrutesSession.getUsuario();
-        if (StringUtils.isBlank(user.getDeviceKey())){
-            this.registerKeyDevice(context);
-        }
-
+        this.registerKeyDevice(context, user.getDeviceKey());
     }
 
-    public void registerKeyDevice(Context context) {
+    public void registerKeyDevice(Context context, String keyRegister) {
         Log.i("LoginServiceImpl","Tentando registrar o device do cliente");
         String regId = AndroidSystemUtil.getRegistrationId(context);
 
@@ -243,7 +239,7 @@ public class LoginServiceImpl implements LoginService {
             regId = GcmUtils.registerIdDevice(context);
         }
 
-        if(StringUtils.isNotBlank(regId)){
+        if(StringUtils.isNotBlank(regId) && !regId.equals(keyRegister)){
 
             Log.i("LoginServiceImpl","DeviceKey = " + regId);
             try {

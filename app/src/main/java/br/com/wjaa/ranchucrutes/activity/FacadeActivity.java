@@ -1,13 +1,19 @@
 package br.com.wjaa.ranchucrutes.activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.inject.Inject;
 
+import java.util.List;
+
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import roboguice.activity.RoboActivity;
@@ -26,6 +32,22 @@ public class FacadeActivity extends RoboActivity implements Runnable {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (RanchucrutesSession.isUsuarioLogado()) {
+            Log.i("FacadeActivity", "ranchucrutes está rodando sim.....");
+            Bundle bundle = new Bundle();
+            bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, 2);
+            AndroidUtils.openActivity(this, MainActivity.class, bundle);
+            finish();
+            return;
+        }else{
+            Log.i("FacadeActivity", "ranchucrutes NAO ESTÁ rodando.....");
+            runAutoLogin();
+        }
+
+    }
+
+    private void runAutoLogin() {
         buffer.initializer();
 
         //intervalo rapido depois de executar o pos.
@@ -35,19 +57,16 @@ public class FacadeActivity extends RoboActivity implements Runnable {
             public void run() {
                 buffer.posInitializer(FacadeActivity.this);
             }
-        }, 300);
+        }, 500);
 
         Handler handler = new Handler();
-        handler.postDelayed(this, 1500);
+        handler.postDelayed(this, 3000);
     }
 
     public void run(){
         Bundle bundle = new Bundle();
         bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, 2);
         AndroidUtils.openActivity(this, MainActivity.class, bundle);
-        //chamando novamente porque precisa atualizar o menu com o usuario logado.
-        buffer.posInitializer(FacadeActivity.this);
-
         finish();
     }
 }

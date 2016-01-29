@@ -38,5 +38,5 @@ public interface LoginService {
 
     UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente);
 
-    void registerKeyDevice(Context context);
+    void registerKeyDevice(Context context, String keyRegister);
 }

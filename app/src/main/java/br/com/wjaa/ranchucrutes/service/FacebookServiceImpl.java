@@ -236,9 +236,7 @@ public class FacebookServiceImpl implements FacebookService {
             try {
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_FACEBOOK);
-                if ( StringUtils.isBlank(pacienteVo.getKeyDeviceGcm()) ){
-                    loginService.registerKeyDevice(context);
-                }
+                loginService.registerKeyDevice(context, pacienteVo.getKeyDeviceGcm());
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 

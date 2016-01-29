@@ -101,11 +101,21 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
         }
         initDrawer();
 
+        initMenu();
+
         if (getIntent() != null && getIntent().getExtras() !=null){
             Integer openFragment = getIntent().getExtras().getInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY,0);
             displayView(openFragment);
         }else{
             displayView(0);
+        }
+
+
+    }
+
+    private void initMenu() {
+        if (RanchucrutesSession.isUsuarioLogado()){
+            RanchucrutesSession.setUsuario(RanchucrutesSession.getUsuario());
         }
     }
 

@@ -26,7 +26,7 @@ public class SplashActivity extends RoboActivity implements Runnable {
         super.onCreate(savedInstanceState);
         buffer.initializer();
         Handler handler = new Handler();
-        handler.postDelayed(this, 2001);
+        handler.postDelayed(this, 3000);
     }
 
     public void run(){
@@ -40,7 +40,7 @@ public class SplashActivity extends RoboActivity implements Runnable {
             public void run() {
                buffer.posInitializer(SplashActivity.this);
             }
-        }, 2000);
+        }, 1000);
 
     }
 }

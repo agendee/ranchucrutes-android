@@ -177,10 +177,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde autenticando paciente.", context);
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_GPLUS);
-                if ( StringUtils.isBlank(pacienteVo.getKeyDeviceGcm()) ){
-                    loginService.registerKeyDevice(context);
-                }
-
+                loginService.registerKeyDevice(context, pacienteVo.getKeyDeviceGcm());
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 
