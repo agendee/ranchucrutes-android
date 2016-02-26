@@ -25,14 +25,12 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.activity.SearchingListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
@@ -67,7 +65,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.activity_home, container, false);
+        return inflater.inflate(R.layout.fragment_pesquisa_profissional, container, false);
 
     }
 
