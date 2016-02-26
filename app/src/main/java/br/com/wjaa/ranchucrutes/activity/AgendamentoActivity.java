@@ -116,13 +116,13 @@ public class AgendamentoActivity extends RoboActionBarActivity {
             @Override
             public void onClick(View v) {
 
-                if (profissional != null && profissional.getTelefone() != null && !"".equals(profissional.getTelefone())){
+                if (profissional != null && profissional.getTelefone() != null && !"".equals(profissional.getTelefone())) {
                     Intent chamada = new Intent(Intent.ACTION_DIAL);
                     //pega a posição da pessoa
                     chamada.setData(Uri.parse("tel:" + profissional.getTelefone().trim()));
                     AgendamentoActivity.this.startActivity(chamada);
 
-                }else{
+                } else {
                     AndroidUtils.showMessageErroDlg("Esse profissional não divulgou seu telefone.",
                             AgendamentoActivity.this);
                 }
@@ -136,7 +136,11 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         mCollapsingToolbarLayout.setTitle(profissional.getNome());
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setBackground(null);
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN){
+            mToolbar.setBackground(null);
+        }
+
         mToolbar.setTitle(profissional.getNome());
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

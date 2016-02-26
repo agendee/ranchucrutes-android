@@ -82,7 +82,8 @@ public class ProfissionalAgendaFragment extends RoboFragment {
             LinearLayout.LayoutParams linearParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
             linearParam.setMargins(30,30,30,20);
             l.setLayoutParams(linearParam);*/
-            b.setLayoutParams(lp);
+            //todo ver isso aqui se funciona nas outras versoes tirada por causa do tablet
+            //b.setLayoutParams(lp);
             b.setText(DateUtils.formatHHmm(date));
             //b.setBackgroundColor(android.R.color.holo_green_dark);
             b.setOnClickListener(new BtnAgendarClickListener(date));

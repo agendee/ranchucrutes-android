@@ -139,7 +139,7 @@ public class AndroidUtils {
         dialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
 
         //caso a activity nao estiver mais viva
-        if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed()){
+        if (!((Activity) context).isFinishing()){
             dialog.show();
         }
         return dialog;
