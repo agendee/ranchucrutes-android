@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single" android:id="@+id/navGroupAuth" >
+        <item
+            android:id="@+id/navSearch"
+            android:icon="@drawable/ic_search_white_18dp"
+            android:title="Pesquisar Profissional" />
+        <item
+            android:id="@+id/navBookmark"
+            android:icon="@drawable/ic_stars_white_18dp"
+            android:title="Profissionais Favoritos" />
+        <item
+            android:id="@+id/navAppointment"
+            android:icon="@drawable/ic_today_white_18dp"
+            android:title="Minhas Consultas" />
+        <item
+            android:id="@+id/navData"
+            android:icon="@drawable/ic_face_white_18dp"
+
+            android:title="Meus Dados" />
+    </group>
+
+
+    <group android:checkableBehavior="single" android:id="@+id/navGroup">
+
+        <item
+            android:id="@+id/navSetting"
+            android:icon="@drawable/ic_settings_white_18dp"
+            android:title="Configurações" />
+        <item
+            android:id="@+id/navExit"
+            android:icon="@drawable/ic_exit_to_app_white_18dp"
+            android:title="Sair" />
+
+        <item
+            android:id="@+id/navEnter"
+            android:icon="@drawable/ic_exit_to_app_white_18dp"
+            android:title="Entrar" />
+
+    </group>
+
+</menu>

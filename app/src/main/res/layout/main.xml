@@ -13,13 +13,6 @@
         android:id="@+id/drawerLayout"
         android:layout_height="match_parent">
 
-
-
-        <android.support.design.widget.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
             <!-- activity view -->
             <FrameLayout
                 android:id="@+id/main_frame"
@@ -28,11 +21,6 @@
                 android:layout_height="match_parent">
 
             </FrameLayout>
-
-        </android.support.design.widget.TabLayout>
-
-
-
 
 
         <!-- navigation drawer -->

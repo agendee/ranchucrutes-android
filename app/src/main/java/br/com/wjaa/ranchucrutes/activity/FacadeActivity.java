@@ -36,7 +36,7 @@ public class FacadeActivity extends RoboActivity implements Runnable {
         if (RanchucrutesSession.isUsuarioLogado()) {
             Log.i("FacadeActivity", "ranchucrutes está rodando sim.....");
             Bundle bundle = new Bundle();
-            bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, 2);
+            bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, R.id.navAppointment);
             AndroidUtils.openActivity(this, MainActivity.class, bundle);
             finish();
             return;

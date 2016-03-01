@@ -30,7 +30,7 @@ public class SplashActivity extends RoboActivity implements Runnable {
     }
 
     public void run(){
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
 
         //intervalo rapido depois de executar o pos.
