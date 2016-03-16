@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,13 +34,13 @@ import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 /**
  * Created by wagner on 02/10/15.
  */
-public class SearchingListActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack {
+public abstract class SearchListActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack {
 
-    private SearchingListAdapter adapter;
-    private CoordinatorLayout clContainer;
-    private RecyclerView mRecyclerView;
-    private List<SearchingListModel> mList;
-    private List<SearchingListModel> mListFilter;
+    protected SearchingListAdapter adapter;
+    protected CoordinatorLayout clContainer;
+    protected RecyclerView mRecyclerView;
+    protected List<SearchingListModel> mList;
+    protected List<SearchingListModel> mListFilter;
 
     private Toolbar toolbar;
 
@@ -69,21 +70,18 @@ public class SearchingListActivity extends AppCompatActivity implements Recycler
         LinearLayoutManager llm = new LinearLayoutManager( this );
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-
-
         adapter = new SearchingListAdapter(this, mListFilter);
-        //adapter.setRecyclerViewOnClickListenerHack(this);
         mRecyclerView.setAdapter(adapter);
 
     }
 
-    private List<SearchingListModel> cloneList(List<SearchingListModel> mList) {
+    protected List<SearchingListModel> cloneList(List<SearchingListModel> mList) {
         List<SearchingListModel> clone = new ArrayList<>(mList.size());
         return cloneList(mList,clone);
 
     }
 
-    private List<SearchingListModel> cloneList(List<SearchingListModel> mList, List<SearchingListModel> clone) {
+    protected List<SearchingListModel> cloneList(List<SearchingListModel> mList, List<SearchingListModel> clone) {
         for (SearchingListModel s : mList){
             clone.add(s);
         }
@@ -91,41 +89,7 @@ public class SearchingListActivity extends AppCompatActivity implements Recycler
 
     }
 
-    public void filter( String q ){
-        mListFilter.clear();
-        if (StringUtils.isBlank(q)){
-            cloneList(mList, mListFilter);
-
-            adapter.notifyDataSetChanged();
-            return;
-        }
-
-        for( int i = 0, tamI = mList.size(); i < tamI; i++ ){
-            if(StringUtils.isNotBlank(mList.get(i).getName()) && mList.get(i).getName().toLowerCase().contains( q.toLowerCase() ) ){
-                mListFilter.add( mList.get(i) );
-            }
-        }
-
-        mRecyclerView.setVisibility(mListFilter.isEmpty() ? View.GONE : View.VISIBLE);
-        if( mListFilter.isEmpty() ){
-
-            if (clContainer.findViewById(1) == null){
-                TextView tv = new TextView( this );
-                tv.setText( "Nenhum resultado encontrado." );
-                tv.setTextColor( getResources().getColor( R.color.primaryColor ) );
-                tv.setId(1);
-                tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-                tv.setGravity(Gravity.CENTER);
-
-                clContainer.addView(tv);
-            }
-        }
-        else if( clContainer.findViewById(1) != null ) {
-            clContainer.removeView( clContainer.findViewById(1) );
-        }
-
-       adapter.notifyDataSetChanged();
-    }
+    public abstract void filter( String q );
 
 
 
@@ -146,7 +110,7 @@ public class SearchingListActivity extends AppCompatActivity implements Recycler
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint("Pesquise aqui");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -159,7 +123,8 @@ public class SearchingListActivity extends AppCompatActivity implements Recycler
                 return false;
             }
         });
-
+        //chamando o onclick da pesquisa
+        searchView.onActionViewExpanded();
 
         return true;
     }

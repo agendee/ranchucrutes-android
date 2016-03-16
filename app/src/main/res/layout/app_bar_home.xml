@@ -16,17 +16,19 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/navToolbar"
+            android:elevation="0dp"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/myAppTheme.PopupOverlay" >
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+            app:layout_collapseMode="pin"
+            >
 
-        <Spinner
+       <!-- <Spinner
             android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:popupTheme="@style/myAppTheme.AppBarOverlay" />
+            app:popupTheme="@style/myAppTheme.AppBarOverlay" />-->
 
         </android.support.v7.widget.Toolbar>
 
@@ -35,11 +37,13 @@
     <include layout="@layout/content_home" />
 
     <android.support.design.widget.FloatingActionButton
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        app:backgroundTint="@color/primaryColor"
+        android:src="@drawable/ic_search_white_18dp" />
 
 </android.support.design.widget.CoordinatorLayout>

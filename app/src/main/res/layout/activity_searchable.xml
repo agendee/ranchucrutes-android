@@ -12,7 +12,6 @@
         android:id="@+id/rv_list"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:scrollbars="vertical"
-
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

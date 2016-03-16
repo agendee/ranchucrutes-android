@@ -30,46 +30,118 @@
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_gravity="center" >
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:id="@+id/edtCep"
-                        android:hint="Digite seu cep"
-                        android:layout_gravity="left|top"
-                        android:gravity="center"
-                        android:textColor="@android:color/black"
-                        style="@style/edtDefault"
-
-                         />
-
                 <LinearLayout
+                    android:background="@android:color/white"
+                    android:id="@+id/frameBusca"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|left"
+                    android:layout_gravity="center"
                     android:orientation="vertical"
-                    android:paddingRight="50dp"
                     android:paddingBottom="10dp"
+                    android:layout_margin="20dp"
+                    android:visibility="invisible"
                     >
 
+                    <RelativeLayout
+                        android:background="@color/primaryColorDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:textSize="18dp"
+                            android:text="Filtro"
+                            android:padding="12dp"
+                            />
+
+                        <Button
+                            android:background="#00000000"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:id="@+id/btnFechar"
+                            android:drawableRight="@drawable/ic_close_white_18dp"
+                            android:padding="12dp"
+                            />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:padding="10dp"
+                        android:hint="Para encontrar profissionais mais próximo a você, utilize o botão 'Minha localização' abaixo:"
+                        android:textColor="@android:color/black"
+
+
+                        />
+
+
+                    <ToggleButton
+                        android:background="@drawable/button_toogle"
+                        android:layout_width="50dp"
+                        android:layout_height="45dp"
+                        android:id="@+id/btnMyLocation"
+                        android:layout_gravity="center"
+                        android:textColor="@android:color/black"
+                        android:drawableBottom="@android:drawable/ic_menu_mylocation"
+                        android:paddingBottom="5dp"
+                        android:textOn=""
+                        android:textOff=""
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:padding="10dp"
+                        android:hint="Ou se preferir, pesquise um endereço."
+                        android:textColor="@android:color/black"
+
+
+                        />
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/bntSelectEspec"
-                        android:id="@+id/btnSelectEspec"
-                        android:drawableEnd="@android:drawable/arrow_up_float"
-                        style="@style/btnDefault" />
+                        android:id="@+id/btnSelectPlace"
+                        android:hint="@string/bntEncontreUmEndereco"
+                        android:drawableRight="@android:drawable/arrow_up_float"
+                        style="@style/btnComboBox"
+                        android:layout_marginTop="0dp"/>
+
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/btnSelectEspec"
+                        android:hint="@string/bntSelectEspec"
+                        android:drawableRight="@android:drawable/arrow_up_float"
+                        style="@style/btnComboBox"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/bntProcurar"
+                        android:textAlignment="gravity"
                         android:id="@+id/btnProcurar"
-                        android:drawableEnd="@android:drawable/ic_menu_search"
-                        android:alpha="0.8"
+                        android:layout_gravity="center"
+                        android:drawableRight="@drawable/ic_search_white_18dp"
                         style="@style/btnDefault"
 
                         />
+
+
                 </LinearLayout>
 
             </fragment>

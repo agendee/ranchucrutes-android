@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,9 +16,11 @@ import android.support.v4.app.FragmentActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +68,13 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         this.context = (FragmentActivity)context;
         this.fragment = fragment;
         this.onMyLocationButtonClickListener = onMyLocationButtonClickListener;
+        View mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
+        View zoomControl = mapView.findViewById(0x1);
+        View myLocationControl = mapView.findViewById(0x2);
+
+        this.alignView(zoomControl,true);
+        this.alignView(myLocationControl,false);
+
     }
 
     //
@@ -73,42 +83,8 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        /*if (marker.equals(mPerth)) {
-            // This causes the marker at Perth to bounce into position when it is clicked.
-            final Handler handler = new Handler();
-            final long start = SystemClock.uptimeMillis();
-            final long duration = 1500;
-
-            final Interpolator interpolator = new BounceInterpolator();
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = Math.max(
-                            1 - interpolator.getInterpolation((float) elapsed / duration), 0);
-                    marker.setAnchor(0.5f, 1.0f + 2 * t);
-
-                    if (t > 0.0) {
-                        // Post again 16ms later.
-                        handler.postDelayed(this, 16);
-                    }
-                }
-            });
-        } else if (marker.equals(mAdelaide)) {
-            // This causes the marker at Adelaide to change color and alpha.
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(mRandom.nextFloat() * 360));
-            marker.setAlpha(mRandom.nextFloat());
-        }*/
         reloadImage = true;
         mLastSelectedMarker = marker;
-
-
-
-
-        // We return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
 
@@ -175,8 +151,6 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
         mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
 
-
-
         final View mapViewf = mapView;
         if (mapView.getViewTreeObserver().isAlive()) {
             mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -192,16 +166,48 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                     } else {
                         mapViewf.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 13));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 11));
                 }
             });
         }
 
     }
 
+
+
+    private void alignView(View view, boolean left) {
+        if (view != null && view.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+            // ZoomControl is inside of RelativeLayout
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            // Align it to - parent TOP|LEFT
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,0);
+            final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10,
+                    context.getResources().getDisplayMetrics());
+
+
+            if (!left){
+                params.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
+
+                // Update margins, set to 10dp
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    params.setMarginStart(margin);
+                }
+
+            }else{
+                params.setMargins(margin, margin, margin, margin);
+            }
+            view.setLayoutParams(params);
+        }
+    }
+
     public void realoadMarker(ResultadoBuscaProfissionalVo resultado) {
         ReloadMarkerThread r = new ReloadMarkerThread(resultado);
         context.runOnUiThread(r);
+    }
+
+    public void setMyLocation(Location myLocation) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(myLocation.getLatitude(),myLocation.getLongitude()), 11));
     }
 
 
@@ -393,7 +399,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 }catch(Exception ex){
 
                 }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 13));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 11));
                 AndroidUtils.closeWaitDlg();
                 
                 if (resultado.getProfissionais() == null || resultado.getProfissionais().size() == 0){

@@ -1,8 +1,10 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.google.inject.Inject;
@@ -29,8 +31,14 @@ public class MinhasConsultasFragment extends RoboListFragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         new FindAgendamentos().start();
     }
 

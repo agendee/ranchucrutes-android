@@ -15,7 +15,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 
 import br.com.wjaa.ranchucrutes.R;
-import br.com.wjaa.ranchucrutes.activity.SearchingListActivity;
+import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
@@ -185,7 +185,7 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
                 parcelables.add(c);
             }
             b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-            AndroidUtils.openActivityFromFragment(MeusDadosFragment.this,SearchingListActivity.class, b);
+            AndroidUtils.openActivityFromFragment(MeusDadosFragment.this,SearchGenericListActivity.class, b);
 
 
         }
@@ -205,7 +205,7 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
                     parcelables.add(c);
                 }
                 b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-                AndroidUtils.openActivityFromFragment(MeusDadosFragment.this,SearchingListActivity.class, b);
+                AndroidUtils.openActivityFromFragment(MeusDadosFragment.this, SearchGenericListActivity.class, b);
             }
         }
     }

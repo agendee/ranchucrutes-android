@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
@@ -64,9 +65,15 @@ public class AndroidUtils {
     public static Intent openActivityFromFragment(Fragment fragment, Class<?> activity, Bundle bundle ){
         FragmentActivity context = fragment.getActivity();
         Intent i = new Intent(context, activity);
-        i.putExtras(bundle);
+        if (bundle != null){
+            i.putExtras(bundle);
+        }
         context.startActivityFromFragment(fragment, i, 1);
         return i;
+    }
+
+    public static Intent openActivityFromFragment(Fragment fragment, Class<?> activity){
+        return openActivityFromFragment(fragment,activity,null);
     }
 
 
@@ -219,5 +226,10 @@ public class AndroidUtils {
     public static void showMessageWarningDlgOnUiThread(String msg, Activity context, DialogCallback dialogCallback){
         showMessageDlgOnUiThread(context.getResources().getString(R.string.titulo_warning), msg,
                 context, AlertType.ALERT_WARNING, dialogCallback);
+    }
+
+    public static void snackAlert(View view, String message){
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 }

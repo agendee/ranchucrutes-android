@@ -61,7 +61,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     @InjectView(R.id.collapsing_toolbar)
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @InjectView(R.id.toolbar)
+    @InjectView(R.id.tbAgendamento)
     private Toolbar toolbar;
 
     @InjectView(R.id.tabLayout)
@@ -135,14 +135,12 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
         mCollapsingToolbarLayout.setTitle(profissional.getNome());
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN){
-            mToolbar.setBackground(null);
+            toolbar.setBackground(null);
         }
 
-        mToolbar.setTitle(profissional.getNome());
-        setSupportActionBar(mToolbar);
+        toolbar.setTitle(profissional.getNome());
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(false);
 

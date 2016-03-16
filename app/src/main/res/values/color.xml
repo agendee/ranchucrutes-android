@@ -18,8 +18,11 @@
     <color name="pressed_color">#4d90fe</color>
     <color name="focused_color">#4d90fe</color>
     <color name="default_color">#000000</color>
-    <color name="item_list_color">#b319191b</color>
+    <color name="item_list_color">#a7eeeef2</color>
     <color name="vidro_black">#8f000000</color>
+
+    <color name="btnNormal">#94999999</color>
+    <color name="btnPressed">#92288f2d</color>
 
 </resources>
 

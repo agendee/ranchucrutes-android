@@ -91,7 +91,6 @@ public class SearchingListAdapter extends RecyclerView.Adapter<SearchingListAdap
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mContext, "finalizando = " + item.getName(), Toast.LENGTH_SHORT);
             Intent i = new Intent();
             i.putExtra(RanchucrutesConstants.PARAM_RESULT_SEARCH,item);
             ((Activity) mContext).setResult(1, i );
