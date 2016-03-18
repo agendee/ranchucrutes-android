@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single" android:id="@+id/navGroupAuth" >
+    <group android:checkableBehavior="single" android:id="@+id/navGroupAuth" android:visible="false">
         <item
             android:id="@+id/navSearch"
             android:icon="@drawable/ic_search_white_18dp"
@@ -31,12 +31,12 @@
         <item
             android:id="@+id/navExit"
             android:icon="@drawable/ic_exit_to_app_white_18dp"
-            android:title="Sair" />
+            android:title="Sair"  android:visible="false"/>
 
         <item
             android:id="@+id/navEnter"
             android:icon="@drawable/ic_exit_to_app_white_18dp"
-            android:title="Entrar" />
+            android:title="Entrar"  />
 
     </group>
 

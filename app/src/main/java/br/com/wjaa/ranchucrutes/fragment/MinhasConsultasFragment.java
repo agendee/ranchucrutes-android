@@ -62,19 +62,21 @@ public class MinhasConsultasFragment extends RoboListFragment {
         @Override
         public void run() {
             try{
-                Integer idPaciente = RanchucrutesSession.getUsuario().getId();
-                AndroidUtils.showWaitDlgOnUiThread("Aguarde carregando agendamentos...", getActivity());
-                final AgendamentoVo[] agendamentoVos = agendamentoService.getAgendamentos(idPaciente.longValue());
-                if (agendamentoVos != null){
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setListAdapter(new MinhasConsultasListAdapter(getActivity(),agendamentoVos));
-                        }
-                    });
+                if (RanchucrutesSession.isUsuarioLogado()){
+                    Integer idPaciente = RanchucrutesSession.getUsuario().getId();
+                    AndroidUtils.showWaitDlgOnUiThread("Aguarde carregando agendamentos...", getActivity());
+                    final AgendamentoVo[] agendamentoVos = agendamentoService.getAgendamentos(idPaciente.longValue());
+                    if (agendamentoVos != null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setListAdapter(new MinhasConsultasListAdapter(getActivity(),agendamentoVos));
+                            }
+                        });
 
+                    }
+                    AndroidUtils.closeWaitDlg();
                 }
-                AndroidUtils.closeWaitDlg();
             }catch (AgendamentoServiceException e) {
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(),getActivity());

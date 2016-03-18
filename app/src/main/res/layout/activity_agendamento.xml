@@ -40,14 +40,7 @@
 
             <include layout="@layout/custom_profissional_detalhes"/>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/tbAgendamento"
-                android:elevation="0dp"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"
-                android:minHeight="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-                app:layout_collapseMode="pin"/>
+            <include layout="@layout/toolbar" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

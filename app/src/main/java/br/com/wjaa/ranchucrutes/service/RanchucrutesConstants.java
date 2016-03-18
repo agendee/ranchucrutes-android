@@ -24,4 +24,5 @@ public class RanchucrutesConstants {
     public static final String PARAM_PROFISSIONAL = "profissionalParam";
     public static final String PARAM_CONFIMAR_AGENDAMENTO = "confirmarAgendamentoParam";
     public static final String PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY = "openFragmentMainActivity";
+    public static final String PARAM_AGENDAMENTO = "agendamentoParam";
 }

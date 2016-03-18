@@ -61,7 +61,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     @InjectView(R.id.collapsing_toolbar)
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @InjectView(R.id.tbAgendamento)
+    @InjectView(R.id.toolbar)
     private Toolbar toolbar;
 
     @InjectView(R.id.tabLayout)

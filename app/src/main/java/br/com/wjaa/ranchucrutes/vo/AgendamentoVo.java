@@ -1,5 +1,8 @@
 package br.com.wjaa.ranchucrutes.vo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +21,28 @@ public class AgendamentoVo implements Serializable {
     private String codigoConfirmacao;
     private Boolean cancelado;
     private Boolean finalizado;
+
+    public AgendamentoVo(){}
+
+    public AgendamentoVo(Parcel source) {
+
+    }
+
+   /* @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeParcelable(this.profissional, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeParcelable(this.paciente, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeSerializable(dataAgendamento);
+        dest.writeSerializable(dataCriacao);
+        dest.writeSerializable(dataConfirmacao);
+        dest.writeSerializable(dataConfirmacaoProfissional);
+        dest.writeString(codigoConfirmacao);
+        dest.writeSerializable(cancelado);
+        dest.writeSerializable(finalizado);
+    }
+*/
+
 
     public Date getDataConfirmacaoConsulta() {
         return dataConfirmacaoConsulta;
@@ -109,4 +134,22 @@ public class AgendamentoVo implements Serializable {
     public void setFinalizado(Boolean finalizado) {
         this.finalizado = finalizado;
     }
+
+   /* @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+
+    public static final Parcelable.Creator<AgendamentoVo> CREATOR = new Parcelable.Creator<AgendamentoVo>(){
+        @Override
+        public AgendamentoVo createFromParcel(Parcel source) {
+            return new AgendamentoVo(source);
+        }
+        @Override
+        public AgendamentoVo[] newArray(int size) {
+            return new AgendamentoVo[size];
+        }
+    };*/
 }

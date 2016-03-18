@@ -88,7 +88,8 @@ public class AndroidUtils {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         View v = ((Activity)context).getLayoutInflater().inflate(alertType.getLayout(), null);
         TextView tv = (TextView) v.findViewById(alertType.getResource());
-        tv.setText(title);
+        tv.setText(Html.fromHtml("<font color='#FFFFFF'>" + title + "</font>"));
+
         alertDialog.setCustomTitle(v);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
 
@@ -111,6 +112,7 @@ public class AndroidUtils {
         View v = ((Activity)context).getLayoutInflater().inflate(AlertType.ALERT_SUCESSO.getLayout(), null);
         TextView tv = (TextView) v.findViewById(AlertType.ALERT_SUCESSO.getResource());
         tv.setText(title);
+        tv.setText(Html.fromHtml("<font color='#FFFFFF'>" + title + "</font>"));
         alertDialog.setCustomTitle(v);
         alertDialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));
         DialogInterface.OnClickListener listener = new ButtonDialogClickListener(callback);
@@ -140,7 +142,7 @@ public class AndroidUtils {
         }
         View v = ((Activity)context).getLayoutInflater().inflate(AlertType.ALERT_SUCESSO.getLayout(), null);
         TextView tv = (TextView) v.findViewById(AlertType.ALERT_SUCESSO.getResource());
-        tv.setText("Aguarde!");
+        tv.setText(Html.fromHtml("<font color='#FFFFFF'>Aguarde!</font>"));
         dialog.setCustomTitle(v);
 
         dialog.setMessage(Html.fromHtml("<font color='#000000'>" + msg + "</font>"));

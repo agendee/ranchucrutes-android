@@ -1,7 +1,9 @@
 package br.com.wjaa.ranchucrutes.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.DetalhesConsultaActivity;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
+import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.DateUtils;
 import br.com.wjaa.ranchucrutes.vo.AgendamentoVo;
 
@@ -30,7 +35,7 @@ public class MinhasConsultasListAdapter extends ArrayAdapter<AgendamentoVo> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        AgendamentoVo agendamentoVo = objects[position];
+        final AgendamentoVo agendamentoVo = objects[position];
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.minhas_consultas_item_list, parent, false);
@@ -76,6 +81,16 @@ public class MinhasConsultasListAdapter extends ArrayAdapter<AgendamentoVo> {
         TextView lbStatus = (TextView) rowView.findViewById(R.id.lbDetalhes);
         lbStatus.setText(statusConsulta);
         lbStatus.setTextColor(context.getResources().getColor(colorStatus));
+
+
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putSerializable(RanchucrutesConstants.PARAM_AGENDAMENTO,agendamentoVo);
+                AndroidUtils.openActivity((Activity)context, DetalhesConsultaActivity.class, b);
+            }
+        });
 
         return rowView;
     }

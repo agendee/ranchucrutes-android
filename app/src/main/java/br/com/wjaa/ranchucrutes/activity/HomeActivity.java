@@ -1,6 +1,7 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
@@ -214,8 +217,11 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     private void onEndConstruct() {
 
         //ajustando a altura do mainFrame.
-        DrawerLayout.LayoutParams l = (DrawerLayout.LayoutParams) mainFrame.getLayoutParams();
+       /* RelativeLayout.LayoutParams l = (RelativeLayout.LayoutParams) mainFrame.getLayoutParams();
         l.setMargins(0, appbarLayout.getHeight(), 0, 0);
+        mainFrame.setLayoutParams(l);*/
+
+
     }
 
     @Override
@@ -358,7 +364,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         GcmUtils.checkPlayServices(this);
         if (pausado){
             pausado = false;
-            displayView(R.id.navSearch);
+            //displayView(R.id.navSearch);
         }
     }
 
@@ -368,5 +374,11 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         super.onPause();
         pausado = true;
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,requestCode,data);
+        //displayView(0);
     }
 }

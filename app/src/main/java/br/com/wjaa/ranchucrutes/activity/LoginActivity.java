@@ -197,19 +197,6 @@ public class LoginActivity extends RoboActionBarActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        /*if (id == R.id.action_settings) {
-            return true;
-        }
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }*/
-        return super.onOptionsItemSelected(item);
-    }
-
-
     private void saudarSair(PacienteVo pacienteVo) {
         if (pacienteVo != null){
             this.runOnUiThread(new Runnable() {
@@ -234,5 +221,15 @@ public class LoginActivity extends RoboActionBarActivity {
             });
 
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == android.R.id.home){
+            finish();
+        }
+        return true;
     }
 }

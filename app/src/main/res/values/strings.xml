@@ -114,6 +114,10 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="bntEncontreUmEndereco">Encontre um endereço</string>
+    <string name="bntReagendar">Reagendar</string>
+    <string name="bntConfirmarSolicitacao">Confirmar Solicitação</string>
+    <string name="bntCancelarConsulta">Cancelar Consulta</string>
+    <string name="bntConfirmarConsulta">Confirmar Consulta</string>
 
 
 </resources>

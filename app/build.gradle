@@ -52,6 +52,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-plus:8.4.0'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    testCompile 'junit:junit:4.12'
 }
 
 project.tasks.withType(JavaCompile) { task ->

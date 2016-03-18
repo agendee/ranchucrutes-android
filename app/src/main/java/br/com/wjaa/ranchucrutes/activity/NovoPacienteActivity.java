@@ -155,18 +155,6 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        /*if (id == R.id.action_settings) {
-            return true;
-        }
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }*/
-        return super.onOptionsItemSelected(item);
-    }
-
     class BtnSaveClickListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -225,6 +213,16 @@ public class NovoPacienteActivity extends RoboActionBarActivity {
                 AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), NovoPacienteActivity.this);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == android.R.id.home){
+            finish();
+        }
+        return true;
     }
 
 }
