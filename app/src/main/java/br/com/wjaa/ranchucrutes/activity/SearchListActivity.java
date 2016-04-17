@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,13 +12,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +23,6 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.adapter.SearchingListAdapter;
 import br.com.wjaa.ranchucrutes.listener.RecyclerViewOnClickListenerHack;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
-import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
@@ -44,6 +38,8 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
 
     private Toolbar toolbar;
 
+    private MenuItem itemMenu;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +94,14 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView;
-        MenuItem item = menu.findItem(R.id.search);
+
+        itemMenu = menu.findItem(R.id.search);
 
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ){
-            searchView = (SearchView) item.getActionView();
+            searchView = (SearchView) itemMenu.getActionView();
         }
         else{
-            searchView = (SearchView) MenuItemCompat.getActionView( item );
+            searchView = (SearchView) MenuItemCompat.getActionView( itemMenu );
         }
 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -123,8 +119,10 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
                 return false;
             }
         });
-        //chamando o onclick da pesquisa
-        searchView.onActionViewExpanded();
+
+        //searchView.onActionViewExpanded();
+       // searchView.callOnClick();
+        itemMenu.expandActionView();
 
         return true;
     }

@@ -29,10 +29,10 @@
             android:minHeight="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-            android:background="?attr/colorPrimary"
+
             app:layout_scrollFlags="scroll|enterAlways"
             app:theme="@style/MyCustomToolbarStyle"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+            />
 
     </android.support.design.widget.AppBarLayout>
 
