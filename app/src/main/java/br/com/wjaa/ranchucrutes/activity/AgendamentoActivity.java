@@ -146,7 +146,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
         SimpleDraweeView sdvFotoProfissional = (SimpleDraweeView) findViewById(R.id.sdvFotoProfissional);
 
-        Uri uri = Uri.parse("http://agendee.com.br/f/" + profissional.getCrm() + ".jpg");
+        Uri uri = Uri.parse("http://agendee.com.br/f/" + profissional.getNumeroRegistro() + ".jpg");
         DraweeController dc = Fresco.newDraweeControllerBuilder()
                 .setUri( uri )
                 .setAutoPlayAnimations(true)
@@ -156,7 +156,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         sdvFotoProfissional.setController(dc);
 
         TextView crmProfissional = ((TextView) this.findViewById(R.id.crm));
-        String crm = profissional.getCrm() != null ? profissional.getCrm().toString() : "";
+        String crm = profissional.getNumeroRegistro() != null ? profissional.getNumeroRegistro().toString() : "";
         SpannableString crmText = new SpannableString(crm);
         crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
         crmProfissional.setText("CRM: " + crmText);

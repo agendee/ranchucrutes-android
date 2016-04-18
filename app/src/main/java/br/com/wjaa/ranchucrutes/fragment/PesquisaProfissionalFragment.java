@@ -46,6 +46,7 @@ import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.PlacesVo;
+import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
@@ -231,14 +232,14 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
         @Override
         public Void call() throws Exception {
 
-            ResultadoBuscaProfissionalVo resultado = null;
+            ResultadoBuscaClinicaVo resultado = null;
             if (myLocation != null){
                 resultado = profissionalService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
             }
 
             if (resultado != null) {
                 ranchucrutesMaps.realoadMarker(resultado);
-                if ( CollectionUtils.isNotEmpty(resultado.getProfissionais()) ){
+                if ( CollectionUtils.isNotEmpty(resultado.getClinicas()) ){
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

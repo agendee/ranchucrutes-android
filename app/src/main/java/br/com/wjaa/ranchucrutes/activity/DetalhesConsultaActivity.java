@@ -98,7 +98,7 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
             dcTxtDataConsulta.setText(DateUtils.formatddMMyyyyHHmm(agendamentoVo.getDataAgendamento()));
             dcTxtNome.setText(agendamentoVo.getProfissional().getNome());
             dcTxtEnd.setText(agendamentoVo.getProfissional().getEndereco());
-            dcTxtNumero.setText("CRM: " + agendamentoVo.getProfissional().getCrm());
+            dcTxtNumero.setText("CRM: " + agendamentoVo.getProfissional().getNumeroRegistro());
             dcTxtTel.setText(agendamentoVo.getProfissional().getTelefone());
             dcTxtEsp.setText(agendamentoVo.getProfissional().getEspec());
             String statusConsulta = "Você não confirmou essa solicitação.";
@@ -184,7 +184,7 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
         @Override
         public void run() {
 
-            String imageUrl = "http://agendee.com.br/f/" + profissional.getCrm() + ".jpg";
+            String imageUrl = "http://agendee.com.br/f/" + profissional.getNumeroRegistro() + ".jpg";
             try {
                 bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
                 DetalhesConsultaActivity.this.runOnUiThread(new Runnable() {

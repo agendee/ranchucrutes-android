@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.List;
+
+import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
 
 /**
  * Created by wagner on 18/10/15.
@@ -15,6 +18,8 @@ public class ClinicaVo implements Parcelable, Serializable{
     private String telefone;
     private Double latitude;
     private Double longitude;
+    private List<ProfissionalBasicoVo> profissionais;
+    private MapTipoLocalidade mapTipoLocalidade = MapTipoLocalidade.PARTICULAR;
 
 
     public ClinicaVo(){
@@ -104,4 +109,34 @@ public class ClinicaVo implements Parcelable, Serializable{
             return new ClinicaVo[size];
         }
     };
+
+    public MapTipoLocalidade getMapTipoLocalidade() {
+        return mapTipoLocalidade;
+    }
+
+    public void setMapTipoLocalidade(MapTipoLocalidade mapTipoLocalidade) {
+        this.mapTipoLocalidade = mapTipoLocalidade;
+    }
+
+    public List<ProfissionalBasicoVo> getProfissionais() {
+        return profissionais;
+    }
+
+    public void setProfissionais(List<ProfissionalBasicoVo> profissionais) {
+        this.profissionais = profissionais;
+    }
+
+    public boolean getTemAgenda() {
+        if (CollectionUtils.isEmpty(profissionais)) {
+            return false;
+        }
+
+        for (ProfissionalBasicoVo p : profissionais){
+            if (p.getTemAgenda()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

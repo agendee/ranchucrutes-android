@@ -13,7 +13,7 @@ import java.util.List;
 public class ProfissionalBasicoVo implements Parcelable, Serializable {
     private Long id;
     private String nome;
-    private Integer crm;
+    private Integer numeroRegistro;
     private String espec;
     private Double latitude;
     private Double longitude;
@@ -21,6 +21,9 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
     private String telefone;
     private ClinicaVo[] clinicas;
     private Boolean temAgenda;
+    private Integer idProfissao;
+    private String nomeProfissao;
+    private Integer idParceiro;
 
     public ProfissionalBasicoVo() {
 
@@ -30,7 +33,7 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
     public ProfissionalBasicoVo(Parcel source) {
         this.id = source.readLong();
         this.nome = source.readString();
-        this.crm = source.readInt();
+        this.numeroRegistro = source.readInt();
         this.espec = source.readString();
         this.latitude = source.readDouble();
         this.longitude = source.readDouble();
@@ -51,8 +54,8 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.nome);
-        if (this.crm != null){
-            dest.writeInt(this.crm);
+        if (this.numeroRegistro != null){
+            dest.writeInt(this.numeroRegistro);
         }
         dest.writeString(this.espec);
         dest.writeDouble(this.latitude);
@@ -77,14 +80,6 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public Integer getCrm() {
-        return crm;
-    }
-
-    public void setCrm(Integer crm) {
-        this.crm = crm;
     }
 
     public String getEspec() {
@@ -158,4 +153,36 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
             return new ProfissionalBasicoVo[size];
         }
     };
+
+    public Integer getIdProfissao() {
+        return idProfissao;
+    }
+
+    public void setIdProfissao(Integer idProfissao) {
+        this.idProfissao = idProfissao;
+    }
+
+    public String getNomeProfissao() {
+        return nomeProfissao;
+    }
+
+    public void setNomeProfissao(String nomeProfissao) {
+        this.nomeProfissao = nomeProfissao;
+    }
+
+    public Integer getIdParceiro() {
+        return idParceiro;
+    }
+
+    public void setIdParceiro(Integer idParceiro) {
+        this.idParceiro = idParceiro;
+    }
+
+    public Integer getNumeroRegistro() {
+        return numeroRegistro;
+    }
+
+    public void setNumeroRegistro(Integer numeroRegistro) {
+        this.numeroRegistro = numeroRegistro;
+    }
 }

@@ -43,7 +43,10 @@ import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
+import br.com.wjaa.ranchucrutes.vo.ClinicaVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
+import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 
 /**
@@ -60,7 +63,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     private GoogleMap mMap;
     private Boolean reloadImage = true;
     private Marker mLastSelectedMarker;
-    private Map<String,ProfissionalBasicoVo> profissionais = new HashMap<String, ProfissionalBasicoVo>();
+    private Map<String,ClinicaVo> profissionais = new HashMap<String, ClinicaVo>();
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener;
     private Fragment fragment;
 
@@ -92,7 +95,8 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     public void onInfoWindowClick(Marker marker) {
 
         try{
-            ProfissionalBasicoVo m = profissionais.get(marker.getId());
+            ClinicaVo c = profissionais.get(marker.getId());
+            ProfissionalBasicoVo m = c.getProfissionais().get(0);
             Bundle b = new Bundle();
             b.putParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL,m);
             AndroidUtils.openActivity(context,AgendamentoActivity.class, b);
@@ -200,7 +204,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         }
     }
 
-    public void realoadMarker(ResultadoBuscaProfissionalVo resultado) {
+    public void realoadMarker(ResultadoBuscaClinicaVo resultado) {
         ReloadMarkerThread r = new ReloadMarkerThread(resultado);
         context.runOnUiThread(r);
     }
@@ -256,37 +260,41 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 badge = 0;
             }*/
             //
-            ProfissionalBasicoVo profissional = profissionais.get(marker.getId());
+            ClinicaVo clinicaVo = profissionais.get(marker.getId());
 
-            if (profissional != null){
+            if (clinicaVo != null){
 
+                if (CollectionUtils.isNotEmpty(clinicaVo.getProfissionais())){
 
-                LoadImage li = new LoadImage(view, profissional, marker, this);
-                li.start();
+                    for (ProfissionalBasicoVo profissional : clinicaVo.getProfissionais()){
+                        LoadImage li = new LoadImage(view, profissional, marker, this);
+                        li.start();
 
-                TextView nomeProfissional = ((TextView) view.findViewById(R.id.nome));
-                SpannableString profissionalText = new SpannableString(profissional.getNome());
-                profissionalText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, profissionalText.length(), 0);
-                nomeProfissional.setText(profissionalText);
+                        TextView nomeProfissional = ((TextView) view.findViewById(R.id.nome));
+                        SpannableString profissionalText = new SpannableString(profissional.getNome());
+                        profissionalText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, profissionalText.length(), 0);
+                        nomeProfissional.setText(profissionalText);
 
-                TextView crmProfissional = ((TextView) view.findViewById(R.id.crm));
-                String crm = profissional.getCrm() != null ? profissional.getCrm().toString() : "";
-                SpannableString crmText = new SpannableString(crm);
-                crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
-                crmProfissional.setText("CRM: " + crmText);
+                        TextView crmProfissional = ((TextView) view.findViewById(R.id.crm));
+                        String crm = profissional.getNumeroRegistro() != null ? profissional.getNumeroRegistro().toString() : "";
+                        SpannableString crmText = new SpannableString(crm);
+                        crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
+                        crmProfissional.setText("CRM: " + crmText);
 
-                TextView especProfissional = ((TextView) view.findViewById(R.id.espec));
-                especProfissional.setText(profissional.getEspec());
+                        TextView especProfissional = ((TextView) view.findViewById(R.id.espec));
+                        especProfissional.setText(profissional.getEspec());
 
-                TextView endProfissional = ((TextView) view.findViewById(R.id.endereco));
-                endProfissional.setText(profissional.getEndereco());
+                        TextView endProfissional = ((TextView) view.findViewById(R.id.endereco));
+                        endProfissional.setText(profissional.getEndereco());
 
-                TextView telProfissional = ((TextView) view.findViewById(R.id.telefone));
-                if (profissional.getTelefone() != null && !"".equals(profissional.getTelefone())){
+                        TextView telProfissional = ((TextView) view.findViewById(R.id.telefone));
+                        if (profissional.getTelefone() != null && !"".equals(profissional.getTelefone())){
 
-                    telProfissional.setText("Telefone: " + profissional.getTelefone());
-                }else{
-                    telProfissional.setText("Telefone: --");
+                            telProfissional.setText("Telefone: " + profissional.getTelefone());
+                        }else{
+                            telProfissional.setText("Telefone: --");
+                        }
+                    }
                 }
 
 
@@ -332,7 +340,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         @Override
         public void run() {
             if( reloadImage ) {
-                String imageUrl = "http://agendee.com.br/f/" + profissional.getCrm() + ".jpg";
+                String imageUrl = "http://agendee.com.br/f/" + profissional.getNumeroRegistro() + ".jpg";
                 try {
                     bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
                     context.runOnUiThread(new Runnable() {
@@ -365,8 +373,8 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
     class ReloadMarkerThread extends Thread{
 
-        private ResultadoBuscaProfissionalVo resultado;
-        ReloadMarkerThread(ResultadoBuscaProfissionalVo resultado){
+        private ResultadoBuscaClinicaVo resultado;
+        ReloadMarkerThread(ResultadoBuscaClinicaVo resultado){
             this.resultado = resultado;
         }
 
@@ -384,16 +392,22 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
                 try{
 
-                    for (ProfissionalBasicoVo profissional : resultado.getProfissionais()) {
+                    for (ClinicaVo clinicaVo : resultado.getClinicas()) {
+                        ProfissionalBasicoVo p = clinicaVo.getProfissionais().get(0);
 
-                        Marker m = mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(profissional.getLatitude(), profissional.getLongitude()))
-                                .icon(BitmapDescriptorFactory.defaultMarker(
-                                        profissional.getTemAgenda() ?
-                                                BitmapDescriptorFactory.HUE_BLUE
-                                            : BitmapDescriptorFactory.HUE_RED)));
+                        //TODO localidade tem que ser da clinica.
+                        if (p != null){
+                            Marker m = mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.defaultMarker(
+                                            clinicaVo.getTemAgenda() ?
+                                                    BitmapDescriptorFactory.HUE_BLUE
+                                                    : BitmapDescriptorFactory.HUE_RED)));
 
-                        profissionais.put(m.getId(), profissional);
+                            profissionais.put(m.getId(), clinicaVo);
+
+                        }
+
 
                     }
                 }catch(Exception ex){
@@ -402,10 +416,10 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), 11));
                 AndroidUtils.closeWaitDlg();
                 
-                if (resultado.getProfissionais() == null || resultado.getProfissionais().size() == 0){
+                if (CollectionUtils.isEmpty(resultado.getClinicas() )){
                     AndroidUtils.showMessageErroDlg(context.getString(R.string.msg_nenhumProfissionalEncontrado), context);
                 }else{
-                    Toast.makeText(context,resultado.getProfissionais().size() + " Profissionals foram encontrados", Toast.LENGTH_SHORT);
+                    Toast.makeText(context,"Profissionals foram encontrados!", Toast.LENGTH_SHORT);
                 }
 
             } catch (Exception ex) {

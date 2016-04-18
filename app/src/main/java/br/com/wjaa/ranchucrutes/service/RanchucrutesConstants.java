@@ -8,6 +8,7 @@ public class RanchucrutesConstants {
 
 
     public static final String END_POINT_PROCURAR_PROFISSIONAL = "profissional/search";
+    public static final String END_POINT_PROCURAR_CLINICAS = "profissional/clinica/search";
     public static final String END_POINT_CRIAR_PACIENTE = "paciente/save";
     public static final String END_POINT_AUTH_PACIENTE = "auth/paciente";
     public static final String END_POINT_ATUALIZAR_PACIENTE = "paciente/update";
