@@ -96,7 +96,7 @@ public class LoginActivity extends RoboActionBarActivity {
             setSupportActionBar(toolbar);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         }
     }

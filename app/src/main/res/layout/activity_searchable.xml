@@ -4,7 +4,7 @@
     android:id="@+id/cl_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@android:color/white"
 
     >
 
@@ -21,7 +21,8 @@
         android:fitsSystemWindows="true"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/padding_top_toolbar"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/tb_main"
@@ -29,9 +30,9 @@
             android:minHeight="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-
             app:layout_scrollFlags="scroll|enterAlways"
             app:theme="@style/MyCustomToolbarStyle"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
             />
 
     </android.support.design.widget.AppBarLayout>
