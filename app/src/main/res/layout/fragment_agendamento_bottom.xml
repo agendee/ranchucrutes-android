@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/txtMsgAgenda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="O Dr Wagner Jeronimo não possui agenda online, mas você pode ligar para ele agora."
+        android:textColor="@color/titulo_color"
+        android:textSize="20dp"
+        android:fontFamily="Arial, Verdana"
+        />
+
+    <ImageButton
+        android:id="@+id/btnLigar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_phone_white_48dp"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:layout_margin="40dp"
+        android:padding="20dp"
+        style="@style/btnRedondo"
+        />
+    
+</LinearLayout>

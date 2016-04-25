@@ -6,25 +6,14 @@
   android:orientation="vertical"
   android:background="@color/vidro_black">
 
-    <RatingBar
-        android:progressBackgroundTint="@android:color/white"
-        android:layout_marginTop="70dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        android:numStars="5"
-        android:scaleX="0.8"
-        android:scaleY="0.8"
-        android:isIndicator="true"
 
-        />
 
    <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
        android:layout_gravity="center"
+       android:layout_marginTop="50dp"
     >
 
 

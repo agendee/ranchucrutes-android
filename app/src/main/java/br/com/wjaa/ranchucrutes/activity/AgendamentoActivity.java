@@ -12,8 +12,11 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,6 +40,7 @@ import br.com.wjaa.ranchucrutes.service.AgendamentoService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.DateUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SlidingTabLayout;
 import br.com.wjaa.ranchucrutes.vo.AgendaVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
@@ -53,11 +57,19 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     @InjectView(R.id.toolbar)
     private Toolbar toolbar;
 
+
+
     @InjectView(R.id.tabLayout)
     private SlidingTabLayout tabLayout;
 
+    @InjectView(R.id.frameInfoBotom)
+    private FrameLayout frameInfoBotom;
+
     @InjectView(R.id.vpTabs)
     private ViewPager viewPager;
+
+    @InjectView(R.id.fab)
+    private FloatingActionButton fab;
 
     @InjectView(R.id.scrollBody)
     private NestedScrollView nestedScrollView;
@@ -99,39 +111,23 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     }
 
     private void criarBotaoLigar() {
-        // FAB
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (profissional != null && profissional.getTelefone() != null && !"".equals(profissional.getTelefone())) {
-                    Intent chamada = new Intent(Intent.ACTION_DIAL);
-                    //pega a posição da pessoa
-                    chamada.setData(Uri.parse("tel:" + profissional.getTelefone().trim()));
-                    AgendamentoActivity.this.startActivity(chamada);
-
-                } else {
-                    AndroidUtils.showMessageErroDlg("Esse profissional não divulgou seu telefone.",
-                            AgendamentoActivity.this);
-                }
-
-            }
-        });
+        fab.setOnClickListener(new BtnLigarClickListerner());
     }
 
     private void initMenu() {
 
         mCollapsingToolbarLayout.setTitle(profissional.getNome());
+        mCollapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
+        mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.white));
+        mCollapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.white));
 
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN){
             toolbar.setBackground(null);
         }
 
-        toolbar.setTitle(profissional.getNome());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         SimpleDraweeView sdvFotoProfissional = (SimpleDraweeView) findViewById(R.id.sdvFotoProfissional);
 
@@ -259,13 +255,13 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
 
                 }else{
-                    criarMsg("Profissional não possui agenda online.");
+                    profissionalSemAgenda("Profissional não possui agenda online.");
 
                 }
 
 
             } catch (AgendamentoServiceException e) {
-                criarMsg(e.getMessage());
+                profissionalSemAgenda(e.getMessage());
             }
 
 
@@ -280,26 +276,51 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         finish();
     }
 
-    private void criarMsg(String s) {
-
-      /*  final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT);
-        lp.setMargins(20, 20, 20, 20);
-        final LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final TextView tv = new TextView(this);
-        //b.setLayoutParams(lp);
-        tv.setText(s);
-        tv.setTextColor(getResources().getColor(android.R.color.white));
-        tv.setTextSize(30);
-        linearLayout.addView(tv);
+    private void profissionalSemAgenda(String s) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                nestedScrollView.addView(linearLayout, lp);
+                View v = LayoutInflater.from(AgendamentoActivity.this).inflate(R.layout.fragment_agendamento_bottom,frameInfoBotom, false);
+                TextView txtMsg = (TextView) v.findViewById(R.id.txtMsgAgenda);
 
+                ImageButton btnLigar = (ImageButton) v.findViewById(R.id.btnLigar);
+                btnLigar.setOnClickListener(new BtnLigarClickListerner());
+
+                if (StringUtils.isNotBlank(profissional.getTelefone())){
+                    txtMsg.setText(profissional.getNome() + " não possui agenda online, mas você pode ligar para ela agora.");
+
+                }else{
+                    txtMsg.setText(profissional.getNome() + " não possui agenda online. Estamos trabalhando pra traze-lo para o agendee e facilitar a sua vida.");
+                    btnLigar.setVisibility(View.INVISIBLE);
+                }
+
+                fab.setVisibility(View.INVISIBLE);
+                tabLayout.setVisibility(View.INVISIBLE);
+                viewPager.setVisibility(View.INVISIBLE);
+                frameInfoBotom.setVisibility(View.VISIBLE);
+                frameInfoBotom.addView(v);
             }
         });
-*/
+    }
+
+
+
+
+    class BtnLigarClickListerner implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            if (profissional != null && profissional.getTelefone() != null && !"".equals(profissional.getTelefone())) {
+                Intent chamada = new Intent(Intent.ACTION_DIAL);
+                //pega a posição da pessoa
+                chamada.setData(Uri.parse("tel:" + profissional.getTelefone().trim()));
+                AgendamentoActivity.this.startActivity(chamada);
+
+            } else {
+                AndroidUtils.showMessageErroDlg("Esse profissional não divulgou seu telefone.",
+                        AgendamentoActivity.this);
+            }
+
+        }
     }
 }
