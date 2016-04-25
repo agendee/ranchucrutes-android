@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:theme="@style/AppTheme.ToolbarSearch"
 
     >
 
@@ -24,16 +25,7 @@
         android:layout_width="match_parent"
         >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/tb_main"
-            android:elevation="0dp"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:theme="@style/MyCustomToolbarStyle"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-            />
+        <include layout="@layout/toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 

@@ -21,6 +21,8 @@
     <color name="item_list_color">#ffffff</color>
     <color name="vidro_black">#8f000000</color>
 
+    <color name="titulo_color">#000000</color>
+    <color name="subTitulo_color">#402e12</color>
     <color name="btnNormal">#94999999</color>
     <color name="btnPressed">#92288f2d</color>
 

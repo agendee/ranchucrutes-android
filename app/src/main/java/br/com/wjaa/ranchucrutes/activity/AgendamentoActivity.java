@@ -1,6 +1,5 @@
 package br.com.wjaa.ranchucrutes.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -8,22 +7,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.LayoutDirection;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -32,10 +23,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -84,7 +73,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         Fresco.initialize(this);
         super.onCreate(savedInstanceState);
         Bundle b = getIntent().getExtras();
-        profissional = b.getParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL);
+        profissional = (ProfissionalBasicoVo) b.getSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL);
         if (profissional != null){
             this.init();
         }
@@ -202,7 +191,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
             try {
                 final List<ProfissionalAgendaFragment> profissionalAgendaFragments = new ArrayList<>();
                 AgendaVo agendaVo = agendamentoService.getAgendamentoByIdProfissional(
-                        profissional.getId(), profissional.getClinicas()[0].getId());
+                        profissional.getId(), profissional.getIdClinicaAtual());
                 Map<Date,List<Date>> datasAgrupadas = new TreeMap<>();
                 if (agendaVo != null){
                     Collections.sort(agendaVo.getHorariosDisponiveis());

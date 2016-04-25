@@ -55,6 +55,13 @@ public class AndroidUtils {
         return i;
     }
 
+    public static Intent openActivity(Activity context, Class<?> activity, int requestCode  ){
+        Intent i = new Intent(context, activity);
+
+        context.startActivityForResult(i, requestCode);
+        return i;
+    }
+
     public static Intent openActivity(Activity context, Class<?> activity, Bundle bundle ){
         Intent i = new Intent(context, activity);
         i.putExtras(bundle);

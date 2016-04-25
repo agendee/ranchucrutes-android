@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         setContentView(R.layout.activity_searchable);
         //==========================
 
-        toolbar = (Toolbar) findViewById(R.id.tb_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -106,8 +107,11 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
             searchView = (SearchView) MenuItemCompat.getActionView( itemMenu );
         }
 
+        ImageView closeButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        closeButton.setImageResource(R.drawable.ic_close_white_18dp);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint("Pesquise aqui");
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -122,9 +126,8 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
             }
         });
 
-        //searchView.onActionViewExpanded();
-       // searchView.callOnClick();
-        itemMenu.expandActionView();
+        searchView.onActionViewExpanded();
+        //itemMenu.expandActionView();
 
         return true;
     }

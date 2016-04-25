@@ -94,8 +94,9 @@ public class LoginActivity extends RoboActionBarActivity {
         if (toolbar != null) {
             this.toolbar.setTitle("Fazer Login");
             setSupportActionBar(toolbar);
-            getSupportActionBar().setHomeButtonEnabled(true);
+           // getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+           // getSupportActionBar().
 //            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         }

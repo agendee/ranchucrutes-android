@@ -95,10 +95,11 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     public void onInfoWindowClick(Marker marker) {
 
         try{
+            //TODO AQUI PRECISA SER DIFERENTE QUANDO TIVER MAIS DE UM PROFISSIONAL NO MESMO LOCAL.
             ClinicaVo c = profissionais.get(marker.getId());
             ProfissionalBasicoVo m = c.getProfissionais().get(0);
             Bundle b = new Bundle();
-            b.putParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL,m);
+            b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL,m);
             AndroidUtils.openActivity(context,AgendamentoActivity.class, b);
         }
         catch(ActivityNotFoundException act){
@@ -243,22 +244,6 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         }
 
         private void render(Marker marker, View view) {
-            int badge = 0;
-            // Use the equals() method on a Marker to check for equals.  Do not use ==.
-           /* if (marker.equals(mBrisbane)) {
-                badge = R.drawable.badge_qld;
-            } else if (marker.equals(mAdelaide)) {
-                badge = R.drawable.badge_sa;
-            } else if (marker.equals(mSydney)) {
-                badge = R.drawable.badge_nsw;
-            } else if (marker.equals(mMelbourne)) {
-                badge = R.drawable.badge_victoria;
-            } else if (marker.equals(mPerth)) {
-                badge = R.drawable.badge_wa;
-            } else {
-                // Passing 0 to setImageResource will clear the image view.
-                badge = 0;
-            }*/
             //
             ClinicaVo clinicaVo = profissionais.get(marker.getId());
 

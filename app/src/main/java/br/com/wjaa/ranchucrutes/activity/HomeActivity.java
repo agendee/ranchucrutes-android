@@ -255,7 +255,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
 
         MenuItem menuItem = navView.getMenu().findItem(id);
-        if (menuItem != null && id != R.id.navExit && id != R.id.navEnter){
+        if (menuItem != null && id != R.id.navExit && id != R.id.navEnter && id != R.id.navSetting){
             navToolbar.setTitle(menuItem.getTitle());
         }
 
@@ -273,7 +273,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
                 openFragment(this.profissionaisFavoritosFragment);
                 break;
             case R.id.navSetting:
-                AndroidUtils.openActivity(this,SettingsActivity.class);
+                AndroidUtils.openActivity(this,SettingsActivity.class, RanchucrutesConstants.FINISH_TO_OPEN_HOME);
                 break;
             case R.id.navExit:
                 AndroidUtils.showConfirmDlg("Sair", "Deseja realmente sair do aplicativo?",
@@ -378,7 +378,11 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,requestCode,data);
-        //displayView(0);
+        super.onActivityResult(requestCode,resultCode,data);
+
+        if (requestCode == RanchucrutesConstants.FINISH_TO_OPEN_HOME){
+            displayView(R.id.navSearch);
+        }
+
     }
 }

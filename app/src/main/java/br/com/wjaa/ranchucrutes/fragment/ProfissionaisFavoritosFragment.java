@@ -14,6 +14,7 @@ import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
+import br.com.wjaa.ranchucrutes.adapter.ProfissionaisFavoritosListAdapter;
 import br.com.wjaa.ranchucrutes.fragment.dummy.DummyContent;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
@@ -27,6 +28,8 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
     @Inject
     private ProfissionalService profissionalService;
 
+    private ProfissionalBasicoVo [] profissionaisFavoritos;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -39,13 +42,19 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
         super.onCreate(savedInstanceState);
 
         //TODO AQUI TRAZER OS FAVORITOS DA BASE
-        List<ItemListVo> items = new ArrayList<>();
-        items.add(new ItemListVo("18868", "Dr. Wagner Jeronimo"));
-        items.add(new ItemListVo("18878", "Dra. Luiza Donizetti"));
+        ProfissionalBasicoVo p1 = new ProfissionalBasicoVo();
+        p1.setId(18868l);
+        p1.setNome("Dr. Wagner Jeronimo");
+        p1.setEspec("Psiquiatria");
+        p1.setIdClinicaAtual(19589l);
+        ProfissionalBasicoVo p2 = new ProfissionalBasicoVo();
+        p2.setId(18878l);
+        p2.setNome("Dra. Luiza Donizetti");
+        p2.setEspec("Dermatologista");
+        p2.setIdClinicaAtual(19593l);
+        profissionaisFavoritos = new ProfissionalBasicoVo[]{p1,p2};
 
-
-        setListAdapter(new ArrayAdapter<ItemListVo>(getActivity(),
-                R.layout.item_list_default, R.id.textItemList, items));
+        setListAdapter(new ProfissionaisFavoritosListAdapter(profissionaisFavoritos, getActivity()));
     }
 
 
@@ -56,28 +65,31 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        ItemListVo vo = (ItemListVo) l.getItemAtPosition(position);
+        ProfissionalBasicoVo vo =  profissionaisFavoritos[position];
         AndroidUtils.showWaitDlg("Aguarde abrindo agenda do profissional...",getActivity());
-        new FindProfissional(new Long(vo.getId())).start();
+        new FindProfissional(vo.getId(), vo.getIdClinicaAtual()).start();
     }
 
     class FindProfissional extends Thread{
         private Long idProfissional;
-        public FindProfissional(Long idProfissional) {
+        private Long idClinica;
+        public FindProfissional(Long idProfissional, Long idClinica) {
             this.idProfissional = idProfissional;
+            this.idClinica = idClinica;
         }
 
         @Override
         public void run() {
             try{
-                //profissionalService.
+                //TODO BUSCAR O PROFISSIONA E CLINICA
                 final ProfissionalBasicoVo profissional = profissionalService.getProfissionalById(idProfissional);
+                profissional.setIdClinicaAtual(idClinica);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Bundle b = new Bundle();
-                        b.putParcelable(RanchucrutesConstants.PARAM_PROFISSIONAL, profissional);
+                        b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL, profissional);
                         AndroidUtils.closeWaitDlg();
                         AndroidUtils.openActivity(getActivity(), AgendamentoActivity.class, b);
                     }

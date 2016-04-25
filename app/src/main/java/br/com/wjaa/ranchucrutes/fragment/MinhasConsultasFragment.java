@@ -1,10 +1,8 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.google.inject.Inject;

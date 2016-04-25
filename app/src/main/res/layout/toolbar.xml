@@ -9,8 +9,10 @@
     android:layout_width="match_parent"
     android:background="?attr/colorPrimary"
     app:layout_scrollFlags="scroll|enterAlways"
-    app:theme="@style/MyCustomToolbarStyle"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-    >
+    android:touchscreenBlocksFocus="false"
+    android:transitionGroup="false"
+    app:titleTextColor="@android:color/white"
+    app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
+   >
 </android.support.v7.widget.Toolbar>
 

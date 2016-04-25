@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by wagner on 25/07/15.
  */
-public class ProfissionalBasicoVo implements Parcelable, Serializable {
+public class ProfissionalBasicoVo implements Serializable {
     private Long id;
     private String nome;
     private Integer numeroRegistro;
@@ -24,12 +24,13 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
     private Integer idProfissao;
     private String nomeProfissao;
     private Integer idParceiro;
+    private Long idClinicaAtual;
 
     public ProfissionalBasicoVo() {
 
     }
 
-
+/*
     public ProfissionalBasicoVo(Parcel source) {
         this.id = source.readLong();
         this.nome = source.readString();
@@ -48,9 +49,9 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
             clinicas = Arrays.copyOf(parcelableArray, parcelableArray.length, ClinicaVo[].class);
         }
 
-    }
+    }*/
 
-    @Override
+   /* @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.nome);
@@ -64,7 +65,7 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
         dest.writeString(this.telefone);
         dest.writeString(this.temAgenda == null ? "false" : this.temAgenda.toString());
         dest.writeParcelableArray(clinicas, PARCELABLE_WRITE_RETURN_VALUE);
-    }
+    }*/
 
     public Long getId() {
         return id;
@@ -138,7 +139,7 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
         this.temAgenda = temAgenda;
     }
 
-    @Override
+    /*@Override
     public int describeContents() {
         return 0;
     }
@@ -152,7 +153,7 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
         public ProfissionalBasicoVo[] newArray(int size) {
             return new ProfissionalBasicoVo[size];
         }
-    };
+    };*/
 
     public Integer getIdProfissao() {
         return idProfissao;
@@ -184,5 +185,13 @@ public class ProfissionalBasicoVo implements Parcelable, Serializable {
 
     public void setNumeroRegistro(Integer numeroRegistro) {
         this.numeroRegistro = numeroRegistro;
+    }
+
+    public Long getIdClinicaAtual() {
+        return idClinicaAtual;
+    }
+
+    public void setIdClinicaAtual(Long idClinicaAtual) {
+        this.idClinicaAtual = idClinicaAtual;
     }
 }
