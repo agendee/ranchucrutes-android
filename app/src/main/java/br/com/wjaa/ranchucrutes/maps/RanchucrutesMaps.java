@@ -44,6 +44,7 @@ import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.ClinicaVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
@@ -98,6 +99,9 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
             //TODO AQUI PRECISA SER DIFERENTE QUANDO TIVER MAIS DE UM PROFISSIONAL NO MESMO LOCAL.
             ClinicaVo c = profissionais.get(marker.getId());
             ProfissionalBasicoVo m = c.getProfissionais().get(0);
+            if (StringUtils.isNotBlank(c.getTelefone())){
+                m.setTelefone(c.getTelefone());
+            }
             Bundle b = new Bundle();
             b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL,m);
             AndroidUtils.openActivity(context,AgendamentoActivity.class, b);
@@ -256,25 +260,32 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                         li.start();
 
                         TextView nomeProfissional = ((TextView) view.findViewById(R.id.nome));
-                        SpannableString profissionalText = new SpannableString(profissional.getNome());
-                        profissionalText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, profissionalText.length(), 0);
-                        nomeProfissional.setText(profissionalText);
+                        if (profissional.getNome().length() > 25){
+                            nomeProfissional.setText(profissional.getNome().substring(0,25) + "...");
+                        }else{
+                            nomeProfissional.setText(profissional.getNome());
+                        }
+
 
                         TextView crmProfissional = ((TextView) view.findViewById(R.id.crm));
                         String crm = profissional.getNumeroRegistro() != null ? profissional.getNumeroRegistro().toString() : "";
-                        SpannableString crmText = new SpannableString(crm);
-                        crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
-                        crmProfissional.setText("CRM: " + crmText);
+                        crmProfissional.setText("CRM: " + crm);
 
                         TextView especProfissional = ((TextView) view.findViewById(R.id.espec));
                         especProfissional.setText(profissional.getEspec());
 
+
                         TextView endProfissional = ((TextView) view.findViewById(R.id.endereco));
-                        endProfissional.setText(profissional.getEndereco());
+                        if (profissional.getEndereco().length() > 35){
+                            endProfissional.setText(profissional.getEndereco().substring(0,35) + " ...");
+                        }else{
+                            endProfissional.setText(profissional.getEndereco());
+                        }
 
                         TextView telProfissional = ((TextView) view.findViewById(R.id.telefone));
-                        if (profissional.getTelefone() != null && !"".equals(profissional.getTelefone())){
-
+                        if (StringUtils.isNotBlank(clinicaVo.getTelefone())) {
+                            telProfissional.setText("Telefone: " + clinicaVo.getTelefone());
+                        } else if (StringUtils.isNotBlank(profissional.getTelefone())){
                             telProfissional.setText("Telefone: " + profissional.getTelefone());
                         }else{
                             telProfissional.setText("Telefone: --");

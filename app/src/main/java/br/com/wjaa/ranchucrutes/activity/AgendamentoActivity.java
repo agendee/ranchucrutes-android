@@ -116,7 +116,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
     private void initMenu() {
 
-        mCollapsingToolbarLayout.setTitle(profissional.getNome());
+        mCollapsingToolbarLayout.setTitle("Agendamento");
         mCollapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
         mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.white));
         mCollapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.white));
@@ -140,11 +140,14 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
         sdvFotoProfissional.setController(dc);
 
+
+        TextView txtPDNome = ((TextView) this.findViewById(R.id.txtPDNome));
+        String nome = profissional.getNome();
+        txtPDNome.setText(nome);
+
         TextView crmProfissional = ((TextView) this.findViewById(R.id.crm));
         String crm = profissional.getNumeroRegistro() != null ? profissional.getNumeroRegistro().toString() : "";
-        SpannableString crmText = new SpannableString(crm);
-        crmText.setSpan(new ForegroundColorSpan(Color.BLUE), 0, crm.length(), 0);
-        crmProfissional.setText("CRM: " + crmText);
+        crmProfissional.setText("CRM: " + crm);
 
         TextView especProfissional = ((TextView) this.findViewById(R.id.espec));
         especProfissional.setText(profissional.getEspec());
@@ -154,10 +157,9 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
         TextView telProfissional = ((TextView) this.findViewById(R.id.telefone));
         if (profissional.getTelefone() != null && !"".equals(profissional.getTelefone())){
-
-            telProfissional.setText("Telefone: " + profissional.getTelefone());
+            telProfissional.setText("Tel: " + profissional.getTelefone());
         }else{
-            telProfissional.setText("Telefone: --");
+            telProfissional.setText("Tel: --");
         }
 
 
@@ -286,11 +288,9 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                 ImageButton btnLigar = (ImageButton) v.findViewById(R.id.btnLigar);
                 btnLigar.setOnClickListener(new BtnLigarClickListerner());
 
-                if (StringUtils.isNotBlank(profissional.getTelefone())){
-                    txtMsg.setText(profissional.getNome() + " não possui agenda online, mas você pode ligar para ela agora.");
+                txtMsg.setText("No momento esse profissional não possui agenda.");
 
-                }else{
-                    txtMsg.setText(profissional.getNome() + " não possui agenda online. Estamos trabalhando pra traze-lo para o agendee e facilitar a sua vida.");
+                if (!StringUtils.isNotBlank(profissional.getTelefone())){
                     btnLigar.setVisibility(View.INVISIBLE);
                 }
 

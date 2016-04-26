@@ -17,44 +17,62 @@
     >
 
 
-    <TextView
-      android:id="@+id/crm"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:singleLine="true"
 
+    <TextView
+       android:id="@+id/txtPDNome"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:ellipsize="end"
+       android:singleLine="true"
+       android:text="Dr Wagner Jeronimo de Assis Araujo"
+       android:textColor="#FFF"
+       android:textSize="23dp"/>
+
+    <TextView
+       android:id="@+id/espec"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:ellipsize="end"
+       android:singleLine="true"
+       android:text="Cardiologista"
+       android:textColor="#FFF"
+       android:textSize="15dp"
+       android:paddingLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/crm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:text="4564564"
         android:textColor="#FFF"
-        android:textSize="19dp"/>
-    <TextView
-      android:id="@+id/espec"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:singleLine="true"
-        android:text="Cardiologista"
-        android:textColor="#FFF"
-        android:textSize="19dp"/>
-    <TextView
-      android:id="@+id/endereco"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:singleLine="true"
+        android:textSize="15dp"
+        android:paddingLeft="20dp"/>
 
+
+    <TextView
+        android:id="@+id/endereco"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:text="Rua da gaita gaiteira"
         android:textColor="#FFF"
-        android:textSize="19dp"/>
+        android:textSize="15dp"
+        android:paddingLeft="20dp"/>
+
+
     <TextView
-      android:id="@+id/telefone"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:singleLine="true"
-      android:text="2323232323"
+        android:id="@+id/telefone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="2323232323"
         android:textColor="#FFF"
-      android:textSize="19dp"/>
+        android:textSize="15dp"
+        android:paddingLeft="20dp"/>
 
   </LinearLayout>
 </LinearLayout>

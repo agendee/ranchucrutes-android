@@ -18,13 +18,16 @@
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
   android:background="@drawable/custom_info_bubble"
-  android:orientation="vertical">
+  android:orientation="vertical"
+    >
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
 
         <ImageView
             android:id="@+id/badge"
@@ -42,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_gravity="center"
         android:layout_marginTop="15dp">
 
         <TextView
@@ -51,33 +55,40 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#ff000000"
-            android:textSize="14dp"
+            android:textSize="17dp"
             android:text="jfdassfjdsaklfsdajklasdf jkdfasljf asdl"
             android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/crm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="#ff7f7f7f"
-            android:textSize="14dp"/>
         <TextView
             android:id="@+id/espec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ff7f7f7f"
-            android:textSize="14dp"/>
+            android:textColor="#ff000000"
+            android:text="Angiologia"
+            android:textSize="13dp"
+            android:paddingLeft="15dp"/>
+        <TextView
+            android:id="@+id/crm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="#ff000000"
+            android:text="123456"
+            android:textSize="13dp"
+            android:paddingLeft="15dp"/>
+
         <TextView
             android:id="@+id/endereco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ff7f7f7f"
-            android:textSize="14dp"/>
+            android:textColor="#ff000000"
+            android:text="Rua sao vicente 252 ap 34"
+            android:textSize="13dp"
+            android:paddingLeft="15dp"/>
         <TextView
             android:id="@+id/telefone"
             android:layout_width="wrap_content"
@@ -85,7 +96,10 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#ff000000"
-            android:textSize="14dp"/>
+            android:text="11 9999898"
+            android:textSize="13dp"
+            android:paddingLeft="15dp"
+            android:layout_marginBottom="20dp"/>
      </LinearLayout>
 
 

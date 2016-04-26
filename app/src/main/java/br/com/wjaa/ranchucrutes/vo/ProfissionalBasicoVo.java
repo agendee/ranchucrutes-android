@@ -25,6 +25,8 @@ public class ProfissionalBasicoVo implements Serializable {
     private String nomeProfissao;
     private Integer idParceiro;
     private Long idClinicaAtual;
+    private Boolean aceitaParticular;
+    private Boolean aceitaPlano;
 
     public ProfissionalBasicoVo() {
 
@@ -193,5 +195,21 @@ public class ProfissionalBasicoVo implements Serializable {
 
     public void setIdClinicaAtual(Long idClinicaAtual) {
         this.idClinicaAtual = idClinicaAtual;
+    }
+
+    public Boolean getAceitaParticular() {
+        return aceitaParticular;
+    }
+
+    public void setAceitaParticular(Boolean aceitaParticular) {
+        this.aceitaParticular = aceitaParticular;
+    }
+
+    public Boolean getAceitaPlano() {
+        return aceitaPlano;
+    }
+
+    public void setAceitaPlano(Boolean aceitaPlano) {
+        this.aceitaPlano = aceitaPlano;
     }
 }
