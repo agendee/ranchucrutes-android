@@ -116,8 +116,8 @@
     <string name="bntEncontreUmEndereco">Encontre um endereço</string>
     <string name="bntReagendar">Reagendar</string>
     <string name="bntConfirmarSolicitacao">Confirmar Solicitação</string>
-    <string name="bntCancelarConsulta">Cancelar Consulta</string>
-    <string name="bntConfirmarConsulta">Confirmar Consulta</string>
+    <string name="bntCancelarConsulta">Cancelar</string>
+    <string name="bntConfirmarConsulta">Confirmar</string>
 
 
 </resources>

@@ -4,75 +4,99 @@
   android:layout_height="match_parent"
   android:layout_gravity="center_horizontal"
   android:orientation="vertical"
-  android:background="@color/vidro_black">
+  android:background="@color/primaryColor">
 
 
 
    <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
        android:layout_gravity="center"
-       android:layout_marginTop="50dp"
-    >
+       android:layout_marginTop="50dp">
 
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+           android:layout_gravity="center">
 
+               <br.com.wjaa.ranchucrutes.components.RoundedImageView
+                   android:id="@+id/badge"
+                   android:layout_width="90dp"
+                   android:layout_height="90dp"
+                   android:layout_centerInParent="true"
+                   android:layout_gravity="center"
+                   android:src="@drawable/unknow"
+                   android:layout_margin="5dp">
+               </br.com.wjaa.ranchucrutes.components.RoundedImageView>
+        </LinearLayout>
 
-    <TextView
-       android:id="@+id/txtPDNome"
+       <LinearLayout
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:ellipsize="end"
-       android:singleLine="true"
-       android:text="Dr Wagner Jeronimo de Assis Araujo"
-       android:textColor="#FFF"
-       android:textSize="23dp"/>
+       android:orientation="vertical"
+       android:layout_gravity="center">
+            <TextView
+               android:id="@+id/txtPDNome"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:ellipsize="end"
+               android:singleLine="true"
+               android:text="Dr Wagner Jeronimo de Assis Araujo"
+                android:fontFamily="sans-serif"
+               android:textColor="#FFF"
+               android:textSize="23dp"/>
 
-    <TextView
-       android:id="@+id/espec"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:ellipsize="end"
-       android:singleLine="true"
-       android:text="Cardiologista"
-       android:textColor="#FFF"
-       android:textSize="15dp"
-       android:paddingLeft="20dp"/>
+            <TextView
+               android:id="@+id/espec"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:ellipsize="end"
+               android:singleLine="true"
+               android:text="Cardiologista"
+               android:textColor="#FFF"
+               android:textSize="13dp"
+                android:fontFamily="sans-serif-light"
+               android:paddingLeft="20dp"/>
 
-    <TextView
-        android:id="@+id/crm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="4564564"
-        android:textColor="#FFF"
-        android:textSize="15dp"
-        android:paddingLeft="20dp"/>
-
-
-    <TextView
-        android:id="@+id/endereco"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="Rua da gaita gaiteira"
-        android:textColor="#FFF"
-        android:textSize="15dp"
-        android:paddingLeft="20dp"/>
+            <TextView
+                android:id="@+id/crm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="4564564"
+                android:textColor="#FFF"
+                android:textSize="13dp"
+                android:fontFamily="sans-serif-light"
+                android:paddingLeft="20dp"/>
 
 
-    <TextView
-        android:id="@+id/telefone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="2323232323"
-        android:textColor="#FFF"
-        android:textSize="15dp"
-        android:paddingLeft="20dp"/>
+            <TextView
+                android:id="@+id/endereco"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="Rua da gaita gaiteira"
+                android:textColor="#FFF"
+                android:textSize="13dp"
+                android:fontFamily="sans-serif-light"
+                android:paddingLeft="20dp"/>
 
+
+            <TextView
+                android:id="@+id/telefone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="2323232323"
+                android:textColor="#FFF"
+                android:textSize="13dp"
+                android:fontFamily="sans-serif-light"
+                android:paddingLeft="20dp"/>
+        </LinearLayout>
   </LinearLayout>
 </LinearLayout>

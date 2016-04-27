@@ -37,9 +37,14 @@ public class MinhasConsultasFragment extends RoboListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        new FindAgendamentos().start();
+
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new FindAgendamentos().start();
+    }
 
     @Override
     public void onDetach() {

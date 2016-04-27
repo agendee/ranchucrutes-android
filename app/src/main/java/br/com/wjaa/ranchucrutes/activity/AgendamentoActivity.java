@@ -1,17 +1,12 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
@@ -36,6 +29,7 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.adapter.AgendamentoTabsAdapter;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.fragment.ProfissionalAgendaFragment;
+import br.com.wjaa.ranchucrutes.helper.DetalhesProfissionalHelper;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
@@ -48,7 +42,7 @@ import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-@ContentView(R.layout.activity_agendamento)
+@ContentView(R.layout.activity_detalhes_profissional)
 public class AgendamentoActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.collapsing_toolbar)
@@ -56,8 +50,6 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.toolbar)
     private Toolbar toolbar;
-
-
 
     @InjectView(R.id.tabLayout)
     private SlidingTabLayout tabLayout;
@@ -70,10 +62,6 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.fab)
     private FloatingActionButton fab;
-
-    @InjectView(R.id.scrollBody)
-    private NestedScrollView nestedScrollView;
-
 
     @Inject
     private AgendamentoService agendamentoService;
@@ -115,54 +103,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     }
 
     private void initMenu() {
-
-        mCollapsingToolbarLayout.setTitle("Agendamento");
-        mCollapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
-        mCollapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.white));
-        mCollapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(android.R.color.white));
-
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN){
-            toolbar.setBackground(null);
-        }
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        SimpleDraweeView sdvFotoProfissional = (SimpleDraweeView) findViewById(R.id.sdvFotoProfissional);
-
-        Uri uri = Uri.parse("http://agendee.com.br/f/" + profissional.getNumeroRegistro() + ".jpg");
-        DraweeController dc = Fresco.newDraweeControllerBuilder()
-                .setUri( uri )
-                .setAutoPlayAnimations(true)
-                .setOldController( sdvFotoProfissional.getController() )
-                .build();
-
-        sdvFotoProfissional.setController(dc);
-
-
-        TextView txtPDNome = ((TextView) this.findViewById(R.id.txtPDNome));
-        String nome = profissional.getNome();
-        txtPDNome.setText(nome);
-
-        TextView crmProfissional = ((TextView) this.findViewById(R.id.crm));
-        String crm = profissional.getNumeroRegistro() != null ? profissional.getNumeroRegistro().toString() : "";
-        crmProfissional.setText("CRM: " + crm);
-
-        TextView especProfissional = ((TextView) this.findViewById(R.id.espec));
-        especProfissional.setText(profissional.getEspec());
-
-        TextView endProfissional = ((TextView) this.findViewById(R.id.endereco));
-        endProfissional.setText(profissional.getEndereco());
-
-        TextView telProfissional = ((TextView) this.findViewById(R.id.telefone));
-        if (profissional.getTelefone() != null && !"".equals(profissional.getTelefone())){
-            telProfissional.setText("Tel: " + profissional.getTelefone());
-        }else{
-            telProfissional.setText("Tel: --");
-        }
-
-
+        DetalhesProfissionalHelper.build(this,"Agendamento", mCollapsingToolbarLayout,toolbar,profissional);
     }
 
     @Override
@@ -215,7 +156,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                         @Override
                         public void run() {
                             viewPager.setAdapter(new AgendamentoTabsAdapter(getSupportFragmentManager(), profissionalAgendaFragments, AgendamentoActivity.this));
-                            tabLayout.setBackgroundColor(getResources().getColor(R.color.primaryColor));
+                            tabLayout.setBackgroundColor(getResources().getColor(android.R.color.black));
                             tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primaryColorDark));
                             tabLayout.setCustomTabView(R.layout.tab_view, R.id.tv_tab);
                             //aqui pra deixar apenas uma data por pagina.
@@ -257,7 +198,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
 
                 }else{
-                    profissionalSemAgenda("Profissional não possui agenda online.");
+                    profissionalSemAgenda("No momento esse profissional não possui agenda.");
 
                 }
 
@@ -278,17 +219,17 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         finish();
     }
 
-    private void profissionalSemAgenda(String s) {
+    private void profissionalSemAgenda(final String msg) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                View v = LayoutInflater.from(AgendamentoActivity.this).inflate(R.layout.fragment_agendamento_bottom,frameInfoBotom, false);
+                View v = LayoutInflater.from(AgendamentoActivity.this).inflate(R.layout.fragment_agendamento,frameInfoBotom, false);
                 TextView txtMsg = (TextView) v.findViewById(R.id.txtMsgAgenda);
 
                 ImageButton btnLigar = (ImageButton) v.findViewById(R.id.btnLigar);
                 btnLigar.setOnClickListener(new BtnLigarClickListerner());
 
-                txtMsg.setText("No momento esse profissional não possui agenda.");
+                txtMsg.setText(msg);
 
                 if (!StringUtils.isNotBlank(profissional.getTelefone())){
                     btnLigar.setVisibility(View.INVISIBLE);

@@ -15,8 +15,11 @@ public class RanchucrutesConstants {
     public static final String END_POINT_CRIAR_AGENDAMENTO = "agendamento/criar";
     public static final String END_POINT_AGENDAMENTO = "agendamento";
     public static final String END_POINT_CONFIRMAR_SOLICITACAO = "agendamento/confirmarSolicitacao";
+    public static final String END_POINT_CANCELAR_CONSULTA = "agendamento/cancelarConsulta";
+    public static final String END_POINT_CONFIRMAR_CONSULTA = "agendamento/confirmarConsulta";
     public static final String END_POINT_GET_PROFISSIONAL = "profissional/basico";
     public static final String END_POINT_GET_AGENDAMENTOS = "agendamento/list";
+    public static final String END_POINT_GET_AGENDAMENTO = "agendamento";
     public static final String END_POINT_REGISTRO_GCM = "gcm/register";
 
 
@@ -30,4 +33,5 @@ public class RanchucrutesConstants {
 
     /*CONSTANTES PARA CONTROLE DE ACTIVITYS*/
     public static final int FINISH_TO_OPEN_HOME = 1000;
+
 }

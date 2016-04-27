@@ -36,6 +36,17 @@
         <item name="android:background">@drawable/button_border</item>
     </style>
 
+    <style name="btnGray">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@drawable/button_gray</item>
+    </style>
+
+
     <style name="btnError">
         <item name="android:textSize">14dp</item>
         <item name="android:textStyle">bold</item>

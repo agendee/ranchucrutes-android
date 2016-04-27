@@ -14,6 +14,10 @@
     <color name="warningTextColor">#e6cf2c</color>
     <color name="successTextColor">#43df30</color>
 
+    <color name="errorTextColorLigth">#64f25655</color>
+    <color name="warningTextColorLigth">#64e6cf2c</color>
+    <color name="successTextColorLigth">#6443df30</color>
+
 
     <color name="pressed_color">#4d90fe</color>
     <color name="focused_color">#4d90fe</color>

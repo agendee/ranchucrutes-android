@@ -16,7 +16,13 @@ public interface AgendamentoService {
 
     ConfirmarAgendamentoVo criarAgendamento(Long idProfissional,Long idClinica, Long idPaciente, Date date, boolean particular) throws AgendamentoServiceException;
 
-    AgendamentoVo confirmarAgendamento(Long idAgendamento, String codigo) throws AgendamentoServiceException;
+    AgendamentoVo confirmarSolicitacao(Long idAgendamento, String codigo) throws AgendamentoServiceException;
 
     AgendamentoVo[] getAgendamentos(Long idPaciente) throws AgendamentoServiceException;
+
+    AgendamentoVo cancelarAgendamento(Long id) throws AgendamentoServiceException;
+
+    AgendamentoVo confirmarAgendamento(Long id) throws AgendamentoServiceException;
+
+    AgendamentoVo getAgendamentoById(Long id) throws AgendamentoServiceException;
 }

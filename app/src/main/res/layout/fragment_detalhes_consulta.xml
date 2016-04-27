@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+    >
+
+    <android.support.v7.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="3dp"
+        android:layout_margin="10dp"
+        >
+        <LinearLayout
+            android:id="@+id/dcLayoutStatus"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="5dp"
+            >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="27dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="Sua consulta em"
+            android:textColor="@android:color/black"
+            />
+
+        <TextView
+            android:id="@+id/dcTxtDataConsulta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="23dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="10/10/2015 09:50"
+            android:textColor="@android:color/black"
+            />
+
+
+            <TextView
+                android:id="@+id/dcTxtStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:text="Consulta cancelada!"
+                android:textColor="@android:color/black"
+
+                />
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/dcBtnReagendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bntReagendar"
+            android:textAlignment="gravity"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            style="@style/btn"
+            android:layout_marginTop="10dp"
+
+            />
+        <Button
+            android:id="@+id/dcBtnConfirmarSolicitacao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bntConfirmarSolicitacao"
+            android:textAlignment="gravity"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            style="@style/btn"
+            android:layout_marginTop="10dp"
+            />
+
+        <Button
+            android:id="@+id/dcBtnCancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bntCancelarConsulta"
+            android:textAlignment="gravity"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            style="@style/btn"
+            android:layout_marginTop="10dp"
+            />
+
+
+        <Button
+            android:id="@+id/dcBtnConfirmarConsulta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bntConfirmarConsulta"
+            android:textAlignment="gravity"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            style="@style/btn"
+            android:layout_marginTop="10dp"
+
+            />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

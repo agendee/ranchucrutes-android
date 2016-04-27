@@ -25,20 +25,17 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        >
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
 
-        <ImageView
+        <br.com.wjaa.ranchucrutes.components.RoundedImageView
             android:id="@+id/badge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:maxWidth="80dp"
-            android:maxHeight="80dp"
             android:src="@drawable/unknow">
-        </ImageView>
+        </br.com.wjaa.ranchucrutes.components.RoundedImageView>
 
     </LinearLayout>
     <LinearLayout

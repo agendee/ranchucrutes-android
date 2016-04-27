@@ -260,12 +260,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                         li.start();
 
                         TextView nomeProfissional = ((TextView) view.findViewById(R.id.nome));
-                        if (profissional.getNome().length() > 25){
-                            nomeProfissional.setText(profissional.getNome().substring(0,25) + "...");
-                        }else{
-                            nomeProfissional.setText(profissional.getNome());
-                        }
-
+                        nomeProfissional.setText(profissional.getNome());
 
                         TextView crmProfissional = ((TextView) view.findViewById(R.id.crm));
                         String crm = profissional.getNumeroRegistro() != null ? profissional.getNumeroRegistro().toString() : "";
@@ -276,11 +271,8 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
 
                         TextView endProfissional = ((TextView) view.findViewById(R.id.endereco));
-                        if (profissional.getEndereco().length() > 35){
-                            endProfissional.setText(profissional.getEndereco().substring(0,35) + " ...");
-                        }else{
-                            endProfissional.setText(profissional.getEndereco());
-                        }
+                        endProfissional.setText(profissional.getEndereco());
+
 
                         TextView telProfissional = ((TextView) view.findViewById(R.id.telefone));
                         if (StringUtils.isNotBlank(clinicaVo.getTelefone())) {

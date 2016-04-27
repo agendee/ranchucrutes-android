@@ -3,16 +3,12 @@ package br.com.wjaa.ranchucrutes.activity;
 
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -22,11 +18,8 @@ import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.vo.AgendamentoVo;
 import br.com.wjaa.ranchucrutes.vo.ConfirmarAgendamentoVo;
 import roboguice.activity.RoboActionBarActivity;
-import roboguice.activity.RoboActivity;
-import roboguice.fragment.RoboFragment;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -66,7 +59,7 @@ public class ConfirmeAgendamentoActivity extends RoboActionBarActivity {
         toolbar.setTitle(R.string.title_activity_confirme_agendamento);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
     }
 
@@ -98,7 +91,7 @@ public class ConfirmeAgendamentoActivity extends RoboActionBarActivity {
         public void run() {
             try {
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, enviando confirmação...", ConfirmeAgendamentoActivity.this);
-                agendamentoService.confirmarAgendamento(confirmarAgendamento.getAgendamentoVo().getId(), edtConfirmeCode.getText().toString());
+                agendamentoService.confirmarSolicitacao(confirmarAgendamento.getAgendamentoVo().getId(), edtConfirmeCode.getText().toString());
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \nVeja detalhes em Minhas Consultas.",
                         ConfirmeAgendamentoActivity.this, new DialogCallback() {
@@ -117,6 +110,16 @@ public class ConfirmeAgendamentoActivity extends RoboActionBarActivity {
                 AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), ConfirmeAgendamentoActivity.this);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == android.R.id.home){
+            finish();
+        }
+        return true;
     }
 
 }
