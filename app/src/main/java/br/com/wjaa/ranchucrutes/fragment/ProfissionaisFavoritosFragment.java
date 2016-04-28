@@ -3,18 +3,23 @@ package br.com.wjaa.ranchucrutes.fragment;
 import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.adapter.ProfissionaisFavoritosListAdapter;
+import br.com.wjaa.ranchucrutes.entity.ProfissionalFavoritoEntity;
 import br.com.wjaa.ranchucrutes.fragment.dummy.DummyContent;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
@@ -28,7 +33,7 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
     @Inject
     private ProfissionalService profissionalService;
 
-    private ProfissionalBasicoVo [] profissionaisFavoritos;
+    private List<ProfissionalFavoritoEntity> profissionaisFavoritos;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,22 +44,11 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+       super.onCreate(savedInstanceState);
 
-        //TODO AQUI TRAZER OS FAVORITOS DA BASE
-        ProfissionalBasicoVo p1 = new ProfissionalBasicoVo();
-        p1.setId(18868l);
-        p1.setNome("Dr. Wagner Jeronimo");
-        p1.setEspec("Psiquiatria");
-        p1.setIdClinicaAtual(19589l);
-        ProfissionalBasicoVo p2 = new ProfissionalBasicoVo();
-        p2.setId(18878l);
-        p2.setNome("Dra. Luiza Donizetti");
-        p2.setEspec("Dermatologista");
-        p2.setIdClinicaAtual(19593l);
-        profissionaisFavoritos = new ProfissionalBasicoVo[]{p1,p2};
+       profissionaisFavoritos = profissionalService.listProfissionalFavorito();
 
-        setListAdapter(new ProfissionaisFavoritosListAdapter(profissionaisFavoritos, getActivity()));
+       setListAdapter(new ProfissionaisFavoritosListAdapter(profissionaisFavoritos, getActivity()));
     }
 
 
@@ -65,9 +59,9 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        ProfissionalBasicoVo vo =  profissionaisFavoritos[position];
+        ProfissionalFavoritoEntity pdf =  profissionaisFavoritos.get(position);
         AndroidUtils.showWaitDlg("Aguarde abrindo agenda do profissional...",getActivity());
-        new FindProfissional(vo.getId(), vo.getIdClinicaAtual()).start();
+        new FindProfissional(pdf.getId().longValue(), pdf.getIdClinica().longValue()).start();
     }
 
     class FindProfissional extends Thread{
@@ -101,6 +95,12 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
                 Log.e("Exemplo de chamada", "falha", act);
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setEmptyText(getResources().getString(R.string.emptyProfissionais));
     }
 
 }
