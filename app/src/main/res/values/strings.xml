@@ -118,6 +118,7 @@
     <string name="bntConfirmarSolicitacao">Confirmar Solicitação</string>
     <string name="bntCancelarConsulta">Cancelar</string>
     <string name="bntConfirmarConsulta">Confirmar</string>
+    <string name="emptyProfissionais">Não existe profissionais favoritos.</string>
 
 
 </resources>

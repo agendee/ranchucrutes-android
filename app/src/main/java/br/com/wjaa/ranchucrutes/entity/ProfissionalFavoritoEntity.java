@@ -22,7 +22,7 @@ public class ProfissionalFavoritoEntity extends PersistenceBean {
     private String espec;
 
     public ProfissionalFavoritoEntity() {
-        super( "usuario", new String[] { "id","id_profissional","id_clinica","nome","espec"} );
+        super( "profissional_favorito", new String[] { "id","id_profissional","id_clinica","nome","espec"} );
     }
 
     public Integer getId() {
