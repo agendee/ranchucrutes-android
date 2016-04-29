@@ -6,7 +6,7 @@
     <item
         android:id="@+id/menuAddFavorito"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_star_white_24dp"
+        android:icon="@drawable/ic_star_white_36dp"
         app:showAsAction="always"
         />
 

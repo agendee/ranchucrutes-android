@@ -27,6 +27,7 @@ public class ProfissionalBasicoVo implements Serializable {
     private Long idClinicaAtual;
     private Boolean aceitaParticular;
     private Boolean aceitaPlano;
+    private boolean favorito = false;
 
     public ProfissionalBasicoVo() {
 
@@ -211,5 +212,13 @@ public class ProfissionalBasicoVo implements Serializable {
 
     public void setAceitaPlano(Boolean aceitaPlano) {
         this.aceitaPlano = aceitaPlano;
+    }
+
+    public boolean isFavorito() {
+        return favorito;
+    }
+
+    public void setFavorito(boolean favorito) {
+        this.favorito = favorito;
     }
 }

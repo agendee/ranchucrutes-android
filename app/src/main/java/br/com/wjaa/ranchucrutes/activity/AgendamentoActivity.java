@@ -39,6 +39,7 @@ import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.fragment.ProfissionalAgendaFragment;
 import br.com.wjaa.ranchucrutes.helper.DetalhesProfissionalHelper;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
+import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.DateUtils;
@@ -74,6 +75,9 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     @Inject
     private AgendamentoService agendamentoService;
 
+    @Inject
+    private ProfissionalService profissionalService;
+
     private ProfissionalBasicoVo profissional;
 
     @Override
@@ -95,10 +99,13 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     }
 
     private void initTabs() {
-
         new FindAgendamento(profissional).start();
+    }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        profissional.setFavorito(profissionalService.isFavorito(profissional.getIdProfissao(),profissional.getIdClinicaAtual().intValue()));
     }
 
     private void initButtons() {
@@ -130,12 +137,24 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         }
         if (id == R.id.menuAddFavorito){
             Drawable drawable = item.getIcon();
-            if(drawable != null) {
-                drawable.mutate();
-                drawable.setColorFilter(getResources().getColor(R.color.warningColor), PorterDuff.Mode.SRC_ATOP);
-            }
 
-            Toast.makeText(this.getApplicationContext(),"Profissional adicionado ao favorito", Toast.LENGTH_LONG).show();
+            if (!profissional.isFavorito()){
+                if(drawable != null) {
+                    drawable.mutate();
+                    drawable.setColorFilter(getResources().getColor(R.color.favoritoColor), PorterDuff.Mode.SRC_ATOP);
+                }
+                profissionalService.addProfissionalFavorito(profissional);
+                Toast.makeText(this.getApplicationContext(),"Profissional adicionado ao favorito", Toast.LENGTH_SHORT).show();
+            }else{
+                if(drawable != null) {
+                    drawable.mutate();
+                    drawable.setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+                }
+                profissionalService.removeProfissionalFavorito(profissional);
+                Toast.makeText(this.getApplicationContext(),"Profissional removido do favorito", Toast.LENGTH_SHORT).show();
+            }
+            profissional.setFavorito(!profissional.isFavorito());
+
         }
 
         return true;
