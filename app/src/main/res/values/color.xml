@@ -30,5 +30,7 @@
     <color name="btnNormal">#94999999</color>
     <color name="btnPressed">#92288f2d</color>
 
+    <color name="favoritoColor">#f5e03f</color>
+
 </resources>
 

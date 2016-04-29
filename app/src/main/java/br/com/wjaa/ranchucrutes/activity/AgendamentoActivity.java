@@ -1,19 +1,27 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.inject.Inject;
@@ -106,6 +114,13 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         DetalhesProfissionalHelper.build(this,"Agendamento", mCollapsingToolbarLayout,toolbar,profissional);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_profissional_detalhes, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -113,6 +128,16 @@ public class AgendamentoActivity extends RoboActionBarActivity {
         if(id == android.R.id.home){
             finish();
         }
+        if (id == R.id.menuAddFavorito){
+            Drawable drawable = item.getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.warningColor), PorterDuff.Mode.SRC_ATOP);
+            }
+
+            Toast.makeText(this.getApplicationContext(),"Profissional adicionado ao favorito", Toast.LENGTH_LONG).show();
+        }
+
         return true;
     }
 
