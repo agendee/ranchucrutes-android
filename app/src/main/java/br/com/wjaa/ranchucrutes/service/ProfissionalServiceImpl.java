@@ -85,25 +85,36 @@ public class ProfissionalServiceImpl implements ProfissionalService {
 
     @Override
     public void addProfissionalFavorito(ProfissionalBasicoVo p) {
-        ProfissionalFavoritoEntity pfe = new ProfissionalFavoritoEntity();
-        pfe.setIdProfissional(p.getIdProfissao());
+
+        ProfissionalFavoritoEntity pfe = getProfissionalFavorito(p.getId().intValue(),p.getIdClinicaAtual().intValue());
+
+        if (pfe == null){
+            pfe = new ProfissionalFavoritoEntity();
+        }
+        pfe.setIdProfissional(p.getId().intValue());
         pfe.setIdClinica(p.getIdClinicaAtual().intValue());
         pfe.setNome(p.getNome());
         pfe.setEspec(p.getEspec());
-        dataService.insert(pfe);
+        dataService.insertOrUpdate(pfe);
     }
 
     @Override
     public boolean isFavorito(Integer idProfissional, Integer idClinica) {
-        ProfissionalFavoritoEntity pfe = dataService.findUniqueResult(ProfissionalFavoritoEntity.class,"idProfissional=? and idClinica=?",
-                new String[]{idProfissional.toString(),idClinica.toString()});
+        ProfissionalFavoritoEntity pfe = getProfissionalFavorito(idProfissional,idClinica);
         return pfe != null;
     }
 
     @Override
     public ProfissionalFavoritoEntity getProfissionalFavorito(Integer idProfissional, Integer idClinica) {
-        return dataService.findUniqueResult(ProfissionalFavoritoEntity.class,"idProfissional=? and idClinica=?",
+        return dataService.findUniqueResult(ProfissionalFavoritoEntity.class,"id_profissional=? and id_clinica=?",
                 new String[]{idProfissional.toString(),idClinica.toString()});
 
+    }
+
+    @Override
+    public void removeProfissionalFavorito(ProfissionalBasicoVo profissional) {
+        ProfissionalFavoritoEntity pfe = getProfissionalFavorito(profissional.getId().intValue(),
+                profissional.getIdClinicaAtual().intValue());
+        dataService.deleteById(pfe);
     }
 }

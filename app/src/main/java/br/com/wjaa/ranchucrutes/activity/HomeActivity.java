@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,6 +42,8 @@ import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.GcmUtils;
+import br.com.wjaa.ranchucrutes.utils.ImageUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -330,7 +333,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
 
     @Override
-    public void usuarioChange(UsuarioEntity usuario) {
+    public void usuarioChange(final UsuarioEntity usuario) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -351,6 +354,12 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
                 if (tvEmail != null) {
                     tvEmail.setText(isLogado ?
                             RanchucrutesSession.getUsuario().getEmail() : "");
+                }
+
+                ImageView fotoUser = (ImageView) navView.findViewById(R.id.navFotoUser);
+
+                if (isLogado && StringUtils.isNotBlank(RanchucrutesSession.getUsuario().getUrlFoto())){
+                    ImageUtils.loadImage(HomeActivity.this,fotoUser,usuario.getUrlFoto());
                 }
 
             }

@@ -26,4 +26,6 @@ public interface ProfissionalService {
     boolean isFavorito(Integer idProfissional, Integer idClinica);
 
     ProfissionalFavoritoEntity getProfissionalFavorito(Integer idProfissional, Integer idClinica);
+
+    void removeProfissionalFavorito(ProfissionalBasicoVo profissional);
 }

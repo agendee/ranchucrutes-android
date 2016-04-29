@@ -205,13 +205,14 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
         final String id = currentPerson.getId();
         final String nome = currentPerson.getDisplayName();
         final String email = Plus.AccountApi.getAccountName(gplusClient);
+        final String urlFoto = currentPerson.getImage().getUrl();
 
         //se nao tiverem vazio pode criar um novo usuario
         if(StringUtils.isNotBlank(id) &&
                 StringUtils.isNotBlank(nome) &&
                 StringUtils.isNotBlank(email)){
 
-            new CriarUsuarioGPlus(id,nome,email
+            new CriarUsuarioGPlus(id,nome,email,urlFoto
             ).start();
         }else{
             //alguma informacao está vazia, entao usuário precisa completar os seus dados.
@@ -220,6 +221,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
             pacienteVo.setAuthType(AuthType.AUTH_GPLUS);
             pacienteVo.setNome(nome);
             pacienteVo.setEmail(email);
+            pacienteVo.setUrlFoto(urlFoto);
             Bundle b = new Bundle();
             b.putSerializable("paciente",pacienteVo);
             AndroidUtils.openActivity(context,NovoPacienteActivity.class,b);
@@ -233,11 +235,13 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
         private String id;
         private String nome;
         private String email;
+        private String urlFoto;
 
-        public CriarUsuarioGPlus(String id, String nome, String email){
+        public CriarUsuarioGPlus(String id, String nome, String email,String urlFoto){
             this.id = id;
             this.nome = nome;
             this.email = email;
+            this.urlFoto = urlFoto;
         }
 
 
@@ -249,6 +253,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 paciente.setEmail(email);
                 paciente.setAuthType(AuthType.AUTH_GPLUS);
                 paciente.setKeySocial(id);
+                paciente.setUrlFoto(urlFoto);
 
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando paciente...", context);
                 String regId = AndroidSystemUtil.getRegistrationId(context);

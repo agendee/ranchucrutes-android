@@ -45,10 +45,6 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
-
-       profissionaisFavoritos = profissionalService.listProfissionalFavorito();
-
-       setListAdapter(new ProfissionaisFavoritosListAdapter(profissionaisFavoritos, getActivity()));
     }
 
 
@@ -59,9 +55,9 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        ProfissionalFavoritoEntity pdf =  profissionaisFavoritos.get(position);
+        ProfissionalFavoritoEntity pfe =  profissionaisFavoritos.get(position);
         AndroidUtils.showWaitDlg("Aguarde abrindo agenda do profissional...",getActivity());
-        new FindProfissional(pdf.getId().longValue(), pdf.getIdClinica().longValue()).start();
+        new FindProfissional(pfe.getIdProfissional().longValue(), pfe.getIdClinica().longValue()).start();
     }
 
     class FindProfissional extends Thread{
@@ -101,6 +97,8 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
     public void onStart() {
         super.onStart();
         setEmptyText(getResources().getString(R.string.emptyProfissionais));
+        profissionaisFavoritos = profissionalService.listProfissionalFavorito();
+        setListAdapter(new ProfissionaisFavoritosListAdapter(profissionaisFavoritos, getActivity()));
     }
 
 }

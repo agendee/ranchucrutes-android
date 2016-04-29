@@ -20,6 +20,7 @@ public class PacienteVo implements Serializable {
     private AuthType authType;
     private Integer idCategoria;
     private String keyDeviceGcm;
+    private String urlFoto;
 
     public PacienteVo(){}
 
@@ -103,5 +104,13 @@ public class PacienteVo implements Serializable {
 
     public void setKeyDeviceGcm(String keyDeviceGcm) {
         this.keyDeviceGcm = keyDeviceGcm;
+    }
+
+    public String getUrlFoto() {
+        return urlFoto;
+    }
+
+    public void setUrlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
     }
 }
