@@ -158,26 +158,30 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         // Cannot zoom to bounds until the map has a size.
         View mapView = null;
 
-        mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
+        try{
+            mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
 
-        final View mapViewf = mapView;
-        if (mapView.getViewTreeObserver().isAlive()) {
-            mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @SuppressWarnings("deprecation") // We use the new method when supported
-                @SuppressLint("NewApi") // We check which build version we are using.
-                @Override
-                public void onGlobalLayout() {
-                    LatLngBounds bounds = new LatLngBounds.Builder()
-                            .include(CENTER)
-                            .build();
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        mapViewf.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        mapViewf.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            final View mapViewf = mapView;
+            if (mapView.getViewTreeObserver().isAlive()) {
+                mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @SuppressWarnings("deprecation") // We use the new method when supported
+                    @SuppressLint("NewApi") // We check which build version we are using.
+                    @Override
+                    public void onGlobalLayout() {
+                        LatLngBounds bounds = new LatLngBounds.Builder()
+                                .include(CENTER)
+                                .build();
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                            mapViewf.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        } else {
+                            mapViewf.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 11));
                     }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(CENTER, 11));
-                }
-            });
+                });
+            }
+        }catch(Exception ex){
+            Log.e("RanchucrutesMaps","Erro no onmapsready",ex);
         }
 
     }

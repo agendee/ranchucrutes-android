@@ -34,7 +34,7 @@ public class SearchGenericListActivity extends SearchListActivity {
             if (clContainer.findViewById(1) == null){
                 TextView tv = new TextView( this );
                 tv.setText( "Nenhum resultado encontrado." );
-                tv.setTextColor( getResources().getColor( R.color.primaryColor ) );
+                tv.setTextColor( getResources().getColor( android.R.color.black) );
                 tv.setId(1);
                 tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                 tv.setGravity(Gravity.CENTER);
@@ -47,6 +47,11 @@ public class SearchGenericListActivity extends SearchListActivity {
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected CharSequence getQueryHint() {
+        return "Pesquise aqui";
     }
 
 }

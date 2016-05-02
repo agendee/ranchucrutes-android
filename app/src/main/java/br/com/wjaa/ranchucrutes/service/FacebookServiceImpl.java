@@ -30,7 +30,9 @@ import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
@@ -151,13 +153,14 @@ public class FacebookServiceImpl implements FacebookService {
                         String id = object.get("id").toString();
                         String nome = object.get("name").toString();
                         String email = object.get("email").toString();
+                        String foto = "https://graph.facebook.com/" + id + "/picture?type=large";
 
                         //se nao tiverem vazio pode criar um novo usuario
                         if(StringUtils.isNotBlank(id) &&
                                 StringUtils.isNotBlank(nome) &&
                                 StringUtils.isNotBlank(email)){
 
-                            new CriarUsuarioFacebook(id,nome,email
+                            new CriarUsuarioFacebook(id,nome,email,foto
                             ).start();
                         }else{
 
@@ -237,6 +240,12 @@ public class FacebookServiceImpl implements FacebookService {
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_FACEBOOK);
                 loginService.registerKeyDevice(context, pacienteVo.getKeyDeviceGcm());
+
+                //ATUALIZANDO A FOTO DO USUARIO CASO TENHA MUDADO.
+                String foto = "https://graph.facebook.com/" + id + "/picture?type=large";
+                pacienteVo.setUrlFoto(foto);
+                UsuarioEntity user = loginService.registrarAtualizarUsuario(pacienteVo);
+                RanchucrutesSession.setUsuario(user);
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 
@@ -260,11 +269,13 @@ public class FacebookServiceImpl implements FacebookService {
         private String id;
         private String nome;
         private String email;
+        private String foto;
 
-        public CriarUsuarioFacebook(String id, String nome, String email){
+        public CriarUsuarioFacebook(String id, String nome, String email, String foto){
             this.id = id;
             this.nome = nome;
             this.email = email;
+            this.foto = foto;
         }
 
 
@@ -277,6 +288,7 @@ public class FacebookServiceImpl implements FacebookService {
                 paciente.setEmail(email);
                 paciente.setAuthType(AuthType.AUTH_FACEBOOK);
                 paciente.setKeySocial(id);
+                paciente.setUrlFoto(foto);
 
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, criando paciente...", context);
                 String regId = AndroidSystemUtil.getRegistrationId(context);
@@ -296,12 +308,13 @@ public class FacebookServiceImpl implements FacebookService {
     }
 
     private void saudarSair(PacienteVo pacienteVo) {
-        if (pacienteVo != null){
+        context.finish();
+        /*if (pacienteVo != null){
             AndroidUtils.showMessageSuccessDlgOnUiThread("Olá " + pacienteVo.getNome(), context, new DialogCallback() {
 
                 @Override
                 public void confirm() {
-                    context.finish();
+
                 }
 
                 @Override
@@ -310,7 +323,7 @@ public class FacebookServiceImpl implements FacebookService {
                 }
             });
 
-        }
+        }*/
     }
 
 }

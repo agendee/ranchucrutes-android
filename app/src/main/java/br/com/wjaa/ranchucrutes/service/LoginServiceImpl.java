@@ -127,6 +127,7 @@ public class LoginServiceImpl implements LoginService {
         usuarioEntity.setAuthType(paciente.getAuthType());
         usuarioEntity.setIdCategoria(paciente.getIdCategoria());
         usuarioEntity.setDeviceKey(paciente.getKeyDeviceGcm());
+        usuarioEntity.setUrlFoto(paciente.getUrlFoto());
         if (insert){
             dataService.insert(usuarioEntity);
         }else{

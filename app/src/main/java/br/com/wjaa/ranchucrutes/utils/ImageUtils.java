@@ -38,13 +38,15 @@ public class ImageUtils {
         public void run() {
             try {
                 final Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(urlFoto).getContent());
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageView.setImageBitmap(bitmap);
-                        imageView.invalidate();
-                    }
-                });
+                if (imageView != null){
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setImageBitmap(bitmap);
+                            imageView.invalidate();
+                        }
+                    });
+                }
             } catch (Exception e) {
                 Log.e("ImageUtils", "Erro ao buscar a imagem", e);
                 context.runOnUiThread(new Runnable() {

@@ -119,6 +119,7 @@
     <string name="bntCancelarConsulta">Cancelar</string>
     <string name="bntConfirmarConsulta">Confirmar</string>
     <string name="emptyProfissionais">Não existe profissionais favoritos.</string>
+    <string name="configSobre">Sobre</string>
 
 
 </resources>

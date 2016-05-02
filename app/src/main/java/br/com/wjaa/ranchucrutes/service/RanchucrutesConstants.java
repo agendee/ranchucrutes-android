@@ -34,4 +34,5 @@ public class RanchucrutesConstants {
     /*CONSTANTES PARA CONTROLE DE ACTIVITYS*/
     public static final int FINISH_TO_OPEN_HOME = 1000;
 
+    public static final int FINISH_MY_LOCATION = 50;
 }

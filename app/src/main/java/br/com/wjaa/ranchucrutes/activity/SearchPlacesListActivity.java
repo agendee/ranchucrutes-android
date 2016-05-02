@@ -1,8 +1,14 @@
 package br.com.wjaa.ranchucrutes.activity;
 
+import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -26,6 +32,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.PlacesVo;
 
@@ -50,6 +57,7 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener( this )
                 .build();
+
     }
 
     public void filter( String q ){
@@ -63,8 +71,9 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
         LatLngBounds bounds = new LatLngBounds( new LatLng(-23.769084, -45.458059 ), new LatLng( -23.231440, -47.219174 ) );
         List<Integer> filterTypes = new ArrayList<Integer>();
         filterTypes.add(Place.TYPE_STREET_ADDRESS);
-        filterTypes.add( Place.TYPE_NEIGHBORHOOD);
-        filterTypes.add( Place.TYPE_POSTAL_CODE);
+        filterTypes.add(Place.TYPE_NEIGHBORHOOD);
+        filterTypes.add(Place.TYPE_POSTAL_CODE);
+
 
         Places.GeoDataApi.getAutocompletePredictions(googleApiClient, q,
                 bounds, AutocompleteFilter.create(filterTypes)).setResultCallback(
@@ -84,12 +93,13 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                         }
 
                         mRecyclerView.setVisibility(mListFilter.isEmpty() ? View.GONE : View.VISIBLE);
+
                         if( mListFilter.isEmpty() ){
 
                             if (clContainer.findViewById(1) == null){
                                 TextView tv = new TextView( SearchPlacesListActivity.this );
                                 tv.setText( "Nenhum resultado encontrado." );
-                                tv.setTextColor( getResources().getColor( R.color.primaryColor ) );
+                                tv.setTextColor( getResources().getColor( android.R.color.black) );
                                 tv.setId(1);
                                 tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                                 tv.setGravity(Gravity.CENTER);
@@ -102,8 +112,6 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                         }
 
                         adapter.notifyDataSetChanged();
-
-
 
                         //Prevent memory leak by releasing buffer
                         buffer.release();
@@ -142,5 +150,26 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
             googleApiClient.disconnect();
         }
         super.onStop();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuItem itemMenu = menu.findItem(R.id.searchMyLocation);
+        itemMenu.setVisible(true);
+        itemMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                setResult(RanchucrutesConstants.FINISH_MY_LOCATION);
+                finish();
+                return false;
+            }
+        });
+        return true;
+    }
+
+    @Override
+    protected CharSequence getQueryHint() {
+        return "Pesquise um endereço";
     }
 }

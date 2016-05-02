@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,6 +73,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         adapter = new SearchingListAdapter(this, mListFilter);
         mRecyclerView.setAdapter(adapter);
 
+
     }
 
     protected List<SearchingListModel> cloneList(List<SearchingListModel> mList) {
@@ -110,8 +112,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         ImageView closeButton = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         closeButton.setImageResource(R.drawable.ic_close_white_18dp);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setQueryHint("Pesquise aqui");
-
+        searchView.setQueryHint(getQueryHint());
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -126,11 +127,17 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
             }
         });
 
+        searchView.setIconifiedByDefault(false);
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
+        searchView.setLayoutParams(params);
+        itemMenu.expandActionView();
         searchView.onActionViewExpanded();
         //itemMenu.expandActionView();
 
         return true;
     }
+
+    protected abstract CharSequence getQueryHint();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

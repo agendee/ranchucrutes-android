@@ -148,11 +148,13 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
         btnSelectPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchPlacesListActivity.class);
+                openDialogFindPlace();
             }
         });
 
     }
+
+
 
     private void createEdtCep() {
        /* edtCep.setOnKeyListener(new OnKeyListener() {
@@ -174,19 +176,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
         btnProcurarProfissional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (especSelecionada == null) {
-                    AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeEspeciliade), getActivity());
-                    return;
-                }
-
-                if (myLocation == null) {
-                    AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeLocalizacao), getActivity());
-                    return;
-                }
-                AndroidUtils.showWaitDlg(getString(R.string.msg_aguarde), getActivity());
-                ProcurarProfissionalTask t = new ProcurarProfissionalTask(view);
-                t.execute();
+                pesquisarProfissional(view);
             }
 
         });
@@ -199,6 +189,21 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                 fab.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void pesquisarProfissional(View view) {
+        if (especSelecionada == null) {
+            AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeEspeciliade), getActivity());
+            return;
+        }
+
+        if (myLocation == null) {
+            AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeLocalizacao), getActivity());
+            return;
+        }
+        AndroidUtils.showWaitDlg(getString(R.string.msg_aguarde), getActivity());
+        ProcurarProfissionalTask t = new ProcurarProfissionalTask(view);
+        t.execute();
     }
 
     private void createBtnEspec() {
@@ -258,29 +263,37 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
 
 
     class DialogEspecialidade implements View.OnClickListener{
-
         @Override
         public void onClick(View v) {
-
-            Bundle b = new Bundle();
-            ArrayList<Parcelable> parcelables = new ArrayList<>();
-
-            if (especialidades == null){
-                especialidades = RanchucrutesBuffer.getEspecialidades();
-            }
-
-            if (especialidades != null){
-                for (EspecialidadeVo e : especialidades){
-                    parcelables.add(e);
-                }
-                b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-                AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchGenericListActivity.class, b);
-            }else{
-                AndroidUtils.showMessageErroDlg("Problemas na comunicação com o servidor.",getActivity());
-            }
-
-
+            openDialogFindEspecialidade();
         }
+    }
+
+    public void openDialogFindEspecialidade() {
+        Bundle b = new Bundle();
+        ArrayList<Parcelable> parcelables = new ArrayList<>();
+
+        if (especialidades == null){
+            especialidades = RanchucrutesBuffer.getEspecialidades();
+        }
+
+        if (especialidades != null){
+            for (EspecialidadeVo e : especialidades){
+                parcelables.add(e);
+            }
+            b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+            AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchGenericListActivity.class, b);
+        }else{
+            AndroidUtils.showMessageErroDlg("Problemas na comunicação com o servidor.",getActivity());
+        }
+    }
+
+    public void openDialogFindPlace() {
+        AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchPlacesListActivity.class);
+    }
+
+    private boolean podeBuscar(){
+        return myLocation != null && especSelecionada != null;
     }
 
     @Override
@@ -293,6 +306,8 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                 if ( EspecialidadeVo.class.isInstance(model)){
                     especSelecionada = (EspecialidadeVo)model;
                     btnEspecilidade.setText(especSelecionada.getNome());
+                    openDialogFindPlace();
+
                 }else if ( PlacesVo.class.isInstance(model) ){
                     placeVo = (PlacesVo)model;
                     btnSelectPlace.setText(placeVo.getName());
@@ -305,6 +320,9 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                             myLocation.setLatitude(returnedAddress.getLatitude()) ;
                             myLocation.setLongitude(returnedAddress.getLongitude());
                             btnMyLocation.setChecked(false);
+                            if (podeBuscar()){
+                                pesquisarProfissional(getView());
+                            }
 
                         } else {
                             Log.w("PesquisaProfissional", "Nao achou nenhum location para o endereco:" + placeVo.getName());
@@ -315,6 +333,11 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                         Log.e("PesquisaProfissional","Erro ao buscar a geoLocation de um Place: ", e);
                     }
                 }
+            }
+        }else if (resultCode == RanchucrutesConstants.FINISH_MY_LOCATION){
+            onMyLocationButtonClick();
+            if (podeBuscar()){
+                pesquisarProfissional(getView());
             }
         }
     }

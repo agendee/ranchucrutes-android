@@ -19,7 +19,9 @@ import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
+import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
@@ -178,6 +180,13 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 //se estiver authenticado ele já envia o pacientevo para o buffer
                 PacienteVo pacienteVo = loginService.auth(id, AuthType.AUTH_GPLUS);
                 loginService.registerKeyDevice(context, pacienteVo.getKeyDeviceGcm());
+                Person currentPerson = Plus.PeopleApi.getCurrentPerson(gplusClient);
+
+                //ATUALIZANDO A FOTO DO USUARIO CASO TENHA MUDADO
+                String urlImg = currentPerson.getImage().getUrl();
+                pacienteVo.setUrlFoto(urlImg);
+                UsuarioEntity usuario = loginService.registrarAtualizarUsuario(pacienteVo);
+                RanchucrutesSession.setUsuario(usuario);
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);
 
@@ -272,12 +281,13 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
 
 
     private void saudarSair(PacienteVo pacienteVo) {
-        if (pacienteVo != null){
+        context.finish();
+        /*if (pacienteVo != null){
             AndroidUtils.showMessageSuccessDlgOnUiThread("Olá " + pacienteVo.getNome(), context, new DialogCallback() {
 
                 @Override
                 public void confirm() {
-                    context.finish();
+
                 }
 
                 @Override
@@ -286,6 +296,6 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 }
             });
 
-        }
+        }*/
     }
 }

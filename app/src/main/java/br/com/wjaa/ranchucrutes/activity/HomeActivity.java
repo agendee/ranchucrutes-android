@@ -181,8 +181,9 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                findViewById(R.id.frameBusca).setVisibility(View.VISIBLE);
-                fab.setVisibility(View.INVISIBLE);
+                //findViewById(R.id.frameBusca).setVisibility(View.VISIBLE);
+                //fab.setVisibility(View.INVISIBLE);
+                pesquisaProfissionalFragment.openDialogFindEspecialidade();
             }
         });
     }
@@ -356,10 +357,12 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
                             RanchucrutesSession.getUsuario().getEmail() : "");
                 }
 
-                ImageView fotoUser = (ImageView) navView.findViewById(R.id.navFotoUser);
 
+                ImageView fotoUser = (ImageView) navView.findViewById(R.id.navFotoUser);
                 if (isLogado && StringUtils.isNotBlank(RanchucrutesSession.getUsuario().getUrlFoto())){
                     ImageUtils.loadImage(HomeActivity.this,fotoUser,usuario.getUrlFoto());
+                }else{
+                    fotoUser.setImageDrawable(getResources().getDrawable(R.drawable.unknow));
                 }
 
             }
