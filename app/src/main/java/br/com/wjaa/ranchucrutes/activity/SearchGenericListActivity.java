@@ -5,15 +5,23 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
  * Created by wagner on 15/03/16.
  */
 public class SearchGenericListActivity extends SearchListActivity {
 
-    public void filter( String q ){
+    @Override
+    protected List<SearchingListModel> getListCache() {
+        return null;
+    }
+
+    public void filter(String q ){
         mListFilter.clear();
         if (StringUtils.isBlank(q)){
             cloneList(mList, mListFilter);

@@ -38,6 +38,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
     protected CoordinatorLayout clContainer;
     protected RecyclerView mRecyclerView;
     protected List<SearchingListModel> mList;
+    protected List<SearchingListModel> mListCache;
     protected List<SearchingListModel> mListFilter;
 
     private Toolbar toolbar;
@@ -70,11 +71,13 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         LinearLayoutManager llm = new LinearLayoutManager( this );
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(llm);
-        adapter = new SearchingListAdapter(this, mListFilter);
+        adapter = new SearchingListAdapter(this, mListFilter, getListCache());
         mRecyclerView.setAdapter(adapter);
 
 
     }
+
+    protected abstract List<SearchingListModel> getListCache();
 
     protected List<SearchingListModel> cloneList(List<SearchingListModel> mList) {
         List<SearchingListModel> clone = new ArrayList<>(mList.size());

@@ -64,4 +64,21 @@ public class PlacesVo implements SearchingListModel {
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlacesVo placesVo = (PlacesVo) o;
+
+        return placeId != null ? placeId.equals(placesVo.placeId) : placesVo.placeId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return placeId != null ? placeId.hashCode() : 0;
+    }
 }

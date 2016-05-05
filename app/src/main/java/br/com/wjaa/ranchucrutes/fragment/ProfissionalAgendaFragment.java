@@ -43,6 +43,10 @@ public class ProfissionalAgendaFragment extends RoboFragment {
     private AgendamentoService agendamentoService;
     private Context context;
 
+    public ProfissionalAgendaFragment(){
+
+    }
+
     public ProfissionalAgendaFragment(String title, List<Date> hs, Context context, ProfissionalBasicoVo profissionalBasicoVo) {
         this.title = title;
         Collections.sort(hs);
@@ -134,7 +138,7 @@ public class ProfissionalAgendaFragment extends RoboFragment {
             try {
 
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, tentando realizar o agendamento...", (Activity) context);
-                final ConfirmarAgendamentoVo confirmarAgendamentoVo = agendamentoService.criarAgendamento(profissional.getId(), profissional.getClinicas()[0].getId(),
+                final ConfirmarAgendamentoVo confirmarAgendamentoVo = agendamentoService.criarAgendamento(profissional.getId(), profissional.getIdClinicaAtual(),
                         new Long(RanchucrutesSession.getUsuario().getId()), horario, false);
 
                 AndroidUtils.closeWaitDlg();

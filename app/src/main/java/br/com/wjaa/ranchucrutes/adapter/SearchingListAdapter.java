@@ -3,17 +3,13 @@ package br.com.wjaa.ranchucrutes.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
@@ -28,19 +24,22 @@ public class SearchingListAdapter extends RecyclerView.Adapter<SearchingListAdap
 
 
     private Context mContext;
-    private List<SearchingListModel> mList;
+    private List<SearchingListModel> list;
+    private List<SearchingListModel> listCache;
     private LayoutInflater mLayoutInflater;
     private float scale;
     private int width;
 
 
 
-    public SearchingListAdapter(Context c, List<SearchingListModel> l){
-        this(c, l, true, true);
-    }
-    public SearchingListAdapter(Context c, List<SearchingListModel> l, boolean wa, boolean wcl){
-        mContext = c;
-        mList = l;
+
+    public SearchingListAdapter(Context c, List<SearchingListModel> l,List<SearchingListModel> listCache){
+        this.mContext = c;
+        this.list = l;
+        this.listCache = listCache;
+        if (listCache != null){
+            l.addAll(listCache);
+        }
         mLayoutInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         scale = mContext.getResources().getDisplayMetrics().density;
         width = mContext.getResources().getDisplayMetrics().widthPixels - (int)(14 * scale + 0.5f);
@@ -56,23 +55,23 @@ public class SearchingListAdapter extends RecyclerView.Adapter<SearchingListAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int position) {
-        myViewHolder.tvModel.setText(mList.get(position).getName());
-        myViewHolder.setItem(mList.get(position));
+        myViewHolder.tvModel.setText(list.get(position).getName());
+        myViewHolder.setItem(list.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return CollectionUtils.isEmpty(mList) ? 0 : mList.size();
+        return CollectionUtils.isEmpty(list) ? 0 : list.size();
     }
 
     public void addListItem(SearchingListModel c, int position){
-        mList.add(c);
+        list.add(c);
         notifyItemInserted(position);
     }
 
 
     public void removeListItem(int position){
-        mList.remove(position);
+        list.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -92,6 +91,17 @@ public class SearchingListAdapter extends RecyclerView.Adapter<SearchingListAdap
         @Override
         public void onClick(View v) {
             Intent i = new Intent();
+            if (listCache != null){
+
+                listCache.remove(item);
+
+                if (listCache.size() == 5){
+                    listCache.remove(0);
+                }
+
+                listCache.add(item);
+            }
+
             i.putExtra(RanchucrutesConstants.PARAM_RESULT_SEARCH,item);
             ((Activity) mContext).setResult(1, i );
             ((Activity) mContext).finish();

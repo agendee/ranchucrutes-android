@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
+import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.PlacesVo;
 
 /**
@@ -42,7 +43,7 @@ import br.com.wjaa.ranchucrutes.vo.PlacesVo;
 public class SearchPlacesListActivity extends SearchListActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     private GoogleApiClient googleApiClient;
-
+    private static List<SearchingListModel> listCache = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,16 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
 
     }
 
+    @Override
+    protected List<SearchingListModel> getListCache() {
+        return listCache;
+    }
+
     public void filter( String q ){
+
+        if (q.length() == 0 ){
+            return;
+        }
 
         if (q.length() < 5 ){
             mListFilter.clear();

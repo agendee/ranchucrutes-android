@@ -7,16 +7,16 @@
 
        <item
             android:id="@+id/search"
-            android:orderInCategory="100"
+            android:orderInCategory="99"
             android:icon="@drawable/ic_search_white_24dp"
-            app:showAsAction="always"
+            app:showAsAction="always|collapseActionView"
             app:actionViewClass="android.support.v7.widget.SearchView"
             />
 
        <item
            android:id="@+id/searchMyLocation"
-           android:orderInCategory="99"
-           android:icon="@android:drawable/ic_menu_mylocation"
+           android:orderInCategory="100"
+           android:icon="@drawable/ic_my_location_white_36dp"
            app:showAsAction="always"
            android:visible="false"
            />

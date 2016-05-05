@@ -40,6 +40,10 @@ public class RanchucrutesBuffer {
         new FindConvenio().start();
     }
 
+    public boolean empty(){
+        return  especialidades == null || especialidades.length == 0 ||
+                convenios == null || convenios.length == 0;
+    }
 
     public void posInitializer(Context context){
         new AutoLogin(context).start();

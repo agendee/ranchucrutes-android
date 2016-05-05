@@ -1,8 +1,6 @@
 package br.com.wjaa.ranchucrutes.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -13,24 +11,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
 import br.com.wjaa.ranchucrutes.fragment.MeusDadosFragment;
@@ -93,8 +86,19 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     @Inject
     private LoginService loginService;
 
+    @Inject
+    private RanchucrutesBuffer buffer;
+
     private boolean pausado = false;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if ( AndroidUtils.internetNotActive(this) ) {
+            AndroidUtils.showMessageErroDlg("Você não está conectado a internet, alguns recursos podem não funcionar.",this);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +117,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         initView();
 
         //Pós inicio
-
         initPos();
     }
 
@@ -124,6 +127,31 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         }else{
             displayView(R.id.navSearch);
         }
+
+        //TODO se o buffer estiver vazio eh pq o app saiu do estado de sleep e nao conseguiu carregar o buffer e nem logar.
+        if ( buffer.empty() ){
+            AndroidUtils.showWaitDlg("Aguarde...",this);
+            buffer.initializer();
+
+            //tentando logar o usuário novamente.
+            buffer.posInitializer(this);
+
+            //aguardando 3s para tirar o aguarde. Tempo suficiente para as thread de carregamento do buffer
+            //e de login terminarem o trabalho
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(3000);
+                        AndroidUtils.closeWaitDlg();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        }
+
+
     }
 
     private void initListeners() {
@@ -145,29 +173,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
             setSupportActionBar(navToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        //TODO MONTAR O SPINNER NO FUTURO. ELE IRA MUDAR A VISAO DO USARIO ENTRE MAPA E LISTA
-       /* spinner.setAdapter(new MyAdapter(
-                navToolbar.getContext(),
-                new String[]{
-                        "Mostrar Mapa",
-                        "Mostrar Lista",
-                }));
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // When the given dropdown item is selected, show its contents in the
-                // container view.
-               *//* getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                        .commit();*//*
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });*/
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, navToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -181,8 +186,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //findViewById(R.id.frameBusca).setVisibility(View.VISIBLE);
-                //fab.setVisibility(View.INVISIBLE);
                 pesquisaProfissionalFragment.openDialogFindEspecialidade();
             }
         });
@@ -198,34 +201,23 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
             drawer.closeDrawer(GravityCompat.START);
 
         //verificando se o menu de busca de profissionais está aberto
-        }else if (PesquisaProfissionalFragment.class.isInstance(fragmentAtual) &&
-                ((PesquisaProfissionalFragment)fragmentAtual).getFrameBusca().getVisibility() == View.VISIBLE){
-            ((PesquisaProfissionalFragment)fragmentAtual).getFrameBusca().setVisibility(View.GONE);
-            fab.setVisibility(View.VISIBLE);
+        }else if (PesquisaProfissionalFragment.class.isInstance(fragmentAtual) ) {
+            AndroidUtils.showConfirmDlg("Sair","Deseja realmente sair?",this, new DialogCallback(){
+                @Override
+                public void confirm() {
+                    finish();
+                }
+
+                @Override
+                public void cancel() {
+                    fab.setVisibility(View.VISIBLE);
+                }
+            });
 
         //caso contrario chama fragmente principal (mapa).
         } else {
             displayView(R.id.navSearch);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.home, menu);
-
-        onEndConstruct();
-        return true;
-    }
-
-    private void onEndConstruct() {
-
-        //ajustando a altura do mainFrame.
-       /* RelativeLayout.LayoutParams l = (RelativeLayout.LayoutParams) mainFrame.getLayoutParams();
-        l.setMargins(0, appbarLayout.getHeight(), 0, 0);
-        mainFrame.setLayoutParams(l);*/
-
-
     }
 
     @Override
@@ -241,7 +233,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         displayView(id);
         return true;
     }

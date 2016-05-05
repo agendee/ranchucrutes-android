@@ -31,12 +31,12 @@
         <item
             android:id="@+id/navExit"
             android:icon="@drawable/ic_exit_to_app_white_18dp"
-            android:title="Sair"  android:visible="false"/>
+            android:title="Logoff"  android:visible="false"/>
 
         <item
             android:id="@+id/navEnter"
             android:icon="@drawable/ic_exit_to_app_white_18dp"
-            android:title="Entrar"  />
+            android:title="Login"  />
 
     </group>
 
