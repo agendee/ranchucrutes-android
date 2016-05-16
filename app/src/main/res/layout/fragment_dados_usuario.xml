@@ -1,70 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="30dp">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Nome Completo"
-        android:ems="10"
-        android:id="@+id/edtDadosNome"
-        android:padding="20dp"
-        android:layout_margin="10dp"
-        android:editable="false"
-        style="@style/edt"
-        />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="100dp"
+            >
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:hint="(99)99999-9999"
-        android:ems="10"
-        android:id="@+id/edtDadosCelular"
-        android:editable="false"
-        style="@style/edt"
-        />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="Nome Completo"
+                android:ems="10"
+                android:id="@+id/edtDadosNome"
+                android:padding="20dp"
+                android:layout_margin="10dp"
+                android:editable="false"
+                style="@style/edt"
+                />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="Seu email"
-        android:ems="10"
-        android:id="@+id/edtDadosEmail"
-        android:editable="false"
-        style="@style/edt"
-        />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Seu email"
+                android:ems="10"
+                android:id="@+id/edtDadosEmail"
+                android:editable="false"
+                style="@style/edt"
+                />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="viewStart"
-        android:text="Selecione um plano"
-        android:id="@+id/btnSelectPlano"
-        android:drawableEnd="@android:drawable/arrow_up_float"
-        style="@style/btnOpenList" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:hint="Tel: (99)99999-9999"
+                android:ems="10"
+                android:id="@+id/edtDadosCelular"
+                android:editable="false"
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="textStart"
-        android:text="----------------"
-        android:id="@+id/btnSelectCategoria"
-        android:drawableEnd="@android:drawable/arrow_up_float"
-        style="@style/btnOpenList" />
+                style="@style/edt"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="CPF: 000.000.000-00"
+                android:maxLength="11"
+                android:ems="10"
+                android:id="@+id/edtDadosCpf"
+                android:editable="false"
+                style="@style/edt"
+                />
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                >
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Masculino"
+                        android:layout_gravity="left"
+                        android:id="@+id/radioButton" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Feminino"
+                        android:id="@+id/radioButton2"
+                        android:layout_marginLeft="30dp"
+                        android:layout_gravity="right" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textStart"
+                android:text="Data de aniversário"
+                android:id="@+id/btnSelectDtAniversario"
+                android:drawableEnd="@android:drawable/arrow_up_float"
+                style="@style/btnOpenList" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:text="Selecione um plano"
+                android:id="@+id/btnSelectPlano"
+                android:drawableEnd="@android:drawable/arrow_up_float"
+                style="@style/btnOpenList" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textStart"
+                android:text="----------------"
+                android:id="@+id/btnSelectCategoria"
+                android:drawableEnd="@android:drawable/arrow_up_float"
+                style="@style/btnOpenList" />
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Atualizar dados"
-        android:id="@+id/btnDadosSave"
-        android:layout_gravity="center_horizontal"
-        android:background="?attr/colorPrimary"
-        style="@style/btn"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Atualizar dados"
+                android:id="@+id/btnDadosSave"
+                android:layout_gravity="center_horizontal"
+                android:background="?attr/colorPrimary"
+                style="@style/btn"/>
 
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
