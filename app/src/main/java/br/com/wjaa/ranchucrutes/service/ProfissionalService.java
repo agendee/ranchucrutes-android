@@ -3,6 +3,7 @@ package br.com.wjaa.ranchucrutes.service;
 import java.util.List;
 
 import br.com.wjaa.ranchucrutes.entity.ProfissionalFavoritoEntity;
+import br.com.wjaa.ranchucrutes.exception.ProfissionalServiceException;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
@@ -13,9 +14,9 @@ import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
  */
 public interface ProfissionalService {
 
-    ResultadoBuscaClinicaVo find(Integer idEspecialidade, String cep);
+    ResultadoBuscaClinicaVo find(Integer idEspecialidade, String cep) throws ProfissionalServiceException;
 
-    ResultadoBuscaClinicaVo find(Integer idEspecialidade, LocationVo location);
+    ResultadoBuscaClinicaVo find(Integer idEspecialidade, LocationVo location) throws ProfissionalServiceException;
 
     ProfissionalBasicoVo getProfissionalById(Long idProfissional);
 

@@ -1,6 +1,8 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -8,11 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
@@ -47,6 +53,15 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
     @InjectView(R.id.edtDadosNome)
     private EditText edtNome;
 
+    @InjectView(R.id.edtDadosCpf)
+    private EditText edtDadosCpf;
+
+    @InjectView(R.id.rgSexo)
+    private RadioGroup rgSexo;
+
+    @InjectView(R.id.btnDtAniversario)
+    private Button btnDtAniversario;
+
     @InjectView(R.id.btnSelectPlano)
     private Button btnConvenio;
 
@@ -65,6 +80,16 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
     private ConvenioCategoriaVo [] categorias;
 
     private ConvenioCategoriaVo categoriaSelected;
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            String data = String.valueOf(dayOfMonth) + " /"
+                    + String.valueOf(monthOfYear+1) + " /" + String.valueOf(year);
+            btnDtAniversario.setText(data);
+
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +116,7 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
     private void initButtons() {
         btnConvenio.setOnClickListener(new DialogConvenioClickListener());
         btnCategoria.setOnClickListener(new DialogCategoriaClickListener());
+        btnDtAniversario.setOnClickListener(new DialogDataAniversarioClickListener());
         btnCategoria.setEnabled(false);
         btnSave.setOnClickListener(new SavePacienteClickListener());
 
@@ -174,6 +200,19 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
         }
     }
 
+    protected void createDialogDataAniversario() {
+        Calendar calendario = Calendar.getInstance();
+
+        int ano = calendario.get(Calendar.YEAR);
+        int mes = calendario.get(Calendar.MONTH);
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+
+
+        new DatePickerDialog(this.getActivity(), mDateSetListener, ano, mes,
+                        dia).show();
+
+    }
+
 
     class DialogConvenioClickListener implements View.OnClickListener{
 
@@ -207,6 +246,14 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
                 b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
                 AndroidUtils.openActivityFromFragment(MeusDadosFragment.this, SearchGenericListActivity.class, b);
             }
+        }
+    }
+
+    class DialogDataAniversarioClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            createDialogDataAniversario();
         }
     }
 

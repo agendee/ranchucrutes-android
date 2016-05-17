@@ -63,33 +63,35 @@
                 style="@style/edt"
                 />
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="horizontal" android:layout_width="match_parent"
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                >
+                android:orientation="horizontal"
+                android:id="@+id/rgSexo"
+                android:layout_marginLeft="20dp">
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Masculino"
-                        android:layout_gravity="left"
-                        android:id="@+id/radioButton" />
+                        android:id="@+id/rbMasculino"
+                        />
 
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Feminino"
-                        android:id="@+id/radioButton2"
+                        android:id="@+id/rbFeminino"
                         android:layout_marginLeft="30dp"
-                        android:layout_gravity="right" />
-            </LinearLayout>
+                        />
+            </RadioGroup>
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="textStart"
+                android:textAlignment="gravity"
+                android:layout_gravity="start"
                 android:text="Data de aniversário"
-                android:id="@+id/btnSelectDtAniversario"
+                android:id="@+id/btnDtAniversario"
                 android:drawableEnd="@android:drawable/arrow_up_float"
                 style="@style/btnOpenList" />
 

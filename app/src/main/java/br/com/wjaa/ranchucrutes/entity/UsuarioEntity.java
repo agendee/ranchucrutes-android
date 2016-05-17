@@ -22,10 +22,13 @@ public class UsuarioEntity extends PersistenceBean {
     private String deviceKey;
     private String urlFoto;
     private ConvenioCategoriaVo categoriaVo;
+    private String dataAniversario;
+    private String sexo;
+    private String cpf;
 
 
     public UsuarioEntity() {
-        super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria","device_key","url_foto"} );
+        super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria","device_key","url_foto","data_aniversario","sexo","cpf"} );
     }
 
     public Integer getId() {
@@ -45,6 +48,9 @@ public class UsuarioEntity extends PersistenceBean {
         val.put("id_categoria", this.getIdCategoria());
         val.put("device_key", this.getDeviceKey());
         val.put("url_foto", this.getUrlFoto());
+        val.put("data_aniversario", this.getUrlFoto());
+        val.put("sexo", this.getUrlFoto());
+        val.put("cpf", this.getUrlFoto());
         return val;
     }
 
@@ -57,6 +63,9 @@ public class UsuarioEntity extends PersistenceBean {
         this.setIdCategoria(cr.getInt(5));
         this.setDeviceKey(cr.getString(6));
         this.setUrlFoto(cr.getString(7));
+        this.setDataAniversario(cr.getString(8));
+        this.setSexo(cr.getString(9));
+        this.setCpf(cr.getString(10));
     }
 
 
@@ -146,5 +155,27 @@ public class UsuarioEntity extends PersistenceBean {
         return result;
     }
 
+    public String getDataAniversario() {
+        return dataAniversario;
+    }
 
+    public void setDataAniversario(String dataAniversario) {
+        this.dataAniversario = dataAniversario;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 }

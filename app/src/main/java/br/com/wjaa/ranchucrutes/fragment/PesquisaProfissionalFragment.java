@@ -37,6 +37,7 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
 import br.com.wjaa.ranchucrutes.activity.SearchPlacesListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
+import br.com.wjaa.ranchucrutes.exception.ProfissionalServiceException;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
@@ -239,7 +240,13 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
 
             ResultadoBuscaClinicaVo resultado = null;
             if (myLocation != null){
-                resultado = profissionalService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
+                try {
+                    resultado = profissionalService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
+                } catch (ProfissionalServiceException e) {
+                    AndroidUtils.closeWaitDlg();
+                    AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(),getActivity());
+
+                }
             }
 
             if (resultado != null) {

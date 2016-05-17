@@ -5,12 +5,14 @@ import com.google.inject.Inject;
 import java.util.List;
 
 import br.com.wjaa.ranchucrutes.entity.ProfissionalFavoritoEntity;
+import br.com.wjaa.ranchucrutes.exception.ProfissionalServiceException;
 import br.com.wjaa.ranchucrutes.exception.RestException;
 import br.com.wjaa.ranchucrutes.exception.RestRequestUnstable;
 import br.com.wjaa.ranchucrutes.exception.RestResponseUnsatisfiedException;
 import br.com.wjaa.ranchucrutes.form.FindClinicaForm;
 import br.com.wjaa.ranchucrutes.form.FindProfissionalForm;
 import br.com.wjaa.ranchucrutes.rest.RestUtils;
+import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
@@ -27,39 +29,33 @@ public class ProfissionalServiceImpl implements ProfissionalService {
 
 
     @Override
-    public ResultadoBuscaClinicaVo find(Integer idEspecialidade, String cep) {
+    public ResultadoBuscaClinicaVo find(Integer idEspecialidade, String cep) throws ProfissionalServiceException {
         FindClinicaForm form = new FindClinicaForm();
         form.setCep(cep);
         form.setIdEspecialidade(idEspecialidade);
         String json = ObjectUtils.toJson(form);
         try {
             return RestUtils.postJson(ResultadoBuscaClinicaVo.class,RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_PROCURAR_CLINICAS,json);
-        } catch (RestResponseUnsatisfiedException e) {
-            e.printStackTrace();
-        } catch (RestException e) {
-            e.printStackTrace();
-        } catch (RestRequestUnstable restRequestUnstable) {
-            restRequestUnstable.printStackTrace();
+        } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
+            throw new ProfissionalServiceException(e.getMessage());
+        } catch (RestException e){
+            throw new ProfissionalServiceException(e.getErrorMessage().getErrorMessage());
         }
-        return null;
     }
 
     @Override
-    public ResultadoBuscaClinicaVo find(Integer idEspecialidade, LocationVo location) {
+    public ResultadoBuscaClinicaVo find(Integer idEspecialidade, LocationVo location) throws ProfissionalServiceException {
         FindClinicaForm form = new FindClinicaForm();
         form.setLocation(location);
         form.setIdEspecialidade(idEspecialidade);
         String json = ObjectUtils.toJson(form);
         try {
             return RestUtils.postJson(ResultadoBuscaClinicaVo.class,RanchucrutesConstants.WS_HOST,RanchucrutesConstants.END_POINT_PROCURAR_CLINICAS,json);
-        } catch (RestResponseUnsatisfiedException e) {
-            e.printStackTrace();
-        } catch (RestException e) {
-            e.printStackTrace();
-        } catch (RestRequestUnstable restRequestUnstable) {
-            restRequestUnstable.printStackTrace();
+        } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
+            throw new ProfissionalServiceException(e.getMessage());
+        } catch (RestException e){
+            throw new ProfissionalServiceException(e.getErrorMessage().getErrorMessage());
         }
-        return null;
     }
 
     @Override
