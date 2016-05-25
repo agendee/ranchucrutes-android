@@ -1,6 +1,8 @@
 package br.com.wjaa.ranchucrutes.vo;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
@@ -21,6 +23,10 @@ public class PacienteVo implements Serializable {
     private Integer idCategoria;
     private String keyDeviceGcm;
     private String urlFoto;
+    private Date dataNascimento;
+    private String cpf;
+    private String sexo;
+    private List<ConvenioCategoriaVo> conveniosCategorias;
 
     public PacienteVo(){}
 
@@ -112,5 +118,37 @@ public class PacienteVo implements Serializable {
 
     public void setUrlFoto(String urlFoto) {
         this.urlFoto = urlFoto;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public List<ConvenioCategoriaVo> getConveniosCategorias() {
+        return conveniosCategorias;
+    }
+
+    public void setConveniosCategorias(List<ConvenioCategoriaVo> conveniosCategorias) {
+        this.conveniosCategorias = conveniosCategorias;
     }
 }

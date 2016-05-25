@@ -29,10 +29,9 @@ import java.util.Arrays;
 import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
-import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
@@ -244,7 +243,7 @@ public class FacebookServiceImpl implements FacebookService {
                 //ATUALIZANDO A FOTO DO USUARIO CASO TENHA MUDADO.
                 String foto = "https://graph.facebook.com/" + id + "/picture?type=large";
                 pacienteVo.setUrlFoto(foto);
-                UsuarioEntity user = loginService.registrarAtualizarUsuario(pacienteVo);
+                PacienteEntity user = loginService.registrarAtualizarUsuario(pacienteVo);
                 RanchucrutesSession.setUsuario(user);
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);

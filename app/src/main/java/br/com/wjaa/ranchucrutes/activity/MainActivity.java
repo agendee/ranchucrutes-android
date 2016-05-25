@@ -22,15 +22,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
-import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.GcmUtils;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import com.google.inject.Inject;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.fragment.PesquisaProfissionalFragment;
 import br.com.wjaa.ranchucrutes.fragment.MinhasConsultasFragment;
 import br.com.wjaa.ranchucrutes.fragment.MeusDadosFragment;
@@ -38,7 +37,6 @@ import br.com.wjaa.ranchucrutes.fragment.ProfissionaisFavoritosFragment;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
@@ -89,7 +87,6 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
 
 
         RanchucrutesSession.addSessionChangedListener(this);
-        RanchucrutesSession.addSessionChangedListener(meusDadosFragment);
         initView();
 
         //verificando se o play service está ativado.
@@ -273,7 +270,7 @@ public class MainActivity extends RoboActionBarActivity implements SessionChange
     }
 
     @Override
-    public void usuarioChange(UsuarioEntity usuario) {
+    public void usuarioChange(PacienteEntity usuario) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

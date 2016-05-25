@@ -10,7 +10,7 @@ import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 /**
  * Created by wagner on 20/09/15.
  */
-public class UsuarioEntity extends PersistenceBean {
+public class PacienteEntity extends PersistenceBean {
 
     private static final long serialVersionUID = 3338854478316950156L;
     private Integer id;
@@ -27,8 +27,24 @@ public class UsuarioEntity extends PersistenceBean {
     private String cpf;
 
 
-    public UsuarioEntity() {
-        super( "usuario", new String[] { "id","nome","email","telefone","auth_type","id_categoria","device_key","url_foto","data_aniversario","sexo","cpf"} );
+    public PacienteEntity() {
+        super( "paciente", new String[] { "id","nome","email","telefone","auth_type","id_categoria","device_key","url_foto","data_aniversario","sexo","cpf"} );
+    }
+
+    public PacienteEntity(PacienteEntity usuario) {
+        this();
+        this.id = usuario.getId();
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.telefone = usuario.getTelefone();
+        this.authType = usuario.getAuthType();
+        this.idCategoria = usuario.getIdCategoria();
+        this.deviceKey = usuario.getDeviceKey();
+        this.urlFoto = usuario.getUrlFoto();
+        this.categoriaVo = usuario.getCategoriaVo();
+        this.dataAniversario = usuario.getDataAniversario();
+        this.sexo = usuario.getSexo();
+        this.cpf = usuario.getCpf();
     }
 
     public Integer getId() {
@@ -48,9 +64,9 @@ public class UsuarioEntity extends PersistenceBean {
         val.put("id_categoria", this.getIdCategoria());
         val.put("device_key", this.getDeviceKey());
         val.put("url_foto", this.getUrlFoto());
-        val.put("data_aniversario", this.getUrlFoto());
-        val.put("sexo", this.getUrlFoto());
-        val.put("cpf", this.getUrlFoto());
+        val.put("data_aniversario", this.getDataAniversario());
+        val.put("sexo", this.getSexo());
+        val.put("cpf", this.getCpf());
         return val;
     }
 
@@ -139,7 +155,7 @@ public class UsuarioEntity extends PersistenceBean {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UsuarioEntity that = (UsuarioEntity) o;
+        PacienteEntity that = (PacienteEntity) o;
 
         if (!id.equals(that.id)) return false;
         if (!nome.equals(that.nome)) return false;

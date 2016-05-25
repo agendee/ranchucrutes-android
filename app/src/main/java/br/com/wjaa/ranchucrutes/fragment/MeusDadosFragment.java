@@ -2,34 +2,40 @@ package br.com.wjaa.ranchucrutes.fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.ListViewCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
+import br.com.wjaa.ranchucrutes.adapter.ConveniosSelectedListAdapter;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
-import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.DateUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
@@ -41,7 +47,7 @@ import roboguice.inject.InjectView;
 /**
  *
  */
-public class MeusDadosFragment extends RoboFragment implements SessionChangedListener{
+public class MeusDadosFragment extends RoboFragment{
 
 
     @InjectView(R.id.edtDadosEmail)
@@ -54,19 +60,19 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
     private EditText edtNome;
 
     @InjectView(R.id.edtDadosCpf)
-    private EditText edtDadosCpf;
+    private EditText edtCpf;
 
     @InjectView(R.id.rgSexo)
     private RadioGroup rgSexo;
 
-    @InjectView(R.id.btnDtAniversario)
-    private Button btnDtAniversario;
+    @InjectView(R.id.edtDtAniversario)
+    private EditText edtDtAniversario;
 
     @InjectView(R.id.btnSelectPlano)
     private Button btnConvenio;
 
-    @InjectView(R.id.btnSelectCategoria)
-    private Button btnCategoria;
+    /*@InjectView(R.id.btnSelectCategoria)
+    private Button btnCategoria;*/
 
     @InjectView(R.id.btnDadosSave)
     private Button btnSave;
@@ -77,17 +83,22 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
     @Inject
     private LoginService loginService;
 
-    private ConvenioCategoriaVo [] categorias;
+    @InjectView(R.id.lvConvenios)
+    private ListViewCompat lvConvenios;
+
+    private List<ConvenioCategoriaVo> categorias = new ArrayList<>();
 
     private ConvenioCategoriaVo categoriaSelected;
+
+    private PacienteEntity user;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            String data = String.valueOf(dayOfMonth) + " /"
-                    + String.valueOf(monthOfYear+1) + " /" + String.valueOf(year);
-            btnDtAniversario.setText(data);
-
+            String data = String.format("%02d",dayOfMonth) + "/"
+                    + String.format("%02d",monthOfYear+1) + "/" + String.valueOf(year);
+            edtDtAniversario.setText(data);
+            user.setDataAniversario(data);
         }
     };
 
@@ -101,66 +112,84 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_dados_usuario, container, false);
     }
+
+
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        lvConvenios.setAdapter(new ConveniosSelectedListAdapter(this.getContext(),categorias));
+        LayoutInflater inflater = (LayoutInflater) this.getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View emptyView = inflater.inflate(R.layout.empty_list, null, false);
+        lvConvenios.setEmptyView(emptyView);
         initButtons();
-        initView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        user = new PacienteEntity(RanchucrutesSession.getUsuario());
+        if (user == null){
+            AndroidUtils.showMessageErroDlg("Usuário não está autenticado!", this.getActivity());
+            return;
+        }
+        initView();
     }
 
     private void initButtons() {
         btnConvenio.setOnClickListener(new DialogConvenioClickListener());
-        btnCategoria.setOnClickListener(new DialogCategoriaClickListener());
-        btnDtAniversario.setOnClickListener(new DialogDataAniversarioClickListener());
-        btnCategoria.setEnabled(false);
+        //btnCategoria.setOnClickListener(new DialogCategoriaClickListener());
+        edtDtAniversario.setOnClickListener(new DialogDataAniversarioClickListener());
+        //btnCategoria.setEnabled(false);
         btnSave.setOnClickListener(new SavePacienteClickListener());
-
     }
 
     public void initView() {
-        UsuarioEntity usuario = RanchucrutesSession.getUsuario();
-        if (usuario != null){
-            this.atualizarCampos(usuario);
+        if (user != null){
+            this.atualizarCampos(user);
         }else{
             this.zerarCampos();
         }
-    }
 
+        EditText [] edts = new EditText[4];
+        edts[0] = edtNome;
+        edts[1] = edtEmail;
+        edts[2] = edtCelular;
+        edts[3] = edtCpf;
 
-    @Override
-    public void usuarioChange(final UsuarioEntity usuario) {
-        Activity activity = (Activity)getContext();
-
-        //pode ser que o contexto ainda nao esteja criado.
-        if (activity != null){
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (usuario == null){
-                        zerarCampos();
-                    }else{
-                        atualizarCampos(usuario);
-                    }
-                }
-            });
+        for(EditText e : edts){
+            e.addTextChangedListener(new TextChanged(e.getId()));
         }
 
+        rgSexo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (user != null){
+                    switch (checkedId){
+                        case R.id.rbFeminino : user.setSexo("F"); break;
+                        case R.id.rbMasculino : user.setSexo("M"); break;
+                    }
+                }
+            }
+        });
+
     }
 
-    private void atualizarCampos(UsuarioEntity usuario) {
+
+    private void atualizarCampos(PacienteEntity usuario) {
         if (edtEmail != null) {
             edtCelular.setText(usuario.getTelefone());
             edtEmail.setText(usuario.getEmail());
             edtNome.setText(usuario.getNome());
+            edtCpf.setText(usuario.getCpf());
+            edtDtAniversario.setText(usuario.getDataAniversario());
+            if ("M".equals(usuario.getSexo())){
+                rgSexo.check(R.id.rbMasculino);
+            }else if ("F".equals(usuario.getSexo())){
+                rgSexo.check(R.id.rbFeminino);
+            }
             if (usuario.getCategoriaVo() != null){
                 btnConvenio.setText(usuario.getCategoriaVo().getConvenioVo().getNome());
-                btnCategoria.setText(usuario.getCategoriaVo().getNome());
-                btnCategoria.setEnabled(true);
                 categoriaSelected = usuario.getCategoriaVo();
             }
         }
@@ -173,6 +202,9 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
             edtCelular.setText("");
             edtEmail.setText("");
             edtNome.setText("");
+            edtNome.setText("");
+            edtCpf.setText("");
+            edtDtAniversario.setText("dd/mm/aaaa");
         }
     }
 
@@ -187,12 +219,12 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
 
                 if (model instanceof  ConvenioCategoriaVo){
                     ConvenioCategoriaVo convenioCategoriaVo = (ConvenioCategoriaVo)model;
-                    btnCategoria.setText(convenioCategoriaVo.getNome());
-                    this.categoriaSelected = convenioCategoriaVo;
+                    this.categorias.add(convenioCategoriaVo);
+                    ((ArrayAdapter)this.lvConvenios.getAdapter()).notifyDataSetChanged();
+
                 }
                 if (model instanceof  ConvenioVo){
                     ConvenioVo convenioVo = (ConvenioVo)model;
-                    btnConvenio.setText(convenioVo.getNome());
                     new FindCategoria(convenioVo.getId()).start();
                 }
 
@@ -206,8 +238,6 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
         int ano = calendario.get(Calendar.YEAR);
         int mes = calendario.get(Calendar.MONTH);
         int dia = calendario.get(Calendar.DAY_OF_MONTH);
-
-
         new DatePickerDialog(this.getActivity(), mDateSetListener, ano, mes,
                         dia).show();
 
@@ -230,25 +260,6 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
         }
     }
 
-
-    class DialogCategoriaClickListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View v) {
-            Bundle b = new Bundle();
-
-            if (categorias != null){
-
-                ArrayList<Parcelable> parcelables = new ArrayList<>();
-                for (ConvenioCategoriaVo c : categorias){
-                    parcelables.add(c);
-                }
-                b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
-                AndroidUtils.openActivityFromFragment(MeusDadosFragment.this, SearchGenericListActivity.class, b);
-            }
-        }
-    }
-
     class DialogDataAniversarioClickListener implements View.OnClickListener{
 
         @Override
@@ -264,22 +275,25 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
         }
         @Override
         public void run() {
-            categorias = ranchucrutesService.getConvenioCategoriasByIdConvenio(idConvenio);
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    btnCategoria.setText("Selecione uma Categoria");
-                    btnCategoria.setEnabled(true);
-                }
-            });
+            Bundle b = new Bundle();
 
+            ConvenioCategoriaVo [] convenioCategorias = ranchucrutesService.getConvenioCategoriasByIdConvenio(idConvenio);
+            if (convenioCategorias != null){
+
+                ArrayList<Parcelable> parcelables = new ArrayList<>();
+                for (ConvenioCategoriaVo c : convenioCategorias){
+                    parcelables.add(c);
+                }
+                b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+                AndroidUtils.openActivityFromFragment(MeusDadosFragment.this, SearchGenericListActivity.class, b);
+            }
         }
     }
 
     private class SavePacienteClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            UsuarioEntity usuarioEntity = RanchucrutesSession.getUsuario();
+            PacienteEntity usuarioEntity = RanchucrutesSession.getUsuario();
 
             if (usuarioEntity == null){
                 AndroidUtils.showMessageErroDlg("Usuário não está autenticado!", getContext());
@@ -295,15 +309,21 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
                 return;
             }
             PacienteVo pacienteVo = new PacienteVo();
-            pacienteVo.setNome(edtNome.getText().toString());
-            pacienteVo.setTelefone(edtCelular.getText().toString());
-            pacienteVo.setEmail(edtEmail.getText().toString());
+            pacienteVo.setNome(user.getNome());
+            pacienteVo.setTelefone(user.getTelefone());
+            pacienteVo.setEmail(user.getEmail());
+            if ( StringUtils.isNotBlank(user.getDataAniversario()) ){
+                pacienteVo.setDataNascimento(DateUtils.parseddMMyyyy(user.getDataAniversario()));
+            }
+            pacienteVo.setSexo(user.getSexo());
+            pacienteVo.setCpf(user.getCpf());
             if (categoriaSelected != null){
                 pacienteVo.setIdCategoria(categoriaSelected.getId());
             }
 
-            pacienteVo.setAuthType(usuarioEntity.getAuthType());
-            pacienteVo.setId(usuarioEntity.getId().longValue());
+            pacienteVo.setAuthType(user.getAuthType());
+            pacienteVo.setId(user.getId().longValue());
+            pacienteVo.setUrlFoto(user.getUrlFoto());
 
             AndroidUtils.showWaitDlgOnUiThread("Aguarde, atualizando dados...", (Activity) getContext());
             new UpdatePaciente(pacienteVo).start();
@@ -326,6 +346,48 @@ public class MeusDadosFragment extends RoboFragment implements SessionChangedLis
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageErroDlgOnUiThread(ex.getMessage(), (Activity) getContext());
             }
+        }
+    }
+
+
+    class TextChanged implements TextWatcher {
+
+        private int idEdt;
+        TextChanged(int idEdt){
+            this.idEdt = idEdt;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            switch (idEdt){
+                case R.id.edtDadosNome : {
+                    user.setNome(s.toString());
+                    break;
+                }
+                case R.id.edtDadosCelular : {
+                    user.setTelefone(s.toString());
+                    break;
+                }
+                case R.id.edtDadosEmail : {
+                    user.setEmail(s.toString());
+                    break;
+                }
+                case R.id.edtDadosCpf : {
+                    user.setCpf(s.toString());
+                    break;
+                }
+
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
         }
     }
 }

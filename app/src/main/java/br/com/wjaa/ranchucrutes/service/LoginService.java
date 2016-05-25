@@ -5,7 +5,7 @@ import android.content.Context;
 import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.commons.AuthType;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.form.LoginForm;
@@ -36,7 +36,7 @@ public interface LoginService {
 
     void atualizarPaciente(PacienteVo pacienteVo) throws NovoPacienteException;
 
-    UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente);
+    PacienteEntity registrarAtualizarUsuario(PacienteVo paciente);
 
     void registerKeyDevice(Context context, String keyRegister);
 }

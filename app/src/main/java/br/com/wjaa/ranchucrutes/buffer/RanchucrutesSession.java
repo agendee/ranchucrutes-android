@@ -1,29 +1,24 @@
 package br.com.wjaa.ranchucrutes.buffer;
 
-import com.facebook.login.LoginManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.wjaa.ranchucrutes.commons.AuthType;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
-import br.com.wjaa.ranchucrutes.form.LoginForm;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.listener.SessionChangedListener;
-import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 
 /**
  * Created by wagner on 17/09/15.
  */
 public class RanchucrutesSession {
 
-    private static UsuarioEntity usuario;
+    private static PacienteEntity usuario;
     private static List<SessionChangedListener> sessionChangedListenerList;
 
-    public static UsuarioEntity getUsuario() {
+    public static PacienteEntity getUsuario() {
         return usuario;
     }
 
-    public static void setUsuario(UsuarioEntity usuario) {
+    public static void setUsuario(PacienteEntity usuario) {
         RanchucrutesSession.usuario = usuario;
         //disparando o evento
         if (sessionChangedListenerList != null){

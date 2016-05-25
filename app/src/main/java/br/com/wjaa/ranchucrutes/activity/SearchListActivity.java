@@ -149,16 +149,6 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         if(id == android.R.id.home){
             finish();
         }
-        /*else if( id == R.id.action_delete ){
-            SearchRecentSuggestions searchRecentSuggestions = new SearchRecentSuggestions(this,
-                    SearchableProvider.AUTHORITY,
-                    SearchableProvider.MODE);
-
-            searchRecentSuggestions.clearHistory();
-
-            Toast.makeText(this, "Cookies removidos", Toast.LENGTH_SHORT).show();
-        }*/
-
         return true;
     }
 
@@ -171,16 +161,6 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         // TRANSITIONS
         if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ){
 
-           /* View ivCar = view.findViewById(R.id.tviv_car);
-            View tvModel = view.findViewById(R.id.tv_model);
-            View tvBrand = view.findViewById(R.id.tv_brand);
-
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-                    Pair.create(ivCar, "element1"),
-                    Pair.create( tvModel, "element2" ),
-                    Pair.create( tvBrand, "element3" ));*/
-
-            //*startActivity(intent, options.toBundle() );
         }
         else{
             startActivity(intent);

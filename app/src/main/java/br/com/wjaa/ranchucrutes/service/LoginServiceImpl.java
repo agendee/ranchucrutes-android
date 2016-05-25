@@ -1,6 +1,5 @@
 package br.com.wjaa.ranchucrutes.service;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,7 +14,7 @@ import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.exception.RestException;
@@ -25,6 +24,7 @@ import br.com.wjaa.ranchucrutes.form.LoginForm;
 import br.com.wjaa.ranchucrutes.rest.RestUtils;
 import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
+import br.com.wjaa.ranchucrutes.utils.DateUtils;
 import br.com.wjaa.ranchucrutes.utils.GcmUtils;
 import br.com.wjaa.ranchucrutes.utils.ObjectUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
@@ -92,7 +92,7 @@ public class LoginServiceImpl implements LoginService {
 
                 PacienteVo paciente = resultadoLogin.getPaciente();
 
-                UsuarioEntity usuario = this.registrarAtualizarUsuario(paciente);
+                PacienteEntity usuario = this.registrarAtualizarUsuario(paciente);
                 RanchucrutesSession.setUsuario(usuario);
                 return paciente;
             }else{
@@ -110,44 +110,51 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public UsuarioEntity registrarAtualizarUsuario(PacienteVo paciente) {
+    public PacienteEntity registrarAtualizarUsuario(PacienteVo paciente) {
         //removendo os usuarios da tabela
         this.deleteAll();
         //usuario autenticado com sucesso, inserindo usuario no banco como ativo.
-        UsuarioEntity usuarioEntity = dataService.getById(UsuarioEntity.class, paciente.getId().intValue());
+        PacienteEntity pacienteEntity = dataService.getById(PacienteEntity.class, paciente.getId().intValue());
         boolean insert = false;
-        if (usuarioEntity == null){
-            usuarioEntity = new UsuarioEntity();
+        if (pacienteEntity == null){
+            pacienteEntity = new PacienteEntity();
             insert = true;
         }
-        usuarioEntity.setId(paciente.getId().intValue());
-        usuarioEntity.setEmail(paciente.getEmail());
-        usuarioEntity.setNome(paciente.getNome());
-        usuarioEntity.setTelefone(paciente.getTelefone());
-        usuarioEntity.setAuthType(paciente.getAuthType());
-        usuarioEntity.setIdCategoria(paciente.getIdCategoria());
-        usuarioEntity.setDeviceKey(paciente.getKeyDeviceGcm());
-        usuarioEntity.setUrlFoto(paciente.getUrlFoto());
+        pacienteEntity.setId(paciente.getId().intValue());
+        pacienteEntity.setEmail(paciente.getEmail());
+        pacienteEntity.setNome(paciente.getNome());
+        pacienteEntity.setTelefone(paciente.getTelefone());
+        pacienteEntity.setAuthType(paciente.getAuthType());
+        pacienteEntity.setIdCategoria(paciente.getIdCategoria());
+        pacienteEntity.setDeviceKey(paciente.getKeyDeviceGcm());
+        pacienteEntity.setUrlFoto(paciente.getUrlFoto());
+        pacienteEntity.setCpf(paciente.getCpf());
+        if ( paciente.getDataNascimento() != null ){
+            pacienteEntity.setDataAniversario(DateUtils.formatddMMyyyy(paciente.getDataNascimento()));
+        }
+        pacienteEntity.setSexo(paciente.getSexo());
         if (insert){
-            dataService.insert(usuarioEntity);
+            dataService.insert(pacienteEntity);
         }else{
-            dataService.updateById(usuarioEntity);
+            dataService.updateById(pacienteEntity);
         }
 
-        if (usuarioEntity.getIdCategoria() != null){
+        //SALVAR OS CONVENIOS AQUI
+
+        if (pacienteEntity.getIdCategoria() != null){
             ConvenioCategoriaVo convenioCategoriaVo = ranchucrutesService
-                    .getConvenioCategoriasById(usuarioEntity.getIdCategoria());
-            usuarioEntity.setCategoriaVo(convenioCategoriaVo);
+                    .getConvenioCategoriasById(pacienteEntity.getIdCategoria());
+            pacienteEntity.setCategoriaVo(convenioCategoriaVo);
         }
 
-        return usuarioEntity;
+        return pacienteEntity;
 
     }
 
     private void deleteAll() {
-        List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
+        List<PacienteEntity> listUsuario = dataService.getList(PacienteEntity.class);
         if (CollectionUtils.isNotEmpty(listUsuario)){
-            for (UsuarioEntity u :listUsuario) {
+            for (PacienteEntity u :listUsuario) {
                 dataService.deleteById(u);
             }
         }
@@ -172,9 +179,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void authLocal(Context context) {
-        List<UsuarioEntity> listUsuario = dataService.getList(UsuarioEntity.class);
+        List<PacienteEntity> listUsuario = dataService.getList(PacienteEntity.class);
         if (CollectionUtils.isNotEmpty(listUsuario)){
-            UsuarioEntity usuario = listUsuario.get(0);
+            PacienteEntity usuario = listUsuario.get(0);
             if (usuario.getIdCategoria() != null){
                 ConvenioCategoriaVo convenioCategoriaVo = ranchucrutesService.getConvenioCategoriasById(usuario.getIdCategoria());
                 usuario.setCategoriaVo(convenioCategoriaVo);
@@ -197,7 +204,7 @@ public class LoginServiceImpl implements LoginService {
         try {
             PacienteVo pVo = RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,
                     RanchucrutesConstants.END_POINT_ATUALIZAR_PACIENTE, pacienteJson);
-            UsuarioEntity u = registrarAtualizarUsuario(pVo);
+            PacienteEntity u = registrarAtualizarUsuario(pVo);
             RanchucrutesSession.setUsuario(u);
         } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
             Log.e(TAG,e.getMessage(),e);
@@ -214,7 +221,7 @@ public class LoginServiceImpl implements LoginService {
         try {
             PacienteVo pVo = RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,
                     RanchucrutesConstants.END_POINT_CRIAR_PACIENTE, pacienteJson);
-            UsuarioEntity u = registrarAtualizarUsuario(pVo);
+            PacienteEntity u = registrarAtualizarUsuario(pVo);
             RanchucrutesSession.setUsuario(u);
             return pVo;
         } catch (RestResponseUnsatisfiedException | RestRequestUnstable e) {
@@ -228,7 +235,7 @@ public class LoginServiceImpl implements LoginService {
 
 
     private void initGcm(Context context) {
-        UsuarioEntity user = RanchucrutesSession.getUsuario();
+        PacienteEntity user = RanchucrutesSession.getUsuario();
         this.registerKeyDevice(context, user.getDeviceKey());
     }
 
@@ -259,3 +266,4 @@ public class LoginServiceImpl implements LoginService {
 
 
 }
+

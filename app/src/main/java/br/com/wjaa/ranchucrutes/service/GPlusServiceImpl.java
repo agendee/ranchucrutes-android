@@ -18,10 +18,9 @@ import com.google.inject.Inject;
 import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.activity.NovoPacienteActivity;
-import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
 import br.com.wjaa.ranchucrutes.utils.AndroidSystemUtil;
@@ -185,7 +184,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 //ATUALIZANDO A FOTO DO USUARIO CASO TENHA MUDADO
                 String urlImg = currentPerson.getImage().getUrl();
                 pacienteVo.setUrlFoto(urlImg);
-                UsuarioEntity usuario = loginService.registrarAtualizarUsuario(pacienteVo);
+                PacienteEntity usuario = loginService.registrarAtualizarUsuario(pacienteVo);
                 RanchucrutesSession.setUsuario(usuario);
                 AndroidUtils.closeWaitDlg();
                 saudarSair(pacienteVo);

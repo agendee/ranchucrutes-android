@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.inject.Inject;
 
@@ -25,7 +24,7 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
-import br.com.wjaa.ranchucrutes.entity.UsuarioEntity;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.fragment.MeusDadosFragment;
 import br.com.wjaa.ranchucrutes.fragment.MinhasConsultasFragment;
 import br.com.wjaa.ranchucrutes.fragment.PesquisaProfissionalFragment;
@@ -160,7 +159,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         navView.setNavigationItemSelectedListener(this);
 
         RanchucrutesSession.addSessionChangedListener(this);
-        RanchucrutesSession.addSessionChangedListener(meusDadosFragment);
 
         if (RanchucrutesSession.isUsuarioLogado()){
             RanchucrutesSession.setUsuario(RanchucrutesSession.getUsuario());
@@ -325,7 +323,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
 
     @Override
-    public void usuarioChange(final UsuarioEntity usuario) {
+    public void usuarioChange(final PacienteEntity usuario) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

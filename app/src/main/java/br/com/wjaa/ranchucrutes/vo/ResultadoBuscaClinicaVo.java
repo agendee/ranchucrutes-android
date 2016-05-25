@@ -12,6 +12,9 @@ public class ResultadoBuscaClinicaVo {
     private List<ClinicaVo> clinicas;
     private Double latitude;
     private Double longitude;
+    private ClinicaVo clinicaMaisProxima;
+    private Double distanceInKm;
+
 
 
     public Double getLatitude() {
@@ -44,5 +47,21 @@ public class ResultadoBuscaClinicaVo {
             clinicas = new ArrayList<>();
         }
         clinicas.add(clinicaVo);
+    }
+
+    public ClinicaVo getClinicaMaisProxima() {
+        return clinicaMaisProxima;
+    }
+
+    public void setClinicaMaisProxima(ClinicaVo clinicaMaisProxima) {
+        this.clinicaMaisProxima = clinicaMaisProxima;
+    }
+
+    public Double getDistanceInKm() {
+        return distanceInKm == null ? 0.0 : distanceInKm ;
+    }
+
+    public void setDistanceInKm(Double distanceInKm) {
+        this.distanceInKm = distanceInKm;
     }
 }
