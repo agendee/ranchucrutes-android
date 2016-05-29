@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import javax.security.auth.login.LoginException;
 
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.commons.AuthType;
+import br.com.wjaa.ranchucrutes.entity.PacienteConvenioEntity;
 import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.exception.NovoPacienteException;
 import br.com.wjaa.ranchucrutes.exception.RanchucrutesWSException;
@@ -112,6 +114,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public PacienteEntity registrarAtualizarUsuario(PacienteVo paciente) {
         //removendo os usuarios da tabela
+        //TODO REVER ESSE DELETEALL
         this.deleteAll();
         //usuario autenticado com sucesso, inserindo usuario no banco como ativo.
         PacienteEntity pacienteEntity = dataService.getById(PacienteEntity.class, paciente.getId().intValue());
@@ -139,22 +142,35 @@ public class LoginServiceImpl implements LoginService {
             dataService.updateById(pacienteEntity);
         }
 
-        //SALVAR OS CONVENIOS AQUI
+        if (CollectionUtils.isNotEmpty(paciente.getConveniosCategorias())){
+            List<PacienteConvenioEntity> listPacienteConvenio = new ArrayList<>();
+            this.deleteAllConvenios();
+            for (ConvenioCategoriaVo convenioCategoriaVo : paciente.getConveniosCategorias()){
+                PacienteConvenioEntity pc = new PacienteConvenioEntity(pacienteEntity.getId(),convenioCategoriaVo);
+                dataService.insert(pc);
+                listPacienteConvenio.add(pc);
 
-        if (pacienteEntity.getIdCategoria() != null){
-            ConvenioCategoriaVo convenioCategoriaVo = ranchucrutesService
-                    .getConvenioCategoriasById(pacienteEntity.getIdCategoria());
-            pacienteEntity.setCategoriaVo(convenioCategoriaVo);
+            }
+            pacienteEntity.setListPacienteConvenio(listPacienteConvenio);
         }
 
         return pacienteEntity;
 
     }
 
+    private void deleteAllConvenios() {
+        List<PacienteConvenioEntity> listPacienteConvenio = dataService.getList(PacienteConvenioEntity.class);
+        if (CollectionUtils.isNotEmpty(listPacienteConvenio)){
+            for (PacienteConvenioEntity u :listPacienteConvenio) {
+                dataService.deleteById(u);
+            }
+        }
+    }
+
     private void deleteAll() {
-        List<PacienteEntity> listUsuario = dataService.getList(PacienteEntity.class);
-        if (CollectionUtils.isNotEmpty(listUsuario)){
-            for (PacienteEntity u :listUsuario) {
+        List<PacienteEntity> listPaciente = dataService.getList(PacienteEntity.class);
+        if (CollectionUtils.isNotEmpty(listPaciente)){
+            for (PacienteEntity u :listPaciente) {
                 dataService.deleteById(u);
             }
         }
@@ -179,17 +195,21 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public void authLocal(Context context) {
-        List<PacienteEntity> listUsuario = dataService.getList(PacienteEntity.class);
-        if (CollectionUtils.isNotEmpty(listUsuario)){
-            PacienteEntity usuario = listUsuario.get(0);
-            if (usuario.getIdCategoria() != null){
-                ConvenioCategoriaVo convenioCategoriaVo = ranchucrutesService.getConvenioCategoriasById(usuario.getIdCategoria());
-                usuario.setCategoriaVo(convenioCategoriaVo);
-            }
-            RanchucrutesSession.setUsuario(usuario);
+        List<PacienteEntity> listPaciente = dataService.getList(PacienteEntity.class);
+        if (CollectionUtils.isNotEmpty(listPaciente)){
+            PacienteEntity paciente = listPaciente.get(0);
+
+            List<PacienteConvenioEntity> listPacienteConvenio = this.getListCategoriaConvenioByIdPaciente(paciente.getId());
+            paciente.setListPacienteConvenio(listPacienteConvenio);
+
+            RanchucrutesSession.setUsuario(paciente);
 
             initGcm(context);
         }
+    }
+
+    private List<PacienteConvenioEntity> getListCategoriaConvenioByIdPaciente(Integer idPaciente) {
+        return dataService.getList(PacienteConvenioEntity.class,"id_paciente = ?",new String[]{idPaciente.toString()});
     }
 
     @Override

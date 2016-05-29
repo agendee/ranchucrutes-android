@@ -3,6 +3,7 @@ package br.com.wjaa.ranchucrutes.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import br.com.wjaa.ranchucrutes.entity.PacienteConvenioEntity;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
@@ -26,6 +27,14 @@ public class ConvenioCategoriaVo implements SearchingListModel {
     public ConvenioCategoriaVo(Parcel parcel) {
         setId(parcel.readInt());
         setNome(parcel.readString());
+        setIdConvenio(parcel.readInt());
+        setConvenioVo((ConvenioVo) parcel.readParcelable(ConvenioVo.class.getClassLoader()));
+    }
+
+    public ConvenioCategoriaVo(PacienteConvenioEntity pc) {
+        this.id = pc.getIdCategoria();
+        this.nome = pc.getNomeCategoria();
+        this.convenioVo = new ConvenioVo(null,pc.getNomeConvenio());
     }
 
 
@@ -78,6 +87,7 @@ public class ConvenioCategoriaVo implements SearchingListModel {
         if (getIdConvenio() != null){
             dest.writeInt(getIdConvenio());
         }
+        dest.writeParcelable(convenioVo,PARCELABLE_WRITE_RETURN_VALUE);
     }
 
     public static final Parcelable.Creator<ConvenioCategoriaVo> CREATOR = new Parcelable.Creator<ConvenioCategoriaVo>(){
@@ -90,4 +100,20 @@ public class ConvenioCategoriaVo implements SearchingListModel {
             return new ConvenioCategoriaVo[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ConvenioCategoriaVo that = (ConvenioCategoriaVo) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

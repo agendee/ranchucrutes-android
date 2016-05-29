@@ -36,14 +36,22 @@ public class ConveniosSelectedListAdapter extends ArrayAdapter<ConvenioCategoria
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final ConvenioCategoriaVo agendamentoVo = convenios.get(position);
        LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.item_list_default, parent, false);
+        View rowView = inflater.inflate(R.layout.item_list_removable, parent, false);
 
         TextView titulo = (TextView) rowView.findViewById(R.id.textItemList);
         TextView subTitulo = (TextView) rowView.findViewById(R.id.textSubItemList);
+        ImageView imgRemove = (ImageView) rowView.findViewById(R.id.imgRemoveItem);
+        imgRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remove(agendamentoVo);
+            }
+        });
+
         titulo.setText(agendamentoVo.getNome());
         if ( agendamentoVo.getConvenioVo() != null ){
             subTitulo.setText(agendamentoVo.getConvenioVo().getNome());

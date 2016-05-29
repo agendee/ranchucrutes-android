@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.RadioGroup;
 
 import com.google.inject.Inject;
@@ -27,14 +28,17 @@ import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.adapter.ConveniosSelectedListAdapter;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.entity.PacienteConvenioEntity;
 import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.service.LoginService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesService;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
+import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
 import br.com.wjaa.ranchucrutes.utils.DateUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
@@ -86,7 +90,7 @@ public class MeusDadosFragment extends RoboFragment{
     @InjectView(R.id.lvConvenios)
     private ListViewCompat lvConvenios;
 
-    private List<ConvenioCategoriaVo> categorias = new ArrayList<>();
+    private List<ConvenioCategoriaVo> categorias;
 
     private ConvenioCategoriaVo categoriaSelected;
 
@@ -117,6 +121,21 @@ public class MeusDadosFragment extends RoboFragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        user = new PacienteEntity(RanchucrutesSession.getUsuario());
+        categorias = new ArrayList<>();
+        if (user == null){
+            AndroidUtils.showMessageErroDlg("Usuário não está autenticado!", this.getActivity());
+            return;
+        }else{
+            if (CollectionUtils.isNotEmpty(user.getListPacienteConvenio())){
+                for (PacienteConvenioEntity pc : user.getListPacienteConvenio()){
+                    categorias.add(new ConvenioCategoriaVo(pc));
+                }
+
+            }
+        }
+
+
         lvConvenios.setAdapter(new ConveniosSelectedListAdapter(this.getContext(),categorias));
         LayoutInflater inflater = (LayoutInflater) this.getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -128,12 +147,8 @@ public class MeusDadosFragment extends RoboFragment{
     @Override
     public void onResume() {
         super.onResume();
-        user = new PacienteEntity(RanchucrutesSession.getUsuario());
-        if (user == null){
-            AndroidUtils.showMessageErroDlg("Usuário não está autenticado!", this.getActivity());
-            return;
-        }
         initView();
+        this.adjustListViewHeightBasedOnChildren();
     }
 
     private void initButtons() {
@@ -172,8 +187,8 @@ public class MeusDadosFragment extends RoboFragment{
                 }
             }
         });
-
     }
+
 
 
     private void atualizarCampos(PacienteEntity usuario) {
@@ -219,12 +234,16 @@ public class MeusDadosFragment extends RoboFragment{
 
                 if (model instanceof  ConvenioCategoriaVo){
                     ConvenioCategoriaVo convenioCategoriaVo = (ConvenioCategoriaVo)model;
-                    this.categorias.add(convenioCategoriaVo);
+                    if ( !this.categorias.contains(convenioCategoriaVo) ){
+                        this.categorias.add(convenioCategoriaVo);
+                    }
+
                     ((ArrayAdapter)this.lvConvenios.getAdapter()).notifyDataSetChanged();
 
                 }
                 if (model instanceof  ConvenioVo){
                     ConvenioVo convenioVo = (ConvenioVo)model;
+
                     new FindCategoria(convenioVo.getId()).start();
                 }
 
@@ -275,6 +294,7 @@ public class MeusDadosFragment extends RoboFragment{
         }
         @Override
         public void run() {
+            AndroidUtils.showWaitDlgOnUiThread("Aguarde...",getActivity());
             Bundle b = new Bundle();
 
             ConvenioCategoriaVo [] convenioCategorias = ranchucrutesService.getConvenioCategoriasByIdConvenio(idConvenio);
@@ -286,6 +306,7 @@ public class MeusDadosFragment extends RoboFragment{
                 }
                 b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
                 AndroidUtils.openActivityFromFragment(MeusDadosFragment.this, SearchGenericListActivity.class, b);
+                AndroidUtils.closeWaitDlg();
             }
         }
     }
@@ -308,6 +329,8 @@ public class MeusDadosFragment extends RoboFragment{
                 AndroidUtils.showMessageErroDlg("Campo nome não pode ser vazio.", getContext());
                 return;
             }
+
+
             PacienteVo pacienteVo = new PacienteVo();
             pacienteVo.setNome(user.getNome());
             pacienteVo.setTelefone(user.getTelefone());
@@ -317,13 +340,10 @@ public class MeusDadosFragment extends RoboFragment{
             }
             pacienteVo.setSexo(user.getSexo());
             pacienteVo.setCpf(user.getCpf());
-            if (categoriaSelected != null){
-                pacienteVo.setIdCategoria(categoriaSelected.getId());
-            }
-
             pacienteVo.setAuthType(user.getAuthType());
             pacienteVo.setId(user.getId().longValue());
             pacienteVo.setUrlFoto(user.getUrlFoto());
+            pacienteVo.setConveniosCategorias(categorias);
 
             AndroidUtils.showWaitDlgOnUiThread("Aguarde, atualizando dados...", (Activity) getContext());
             new UpdatePaciente(pacienteVo).start();
@@ -341,7 +361,7 @@ public class MeusDadosFragment extends RoboFragment{
             try{
                 loginService.atualizarPaciente(pacienteVo);
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageSuccessDlgOnUiThread("Dados atualizados.", (Activity) getContext());
+                AndroidUtils.showMessageSuccessDlgOnUiThread("Dados atualizados com sucesso!", (Activity) getContext());
             }catch (Exception ex){
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageErroDlgOnUiThread(ex.getMessage(), (Activity) getContext());
@@ -390,4 +410,26 @@ public class MeusDadosFragment extends RoboFragment{
 
         }
     }
+
+
+    private void adjustListViewHeightBasedOnChildren() {
+        ListAdapter listAdapter = lvConvenios.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, lvConvenios);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = lvConvenios.getLayoutParams();
+        params.height = totalHeight + (lvConvenios.getDividerHeight() * (listAdapter.getCount() - 1));
+        lvConvenios.setLayoutParams(params);
+        lvConvenios.requestLayout();
+    }
+
 }

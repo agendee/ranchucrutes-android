@@ -17,6 +17,11 @@ public class ConvenioVo implements SearchingListModel {
 
     public ConvenioVo() {}
 
+    public ConvenioVo(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public ConvenioVo(Parcel parcel) {
         setId(parcel.readInt());
         setNome(parcel.readString());

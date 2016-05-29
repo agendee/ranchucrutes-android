@@ -3,8 +3,12 @@ package br.com.wjaa.ranchucrutes.entity;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.wjaa.ranchucrutes.commons.AuthType;
 import br.com.wjaa.ranchucrutes.dao.PersistenceBean;
+import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
 import br.com.wjaa.ranchucrutes.vo.ConvenioCategoriaVo;
 
 /**
@@ -25,26 +29,30 @@ public class PacienteEntity extends PersistenceBean {
     private String dataAniversario;
     private String sexo;
     private String cpf;
+    private List<PacienteConvenioEntity> listPacienteConvenio;
 
 
     public PacienteEntity() {
         super( "paciente", new String[] { "id","nome","email","telefone","auth_type","id_categoria","device_key","url_foto","data_aniversario","sexo","cpf"} );
     }
 
-    public PacienteEntity(PacienteEntity usuario) {
+    public PacienteEntity(PacienteEntity paciente) {
         this();
-        this.id = usuario.getId();
-        this.nome = usuario.getNome();
-        this.email = usuario.getEmail();
-        this.telefone = usuario.getTelefone();
-        this.authType = usuario.getAuthType();
-        this.idCategoria = usuario.getIdCategoria();
-        this.deviceKey = usuario.getDeviceKey();
-        this.urlFoto = usuario.getUrlFoto();
-        this.categoriaVo = usuario.getCategoriaVo();
-        this.dataAniversario = usuario.getDataAniversario();
-        this.sexo = usuario.getSexo();
-        this.cpf = usuario.getCpf();
+        this.id = paciente.getId();
+        this.nome = paciente.getNome();
+        this.email = paciente.getEmail();
+        this.telefone = paciente.getTelefone();
+        this.authType = paciente.getAuthType();
+        this.idCategoria = paciente.getIdCategoria();
+        this.deviceKey = paciente.getDeviceKey();
+        this.urlFoto = paciente.getUrlFoto();
+        this.categoriaVo = paciente.getCategoriaVo();
+        this.dataAniversario = paciente.getDataAniversario();
+        this.sexo = paciente.getSexo();
+        this.cpf = paciente.getCpf();
+        if (CollectionUtils.isNotEmpty(paciente.getListPacienteConvenio())){
+            this.listPacienteConvenio = new ArrayList<>(paciente.getListPacienteConvenio());
+        }
     }
 
     public Integer getId() {
@@ -193,5 +201,13 @@ public class PacienteEntity extends PersistenceBean {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public void setListPacienteConvenio(List<PacienteConvenioEntity> listPacienteConvenio) {
+        this.listPacienteConvenio = listPacienteConvenio;
+    }
+
+    public List<PacienteConvenioEntity> getListPacienteConvenio() {
+        return listPacienteConvenio;
     }
 }

@@ -313,7 +313,14 @@ public class AgendamentoActivity extends RoboActionBarActivity {
             if (profissional != null && profissional.getTelefone() != null && !"".equals(profissional.getTelefone())) {
                 Intent chamada = new Intent(Intent.ACTION_DIAL);
                 //pega a posição da pessoa
-                chamada.setData(Uri.parse("tel:" + profissional.getTelefone().trim()));
+                String tel = profissional.getTelefone().trim();
+                if (tel.length() > 9){
+                    //com ddd
+                    chamada.setData(Uri.parse("tel:+55" + tel));
+                }else{
+                    //sem ddd
+                    chamada.setData(Uri.parse("tel:" + tel));
+                }
                 AgendamentoActivity.this.startActivity(chamada);
 
             } else {
