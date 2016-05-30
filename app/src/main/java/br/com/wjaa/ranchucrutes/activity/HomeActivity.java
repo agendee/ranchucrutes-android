@@ -88,15 +88,38 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     @Inject
     private RanchucrutesBuffer buffer;
 
-    private boolean pausado = false;
-
-
     @Override
     protected void onStart() {
         super.onStart();
         if ( AndroidUtils.internetNotActive(this) ) {
             AndroidUtils.showMessageErroDlg("Você não está conectado a internet, alguns recursos podem não funcionar.",this);
         }
+
+        if (RanchucrutesSession.isUsuarioLogado()){
+            AndroidUtils.closeWaitDlg();
+            AndroidUtils.showWaitDlg("Aguarde...",HomeActivity.this);
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+
+                        Thread.sleep(2000);
+                        runOnUiThread(new Runnable(){
+                            @Override
+                            public void run() {
+                                usuarioChange(RanchucrutesSession.getUsuario());
+                                AndroidUtils.closeWaitDlg();
+                            }
+                        });
+
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        }
+
     }
 
     @Override
@@ -129,6 +152,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
         //TODO se o buffer estiver vazio eh pq o app saiu do estado de sleep e nao conseguiu carregar o buffer e nem logar.
         if ( buffer.empty() ){
+            AndroidUtils.closeWaitDlg();
             AndroidUtils.showWaitDlg("Aguarde...",this);
             buffer.initializer();
 
@@ -154,16 +178,12 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     }
 
     private void initListeners() {
-
         //listeners do itens do menu
         navView.setNavigationItemSelectedListener(this);
-
         RanchucrutesSession.addSessionChangedListener(this);
-
-        if (RanchucrutesSession.isUsuarioLogado()){
-            RanchucrutesSession.setUsuario(RanchucrutesSession.getUsuario());
-        }
     }
+
+
 
 
     private void initMenu() {
@@ -226,6 +246,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -363,18 +384,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     protected void onResume() {
         super.onResume();
         GcmUtils.checkPlayServices(this);
-        if (pausado){
-            pausado = false;
-            //displayView(R.id.navSearch);
-        }
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        pausado = true;
-
     }
 
     @Override
