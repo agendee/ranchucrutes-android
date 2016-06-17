@@ -93,11 +93,11 @@ public class ConfirmeAgendamentoActivity extends RoboActionBarActivity {
                 AndroidUtils.showWaitDlgOnUiThread("Aguarde, enviando confirmação...", ConfirmeAgendamentoActivity.this);
                 agendamentoService.confirmarSolicitacao(confirmarAgendamento.getAgendamentoVo().getId(), edtConfirmeCode.getText().toString());
                 AndroidUtils.closeWaitDlg();
-                AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \nVeja detalhes em Minhas Consultas.",
+                AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento solicitado com sucesso! \n Veja detalhes em Minhas Consultas.",
                         ConfirmeAgendamentoActivity.this, new DialogCallback() {
                     @Override
                     public void confirm() {
-                        finish();
+                        finishActivity(RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO);
                     }
 
                     @Override

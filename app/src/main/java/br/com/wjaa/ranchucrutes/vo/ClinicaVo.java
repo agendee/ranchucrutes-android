@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
@@ -29,10 +30,16 @@ public class ClinicaVo implements Parcelable, Serializable{
     public ClinicaVo(Parcel source) {
         this.id = source.readLong();
         this.nome = source.readString();
-        this.latitude = source.readDouble();
-        this.longitude = source.readDouble();
         this.endereco = source.readString();
         this.telefone = source.readString();
+        this.latitude = source.readDouble();
+        this.longitude = source.readDouble();
+        this.profissionais = new ArrayList<>();
+        try{
+            source.readList(this.profissionais,ProfissionalBasicoVo.class.getClassLoader());
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 
 
@@ -93,10 +100,11 @@ public class ClinicaVo implements Parcelable, Serializable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id == null ? null : this.id);
         dest.writeString(this.nome);
-        dest.writeDouble(this.latitude == null ? null : this.latitude);
-        dest.writeDouble(this.longitude == null ? null : this.longitude);
         dest.writeString(this.endereco);
         dest.writeString(this.telefone);
+        dest.writeDouble(this.latitude == null ? null : this.latitude);
+        dest.writeDouble(this.longitude == null ? null : this.longitude);
+        dest.writeList(this.profissionais);
     }
 
     public static final Parcelable.Creator<ClinicaVo> CREATOR = new Parcelable.Creator<ClinicaVo>(){

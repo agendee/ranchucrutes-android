@@ -1,7 +1,6 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,11 +9,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -22,17 +18,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.adapter.AgendamentoTabsAdapter;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
@@ -275,7 +268,12 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        finish();
+
+        if (requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO){
+            finish();
+        }
+
+
     }
 
     private void profissionalSemAgenda(final String msg) {

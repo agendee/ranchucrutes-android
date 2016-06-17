@@ -50,8 +50,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="android.app.default_searchable"
-            android:value="br.com.wjaa.ranchucrutes.activity.SearchingListActivity"
-            />
+            android:value="br.com.wjaa.ranchucrutes.activity.SearchingListActivity" />
 
         <activity
             android:name=".activity.FacadeActivity"
@@ -113,7 +112,7 @@
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_home"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ActivityDefault"/>
+            android:theme="@style/AppTheme.ActivityDefault" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -127,6 +126,12 @@
         <activity
             android:name=".activity.ConfirmeAgendamentoActivity"
             android:label="@string/title_activity_confirme_agendamento"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".activity.ProfissionalListActivity"
+            android:label="@string/title_activity_lista_profissionais"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
@@ -153,7 +158,8 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".activity.DetalhesConsultaActivity"></activity>
+        <activity android:name=".activity.DetalhesConsultaActivity" />
+        <activity android:name=".activity.MeusDadosActivity" />
     </application>
 
 </manifest>

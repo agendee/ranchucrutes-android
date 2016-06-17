@@ -88,6 +88,8 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     @Inject
     private RanchucrutesBuffer buffer;
 
+    private boolean isNotActivityResult = true;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -95,7 +97,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
             AndroidUtils.showMessageErroDlg("Você não está conectado a internet, alguns recursos podem não funcionar.",this);
         }
 
-        if (RanchucrutesSession.isUsuarioLogado()){
+        if (RanchucrutesSession.isUsuarioLogado() && isNotActivityResult){
             AndroidUtils.closeWaitDlg();
             AndroidUtils.showWaitDlg("Aguarde...",HomeActivity.this);
             new Thread(){
@@ -120,6 +122,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
             }.start();
         }
 
+        this.isNotActivityResult = true;
     }
 
     @Override
@@ -389,7 +392,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
-
+        this.isNotActivityResult = false;
         if (requestCode == RanchucrutesConstants.FINISH_TO_OPEN_HOME){
             displayView(R.id.navSearch);
         }

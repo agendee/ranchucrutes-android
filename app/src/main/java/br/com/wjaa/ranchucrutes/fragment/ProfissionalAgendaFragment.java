@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import java.util.Collections;
 import java.util.Date;
@@ -20,13 +21,17 @@ import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.ConfirmeAgendamentoActivity;
+import br.com.wjaa.ranchucrutes.activity.LoginActivity;
+import br.com.wjaa.ranchucrutes.activity.MeusDadosActivity;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.entity.PacienteEntity;
 import br.com.wjaa.ranchucrutes.exception.AgendamentoServiceException;
 import br.com.wjaa.ranchucrutes.service.AgendamentoService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.DateUtils;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.ConfirmarAgendamentoVo;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import roboguice.RoboGuice;
@@ -72,32 +77,20 @@ public class ProfissionalAgendaFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.initButtons((GridLayout) view);
+        this.initButtons((ScrollView) view);
     }
 
-    private void initButtons(GridLayout gridLayout) {
+    private void initButtons(ScrollView scrollView) {
+        GridLayout gl = (GridLayout) scrollView.findViewById(R.id.grLyButtons);
         for (Date date : horarios){
-            Button b = new Button(gridLayout.getContext());
-
-           GridLayout.MarginLayoutParams lp = new GridLayout.MarginLayoutParams(GridLayout.MarginLayoutParams.WRAP_CONTENT,
-                   GridLayout.MarginLayoutParams.WRAP_CONTENT);
-            lp.setMargins(20, 20, 20, 20);
-            /*LinearLayout l = new LinearLayout(gridLayout.getContext());
-            LinearLayout.LayoutParams linearParam = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            linearParam.setMargins(30,30,30,20);
-            l.setLayoutParams(linearParam);*/
-            //todo ver isso aqui se funciona nas outras versoes tirada por causa do tablet
-            //b.setLayoutParams(lp);
+            View v = LayoutInflater.from(this.getActivity()).inflate(R.layout.button_agendamento, null);
+            Button b = (Button) v.findViewById(R.id.btnAgendamento);
             b.setText(DateUtils.formatHHmm(date));
-            //b.setBackgroundColor(android.R.color.holo_green_dark);
             b.setOnClickListener(new BtnAgendarClickListener(date));
-            b.requestLayout();
-            b.setTextColor(getResources().getColor(android.R.color.background_dark));
-            //l.addView(b);
-            //l.requestLayout();
-            gridLayout.addView(b);
+            gl.addView(v);
         }
-        gridLayout.requestLayout();
+        gl.requestLayout();
+        scrollView.requestLayout();
 
     }
 
@@ -116,6 +109,30 @@ public class ProfissionalAgendaFragment extends RoboFragment {
 
         @Override
         public void onClick(View v) {
+
+            //verificando se paciente esta logado
+            if (!RanchucrutesSession.isUsuarioLogado()){
+                pacienteNaoLogado();
+                return;
+            }else{
+                PacienteEntity paciente = RanchucrutesSession.getUsuario();
+                if (StringUtils.isBlank(paciente.getSexo()) ||
+                    StringUtils.isBlank(paciente.getCpf()) ||
+                    StringUtils.isBlank(paciente.getDataAniversario()) ||
+                    StringUtils.isBlank(paciente.getEmail()) ||
+                    StringUtils.isBlank(paciente.getNome()) ||
+                    StringUtils.isBlank(paciente.getNome()) ){
+                    pacienteCadastroIncompleto();
+                    return;
+                }
+            }
+
+
+            confirmarAgendamento();
+
+        }
+
+        private void confirmarAgendamento() {
             AndroidUtils.showConfirmDlgOnUiThread("Confirmação", "Você quer agendar uma consulta com " +
                     profissional.getNome() + " no dia " + DateUtils.formatddMMyyyy(horario)  + " as " + DateUtils.formatHHmm(horario) + " ?",
                     getActivity(), new DialogCallback() {
@@ -129,7 +146,38 @@ public class ProfissionalAgendaFragment extends RoboFragment {
 
                 }
             });
+        }
 
+        private void pacienteNaoLogado() {
+            AndroidUtils.showConfirmDlgOnUiThread("Usuário não autenticado",
+                    "Para agendar uma consulta você precisa estar autenticado. \n Deseja se autenticar agora?",
+                    getActivity(), new DialogCallback() {
+                @Override
+                public void confirm() {
+                    AndroidUtils.openActivity(getActivity(), LoginActivity.class);
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+            });
+        }
+
+        private void pacienteCadastroIncompleto() {
+            AndroidUtils.showConfirmDlgOnUiThread("Cadastro incompleto",
+                    "Para agendar essa consulta você precisa completar o seu cadastro. \n Deseja completar agora?",
+                    getActivity(), new DialogCallback() {
+                        @Override
+                        public void confirm() {
+                            AndroidUtils.openActivity(getActivity(), MeusDadosActivity.class);
+                        }
+
+                        @Override
+                        public void cancel() {
+
+                        }
+                    });
         }
 
 

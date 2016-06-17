@@ -42,7 +42,9 @@ public class DetalhesProfissionalHelper {
             activity.getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        new LoadImage(context,profissional.getNumeroRegistro()).start();
+        if (StringUtils.isNotBlank(profissional.getFoto())){
+            new LoadImage(context,profissional.getFoto()).start();
+        }
         TextView txtPDNome = ((TextView) context.findViewById(R.id.txtPDNome));
         String nome = profissional.getNome();
         txtPDNome.setText(nome);
@@ -69,18 +71,18 @@ public class DetalhesProfissionalHelper {
     static class LoadImage extends Thread{
         private Activity view;
         private Bitmap bitmap = null;
-        private Integer idRegistro;
+        private String foto;
 
 
-        LoadImage(Activity view, Integer idRegistro){
+        LoadImage(Activity view, String foto){
             this.view = view;
-            this.idRegistro = idRegistro;
+            this.foto = foto;
         }
 
         @Override
         public void run() {
 
-            String imageUrl = "http://agendee.com.br/f/" + idRegistro + ".jpg";
+            String imageUrl = "http://agendee.com.br/f/" + foto;
             try {
                 bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
                 view.runOnUiThread(new Runnable() {

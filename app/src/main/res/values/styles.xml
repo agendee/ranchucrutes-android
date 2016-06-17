@@ -11,8 +11,8 @@
     </style>
 
     <style name="AppTheme.ActivityDefault" parent="AppTheme">
-       <item name="android:color">@android:color/white</item>
-       <item name="android:textColor">@android:color/white</item>
+        <item name="android:color">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="AppTheme.ToolbarSearch" parent="AppTheme">
@@ -24,7 +24,6 @@
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
         <item name="android:textColorHint">#badedcdc</item>
     </style>
-
 
 
     <style name="btnDefault">
@@ -110,8 +109,6 @@
     </style>
 
 
-
-
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
@@ -154,6 +151,10 @@
     <style name="myAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="myAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
 

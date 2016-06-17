@@ -1,79 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp">
+
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/btnAgendamento"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-
+        android:textSize="21dp"
+        android:textColor="@android:color/white"
+        android:background="#008418"
+        android:textStyle="bold"
+        android:layout_margin="1dp"
+        android:padding="1dp"
+        android:text="10:00"
         >
-          <Button
-                android:id="@+id/btn7"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/successColor"
-                android:text="10:00" />
 
-            <Button
-                android:id="@+id/btn8"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/successColor"
-                android:text="10:00" />
-
-            <Button
-                android:id="@+id/btn9"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/successColor"
-                android:text="10:00" />
-
-    <Button
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/successColor"
-        android:text="10:00" />
-
-    <Button
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/successColor"
-        android:text="10:00" />
-
-    <Button
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/successColor"
-        android:text="10:00" />
-
-    <Button
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/successColor"
-        android:text="10:00" />
-
-    <Button
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/successColor"
-        android:text="10:00" />
-
-    <Button
-
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/successColor"
-        android:text="10:00" />
+    </Button>
 </LinearLayout>

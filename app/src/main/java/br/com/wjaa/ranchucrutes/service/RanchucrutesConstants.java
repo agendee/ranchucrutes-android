@@ -26,6 +26,7 @@ public class RanchucrutesConstants {
     public static final String PARAM_LIST_SEARCH = "listSearch";
     public static final String PARAM_RESULT_SEARCH = "resultSearch";
     public static final String PARAM_PROFISSIONAL = "profissionalParam";
+    public static final String PARAM_CLINICA = "clinicaParam";
     public static final String PARAM_CONFIMAR_AGENDAMENTO = "confirmarAgendamentoParam";
     public static final String PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY = "openFragmentMainActivity";
     public static final String PARAM_AGENDAMENTO = "agendamentoParam";
@@ -35,4 +36,6 @@ public class RanchucrutesConstants {
     public static final int FINISH_TO_OPEN_HOME = 1000;
 
     public static final int FINISH_MY_LOCATION = 50;
+    public static final int FINISH_CONFIRME_AGENDAMENTO = 51;
+
 }

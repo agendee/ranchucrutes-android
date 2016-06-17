@@ -120,6 +120,8 @@
     <string name="bntConfirmarConsulta">Confirmar</string>
     <string name="emptyProfissionais">Não existe profissionais favoritos.</string>
     <string name="configSobre">Sobre</string>
+    <string name="title_activity_teste_mauro">TesteMauro</string>
+    <string name="title_activity_lista_profissionais">Lista de profissionais</string>
 
 
 </resources>

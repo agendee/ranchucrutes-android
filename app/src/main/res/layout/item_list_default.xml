@@ -22,6 +22,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                    android:singleLine="true"
                     android:text="Wagner Jeronimo"
                     android:textSize="20dp"
                     android:layout_marginLeft="10dp"
@@ -37,5 +38,17 @@
                     android:layout_marginLeft="25dp"
                     android:layout_marginTop="-15dp"
                     android:textColor="@color/subTitulo_color"/>
+
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/textSub2ItemList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                    android:text="Psiquiatra"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="-15dp"
+                    android:textColor="@color/subTitulo_color" android:visibility="gone"/>
         </LinearLayout>
 </android.support.v7.widget.CardView>
