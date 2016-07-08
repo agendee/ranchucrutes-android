@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
 
     protected SearchingListAdapter adapter;
     protected CoordinatorLayout clContainer;
+    protected LinearLayout pbSearch;
     protected RecyclerView mRecyclerView;
     protected List<SearchingListModel> mList;
     protected List<SearchingListModel> mListCache;
@@ -64,7 +66,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         }
 
         clContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
-
+        pbSearch = (LinearLayout) clContainer.findViewById(R.id.pbSearch);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_list);
         mRecyclerView.setHasFixedSize(true);
 

@@ -8,16 +8,69 @@
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <PreferenceCategory android:title="App Name">
+    <PreferenceCategory android:title="Nosso site">
 
+        <PreferenceScreen
+            android:capitalize="words"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="www.agendee.com.br"
+            >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.agendee.com.br"
+                />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Contatos">
         <Preference
             android:capitalize="words"
             android:inputType="textCapWords"
             android:maxLines="1"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="agendee"
-            />
+            android:title="contato@agendee.com.br" >
+
+            <intent android:action="android.intent.action.VIEW"
+                android:data="mailto:contato@agendee.com.br"/>
+
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Parceiros">
+        <PreferenceScreen
+            android:capitalize="words"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="www.netdente.com.br" >
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.netdente.com.br"
+                />
+
+         </PreferenceScreen>
+        <PreferenceScreen
+            android:capitalize="words"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="www.camtwo.com.br" >
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.camtwo.com.br"
+                />
+
+        </PreferenceScreen>
+
     </PreferenceCategory>
 
 
@@ -31,39 +84,6 @@
             android:title="1.0.0" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Contatos">
-        <Preference
-            android:capitalize="words"
-            android:inputType="textCapWords"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="wagner@agendee.com.br" />
-        <Preference
-            android:capitalize="words"
-            android:inputType="textCapWords"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="diogenes@agendee.com.br" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Parceiros">
-        <Preference
-            android:capitalize="words"
-            android:inputType="textCapWords"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="www.netdente.com.br" />
-        <Preference
-            android:capitalize="words"
-            android:inputType="textCapWords"
-            android:maxLines="1"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="www.camtwo.com.br" />
-    </PreferenceCategory>
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->

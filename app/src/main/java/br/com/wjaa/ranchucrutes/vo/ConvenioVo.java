@@ -3,13 +3,17 @@ package br.com.wjaa.ranchucrutes.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
  * Created by wagner on 30/09/15.
  */
-public class ConvenioVo implements SearchingListModel {
+public class ConvenioVo implements SearchingListModel, Serializable {
 
+
+    private static final long serialVersionUID = -1031597834411605088L;
 
     private Integer id;
     private String nome;

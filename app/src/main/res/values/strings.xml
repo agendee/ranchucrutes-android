@@ -9,7 +9,7 @@
     <string name="msg_buscaProfissional">Procurando profissionais, aguarde!</string>
     <string name="msg_voceAqui">Você está aqui</string>
     <string name="msg_aguarde">Aguarde carregando dados...</string>
-    <string name="msg_nenhumProfissionalEncontrado">Nenhum profissional encontrado para essa especialidade</string>
+    <string name="msg_nenhumProfissionalEncontrado">Nenhum profissional encontrado com essa especialidade na sua região.</string>
     <string name="action_menu">Menu Principal</string>
 
     <string-array name="nav_drawer_items">

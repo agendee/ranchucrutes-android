@@ -1,8 +1,12 @@
 package br.com.wjaa.ranchucrutes.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -11,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -32,7 +37,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import br.com.wjaa.ranchucrutes.R;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
+import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.PlacesVo;
@@ -69,8 +76,11 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
     public void filter( String q ){
 
         if (q.length() == 0 ){
+            pbSearch.setVisibility(View.INVISIBLE);
             return;
         }
+
+
 
         if (q.length() < 5 ){
             mListFilter.clear();
@@ -78,6 +88,8 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
         }
 
         mListFilter.clear();
+        pbSearch.setVisibility(View.VISIBLE);
+
         LatLngBounds bounds = new LatLngBounds( new LatLng(-23.769084, -45.458059 ), new LatLng( -23.231440, -47.219174 ) );
         List<Integer> filterTypes = new ArrayList<Integer>();
         filterTypes.add(Place.TYPE_STREET_ADDRESS);
@@ -114,13 +126,16 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                                 tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                                 tv.setGravity(Gravity.CENTER);
 
+
                                 clContainer.addView(tv);
                             }
-                        }
-                        else if( clContainer.findViewById(1) != null ) {
+                            pbSearch.setVisibility(View.INVISIBLE);
+                        }else if( clContainer.findViewById(1) != null ) {
+
                             clContainer.removeView( clContainer.findViewById(1) );
                         }
 
+                        pbSearch.setVisibility(View.INVISIBLE);
                         adapter.notifyDataSetChanged();
 
                         //Prevent memory leak by releasing buffer
@@ -150,8 +165,9 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
     @Override
     protected void onStart() {
         super.onStart();
-        if( googleApiClient != null )
+        if( googleApiClient != null ){
             googleApiClient.connect();
+        }
     }
 
     @Override
@@ -170,8 +186,28 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
         itemMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                setResult(RanchucrutesConstants.FINISH_MY_LOCATION);
-                finish();
+
+                boolean isOn = AndroidUtils.gpsActive(SearchPlacesListActivity.this);
+
+                if (!isOn){
+                    AndroidUtils.showConfirmDlg("GPS desligado!", "Seu GPS está inativo, deseja ativa-lo agora ?", SearchPlacesListActivity.this, new DialogCallback() {
+                        @Override
+                        public void confirm() {
+                            final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void cancel() {
+
+                        }
+                    });
+
+                }else{
+                    setResult(RanchucrutesConstants.FINISH_MY_LOCATION);
+                    finish();
+                }
+
                 return false;
             }
         });

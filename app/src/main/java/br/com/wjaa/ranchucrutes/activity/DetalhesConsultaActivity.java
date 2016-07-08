@@ -200,7 +200,7 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
                         public void onClick(View v) {
                             Bundle bundle = new Bundle();
                             bundle.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL,agendamentoVo.getProfissional());
-                            AndroidUtils.openActivity(DetalhesConsultaActivity.this,AgendamentoActivity.class, bundle);
+                            AndroidUtils.openActivity(DetalhesConsultaActivity.this,AgendamentoActivity.class, bundle, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST);
                         }
                     });
                     break;
@@ -217,8 +217,20 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
                                         public void run() {
                                             try {
                                                 agendamentoVo = agendamentoService.cancelarAgendamento(agendamentoVo.getId());
-                                                AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento cancelado com sucesso!",DetalhesConsultaActivity.this);
                                                 updateDetalhesConsulta();
+                                                AndroidUtils.showMessageSuccessDlgOnUiThread("Agendamento cancelado com sucesso!",DetalhesConsultaActivity.this, new DialogCallback() {
+                                                    @Override
+                                                    public void confirm() {
+                                                        finish();
+                                                    }
+
+                                                    @Override
+                                                    public void cancel() {
+
+                                                    }
+                                                });
+
+
                                             } catch (AgendamentoServiceException e) {
                                                 AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(),DetalhesConsultaActivity.this);
                                             }
@@ -254,7 +266,7 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
                             confirmar.setCodigoConfirmacao(agendamentoVo.getCodigoConfirmacao());
                             Bundle bundle = new Bundle();
                             bundle.putSerializable(RanchucrutesConstants.PARAM_CONFIMAR_AGENDAMENTO,confirmar);
-                            AndroidUtils.openActivity(DetalhesConsultaActivity.this,ConfirmeAgendamentoActivity.class, bundle);
+                            AndroidUtils.openActivity(DetalhesConsultaActivity.this,ConfirmeAgendamentoActivity.class, bundle, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO);
                         }
                     });
                     break;

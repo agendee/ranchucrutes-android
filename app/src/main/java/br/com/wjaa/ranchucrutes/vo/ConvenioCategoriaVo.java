@@ -3,13 +3,17 @@ package br.com.wjaa.ranchucrutes.vo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 import br.com.wjaa.ranchucrutes.entity.PacienteConvenioEntity;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
  * Created by wagner on 30/09/15.
  */
-public class ConvenioCategoriaVo implements SearchingListModel {
+public class ConvenioCategoriaVo implements SearchingListModel, Serializable {
+
+    private static final long serialVersionUID = -5079975446508058767L;
 
     private Integer id;
     private String nome;

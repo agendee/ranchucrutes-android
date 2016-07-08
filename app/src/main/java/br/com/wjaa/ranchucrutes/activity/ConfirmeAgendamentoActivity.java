@@ -97,7 +97,7 @@ public class ConfirmeAgendamentoActivity extends RoboActionBarActivity {
                         ConfirmeAgendamentoActivity.this, new DialogCallback() {
                     @Override
                     public void confirm() {
-                        finishActivity(RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO);
+                        finish();
                     }
 
                     @Override

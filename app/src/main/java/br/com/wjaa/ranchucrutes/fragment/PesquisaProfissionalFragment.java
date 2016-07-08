@@ -1,12 +1,17 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +26,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,34 +64,20 @@ import roboguice.util.RoboAsyncTask;
 /**
  * @author Wagner Jeronimo
  */
-public class PesquisaProfissionalFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener {
+public class PesquisaProfissionalFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = PesquisaProfissionalFragment.class.getSimpleName();
     private EspecialidadeVo especSelecionada;
     private PlacesVo placeVo;
     @Inject
     private ProfissionalService profissionalService;
-    @InjectView(R.id.btnSelectEspec)
-    private Button btnEspecilidade;
+    @Inject
+    private RanchucrutesBuffer buffer;
 
-    @InjectView(R.id.btnSelectPlace)
-    private Button btnSelectPlace;
-
-    @InjectView(R.id.btnMyLocation)
-    private ToggleButton btnMyLocation;
-
-
-    //@InjectView(R.id.edtCep)
-    //private EditText edtCep;
-    @InjectView(R.id.btnProcurar)
-    private Button btnProcurarProfissional;
-    @InjectView(R.id.btnFechar)
-    private Button btnFechar;
-    @InjectView(R.id.frameBusca)
-    private View frameBusca;
     private EspecialidadeVo[] especialidades;
     private RanchucrutesMaps ranchucrutesMaps;
     private Location myLocation;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -100,6 +94,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
 
     @Override
     public void onDestroyView() {
+        mGoogleApiClient.disconnect();
         super.onDestroyView();
         FragmentManager fm = getChildFragmentManager();
         Fragment fragment = (fm.findFragmentById(R.id.map));
@@ -112,6 +107,17 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
     private void initActivity() {
         this.initBuffers();
         this.initEvents();
+
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        mGoogleApiClient.connect();
+
     }
 
     private void initBuffers() {
@@ -119,111 +125,68 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
     }
 
     private void initEvents() {
-        this.createBtnEspec();
-        this.createBtnPlace();
-        this.createBtnMyLocation();
-        this.createBtnEvents();
-        this.createEdtCep();
         this.createMaps();
-
     }
-
-    private void createBtnMyLocation() {
-        btnMyLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                myLocation = ranchucrutesMaps.getmMap().getMyLocation();
-                if (myLocation != null && btnMyLocation.isChecked()){
-                    ranchucrutesMaps.setMyLocation(myLocation);
-                    btnSelectPlace.setText("");
-                }else{
-                    myLocation = null;
-                }
-            }
-        });
-    }
-
-    private void createBtnPlace() {
-
-        btnSelectPlace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDialogFindPlace();
-            }
-        });
-
-    }
-
-
-
-    private void createEdtCep() {
-       /* edtCep.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                myLocation = null;
-                return false;
-            }
-        });*/
-    }
-
     private void createMaps() {
         SupportMapFragment mapFragment;
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this.ranchucrutesMaps);
     }
 
-    private void createBtnEvents() {
-        btnProcurarProfissional.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pesquisarProfissional(view);
-            }
-
-        });
-
-        btnFechar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                frameBusca.setVisibility(View.GONE);
-                FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-                fab.setVisibility(View.VISIBLE);
-            }
-        });
-    }
 
     private void pesquisarProfissional(View view) {
         if (especSelecionada == null) {
-            AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeEspeciliade), getActivity());
+            AndroidUtils.showMessageErroDlgOnUiThread(getString(R.string.msg_informeEspeciliade), getActivity());
             return;
         }
 
         if (myLocation == null) {
-            AndroidUtils.showMessageErroDlg(getString(R.string.msg_informeLocalizacao), getActivity());
+            AndroidUtils.showMessageErroDlgOnUiThread(getString(R.string.msg_informeLocalizacao), getActivity());
             return;
         }
-        AndroidUtils.showWaitDlg(getString(R.string.msg_aguarde), getActivity());
+        AndroidUtils.showWaitDlgOnUiThread(getString(R.string.msg_aguarde), getActivity());
         ProcurarProfissionalTask t = new ProcurarProfissionalTask(view);
         t.execute();
     }
 
-    private void createBtnEspec() {
-        btnEspecilidade.setOnClickListener(new DialogEspecialidade());
-    }
+
 
     @Override
     public boolean onMyLocationButtonClick() {
-        this.myLocation = this.ranchucrutesMaps.getmMap().getMyLocation();
+        if (myLocation == null){
+            myLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        }
+
+        if (myLocation == null){
+            this.myLocation = this.ranchucrutesMaps.getmMap().getMyLocation();
+        }
 
         if (this.myLocation == null){
-            btnMyLocation.setChecked(false);
             AndroidUtils.showMessageErroDlg(
                     "Não foi possível pegar sua localização. \n Verique se o GPS está ativo.", getActivity());
         }else{
             ranchucrutesMaps.setMyLocation(this.myLocation);
-            btnMyLocation.setChecked(true);
         }
         return true;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Location location = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (location != null) {
+            myLocation = location;
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
@@ -255,7 +218,6 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            frameBusca.setVisibility(View.GONE);
                             FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
                             fab.setVisibility(View.VISIBLE);
                         }
@@ -291,6 +253,12 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
             b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
             AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchGenericListActivity.class, b);
         }else{
+            if (!AndroidUtils.internetActive(this.getContext())){
+                AndroidUtils.showMessageErroDlg("Você está offline, impossível iniciar a pesquisa.",getActivity());
+                return;
+            }else{
+                buffer.initializer();
+            }
             AndroidUtils.showMessageErroDlg("Problemas na comunicação com o servidor.",getActivity());
         }
     }
@@ -312,33 +280,10 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
             if (model != null){
                 if ( EspecialidadeVo.class.isInstance(model)){
                     especSelecionada = (EspecialidadeVo)model;
-                    btnEspecilidade.setText(especSelecionada.getNome());
                     openDialogFindPlace();
 
                 }else if ( PlacesVo.class.isInstance(model) ){
-                    placeVo = (PlacesVo)model;
-                    btnSelectPlace.setText(placeVo.getName());
-                    Geocoder geocoder = new Geocoder(getContext(), new Locale("pt","BR"));
-                    try {
-                        List<Address>  addresses = geocoder.getFromLocationName(placeVo.getName(),1);
-                        if (addresses != null) {
-                            Address returnedAddress = addresses.get(0);
-                            myLocation = new Location("geoCoder");
-                            myLocation.setLatitude(returnedAddress.getLatitude()) ;
-                            myLocation.setLongitude(returnedAddress.getLongitude());
-                            btnMyLocation.setChecked(false);
-                            if (podeBuscar()){
-                                pesquisarProfissional(getView());
-                            }
-
-                        } else {
-                            Log.w("PesquisaProfissional", "Nao achou nenhum location para o endereco:" + placeVo.getName());
-                        }
-
-
-                    } catch (IOException e) {
-                        Log.e("PesquisaProfissional","Erro ao buscar a geoLocation de um Place: ", e);
-                    }
+                    pesquisarProfissional((PlacesVo) model);
                 }
             }
         }else if (resultCode == RanchucrutesConstants.FINISH_MY_LOCATION){
@@ -349,13 +294,39 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
         }
     }
 
-    public View getFrameBusca() {
-        return frameBusca;
-    }
+    private void pesquisarProfissional(PlacesVo model) {
+        placeVo = model;
+        final Geocoder geocoder = new Geocoder(getContext(), new Locale("pt","BR"));
+        new Thread(){
+            @Override
+            public void run() {
+                AndroidUtils.showWaitDlgOnUiThread("Aguarde, carregando a localização do paciente...",getActivity());
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocationName(placeVo.getName(),1);
+                    if (addresses != null) {
+                        Address returnedAddress = addresses.get(0);
+                        myLocation = new Location("geoCoder");
+                        myLocation.setLatitude(returnedAddress.getLatitude()) ;
+                        myLocation.setLongitude(returnedAddress.getLongitude());
+                        if (podeBuscar()){
+                            AndroidUtils.closeWaitDlg();
+                            pesquisarProfissional(getView());
+                        }
+
+                    } else {
+                        AndroidUtils.closeWaitDlg();
+                        Log.w("PesquisaProfissional", "Nao achou nenhum location para o endereco:" + placeVo.getName());
+                    }
 
 
-    public boolean isFrameBuscaVisible(){
-        return frameBusca != null ? frameBusca.getVisibility() == View.VISIBLE : false;
+                } catch (IOException e) {
+                    AndroidUtils.closeWaitDlg();
+                    Log.e("PesquisaProfissional","Erro ao buscar a geoLocation de um Place: ", e);
+                }
+            }
+        }.start();
+
     }
 
 }

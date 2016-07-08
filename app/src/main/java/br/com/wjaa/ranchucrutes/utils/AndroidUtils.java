@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,10 @@ public class AndroidUtils {
 
     private static ProgressDialog dialog;
 
+    public static boolean gpsActive(Context c) {
+        LocationManager manager = (LocationManager) c.getSystemService( Context.LOCATION_SERVICE );
+        return manager.isProviderEnabled( LocationManager.GPS_PROVIDER);
+    }
 
 
     public enum AlertType{
@@ -67,6 +72,13 @@ public class AndroidUtils {
         Intent i = new Intent(context, activity);
         i.putExtras(bundle);
         context.startActivityForResult(i, 1);
+        return i;
+    }
+
+    public static Intent openActivity(Activity context, Class<?> activity, Bundle bundle, int requestCode ){
+        Intent i = new Intent(context, activity);
+        i.putExtras(bundle);
+        context.startActivityForResult(i, requestCode);
         return i;
     }
 

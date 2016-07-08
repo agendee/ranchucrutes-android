@@ -269,7 +269,8 @@ public class AgendamentoActivity extends RoboActionBarActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO){
+        if (requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO ||
+                requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST){
             finish();
         }
 

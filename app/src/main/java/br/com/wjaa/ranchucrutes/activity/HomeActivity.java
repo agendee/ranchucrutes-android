@@ -94,7 +94,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     protected void onStart() {
         super.onStart();
         if ( AndroidUtils.internetNotActive(this) ) {
-            AndroidUtils.showMessageErroDlg("Você não está conectado a internet, alguns recursos podem não funcionar.",this);
+            AndroidUtils.showMessageErroDlg("Você está offline, alguns recursos podem não funcionar.",this);
         }
 
         if (RanchucrutesSession.isUsuarioLogado() && isNotActivityResult){
@@ -265,8 +265,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     public void displayView(int id) {
 
         //ocultando o fab
-        fab.setVisibility( (id == R.id.navSearch || id == R.id.navExit || id == R.id.navEnter) &&
-                !this.pesquisaProfissionalFragment.isFrameBuscaVisible()  ? View.VISIBLE : View.INVISIBLE);
+        fab.setVisibility( (id == R.id.navSearch || id == R.id.navExit || id == R.id.navEnter) ? View.VISIBLE : View.INVISIBLE);
         //TODO INATIVO POR ENQUANTO.
         //spinner.setVisibility(id == R.id.navSearch || id == R.id.navExit || id == R.id.navEnter ? View.VISIBLE : View.INVISIBLE);
 
@@ -395,6 +394,8 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
         this.isNotActivityResult = false;
         if (requestCode == RanchucrutesConstants.FINISH_TO_OPEN_HOME){
             displayView(R.id.navSearch);
+        }else if (requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST){
+            displayView(R.id.navAppointment);
         }
 
     }

@@ -3,19 +3,13 @@ package br.com.wjaa.ranchucrutes.maps;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -42,16 +36,16 @@ import java.util.Map;
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.activity.ProfissionalListActivity;
-import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
+import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
+import br.com.wjaa.ranchucrutes.utils.ImageUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.vo.ClinicaVo;
 import br.com.wjaa.ranchucrutes.vo.MapTipoLocalidade;
 import br.com.wjaa.ranchucrutes.vo.ProfissionalBasicoVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
-import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 
 /**
  * Created by wagner on 31/07/15.
@@ -75,6 +69,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener;
     private Fragment fragment;
     private View mapView;
+    private Marker you;
 
     public RanchucrutesMaps(Context context, Fragment fragment, GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener){
         this.context = (FragmentActivity)context;
@@ -114,7 +109,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 }
                 Bundle b = new Bundle();
                 b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL,p);
-                AndroidUtils.openActivity(context,AgendamentoActivity.class, b);
+                AndroidUtils.openActivity(context,AgendamentoActivity.class, b, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST);
             }else{
                 Bundle b = new Bundle();
                 b.putSerializable(RanchucrutesConstants.PARAM_CLINICA,c);
@@ -244,17 +239,32 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         // These a both viewgroups containing an ImageView with id "badge" and two TextViews with id
         // "title" and "snippet".
         private final View mWindow;
-        //private final View mContents;
+        private final View pacienteWindow;
 
         CustomInfoWindowAdapter() {
             mWindow = context.getLayoutInflater().inflate(R.layout.custom_info_window, null);
-           // mContents = context.getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+            pacienteWindow = context.getLayoutInflater().inflate(R.layout.paciente_info_window, null);
         }
 
         @Override
         public View getInfoWindow(Marker marker) {
-            render(marker, mWindow);
+            if (you!= null && !marker.getId().equals(you.getId())){
+                render(marker, mWindow);
+            }else{
+                renderYou(pacienteWindow);
+                return pacienteWindow;
+            }
             return mWindow;
+        }
+
+        private void renderYou(View pacienteWindow) {
+            ImageView fotoUser = (ImageView) pacienteWindow.findViewById(R.id.imgPaciente);
+            if (RanchucrutesSession.isUsuarioLogado() && StringUtils.isNotBlank(RanchucrutesSession.getUsuario().getUrlFoto())){
+                ImageUtils.loadImage(context,fotoUser,RanchucrutesSession.getUsuario().getUrlFoto());
+            }else{
+                fotoUser.setImageDrawable(context.getResources().getDrawable(R.drawable.unknow));
+            }
+
         }
 
         @Override
@@ -319,6 +329,8 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
 
                 }
+            }else{
+
             }
 
 
@@ -396,10 +408,11 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         public void run() {
 
             try {
+                int countProfissionais = 0;
                 mMap.clear();
                 profissionais.clear();
 
-                Marker you = mMap.addMarker(new MarkerOptions()
+                you = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(resultado.getLatitude(), resultado.getLongitude()))
                         .title(context.getString(R.string.msg_voceAqui))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_black_36dp)));//defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
@@ -419,6 +432,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                                                         BitmapDescriptorFactory.HUE_BLUE
                                                         : BitmapDescriptorFactory.HUE_RED)));
 
+                                countProfissionais ++;
                                 profissionais.put(m.getId(), clinicaVo);
                             }
                         }else{
@@ -427,14 +441,23 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                                     .icon(BitmapDescriptorFactory.defaultMarker(
                                             MapTipoLocalidade.CLINICA.equals(clinicaVo.getMapTipoLocalidade()) ?
                                                     BitmapDescriptorFactory.HUE_GREEN : BitmapDescriptorFactory.HUE_YELLOW)));
+                            countProfissionais += clinicaVo.getProfissionais().size();
                             profissionais.put(m.getId(), clinicaVo);
                         }
 
 
                     }
                 }catch(Exception ex){
-
+                    ex.printStackTrace();
                 }
+
+                if (CollectionUtils.isEmpty(resultado.getClinicas() )){
+                    AndroidUtils.showMessageErroDlg(context.getString(R.string.msg_nenhumProfissionalEncontrado), context);
+                    AndroidUtils.closeWaitDlg();
+                    return;
+                }
+
+
 
                 final LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 builder.include(you.getPosition());
@@ -450,38 +473,11 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), zoom -2));
                 //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultado.getClinicaMaisProxima().getLatitude(),resultado.getClinicaMaisProxima().getLongitude()), getZoom(resultado.getDistanceInKm())));
                 AndroidUtils.closeWaitDlg();
-                
-                if (CollectionUtils.isEmpty(resultado.getClinicas() )){
-                    AndroidUtils.showMessageErroDlg(context.getString(R.string.msg_nenhumProfissionalEncontrado), context);
-                }else{
-                    Toast.makeText(context,"Profissionals foram encontrados!", Toast.LENGTH_SHORT);
-                }
+                Toast.makeText(context, "Encontramos " + countProfissionais + " profissionais!", Toast.LENGTH_LONG).show();
 
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
-        }
-    }
-
-
-    class DialogInfoWindowCallback implements DialogCallback{
-
-        private ProfissionalBasicoVo profissional;
-        DialogInfoWindowCallback(ProfissionalBasicoVo profissional){
-            this.profissional = profissional;
-        }
-
-        @Override
-        public void confirm() {
-            Intent chamada = new Intent(Intent.ACTION_DIAL);
-            //pega a posição da pessoa
-            chamada.setData(Uri.parse("tel:" + profissional.getTelefone().trim()));
-            context.startActivity(chamada);
-        }
-
-        @Override
-        public void cancel() {
 
         }
     }
@@ -492,41 +488,10 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
 
 
 
-    /*public int getZoom(double distanceInMeters){
-
-        if (distanceInMeters < 1000){
-            return 11;
-        }
-
-        for (int zoom = 20; zoom > 0 ; zoom--){
-            Double scale = scaleZoom.get(zoom);
-
-            //se a escala foi maior que a distancia encontramos o zoom ideial
-            if (scale > distanceInMeters){
-
-                //agora precisamos ver a porcetagem dessa distancia...se for menor que 50%
-                //retornamos o zoom+1
-                //caso contrario retornamos o proprio zoom.
-
-                if ((distanceInMeters/scale)*100 > 50){
-                    return zoom;
-                }else{
-                    if (zoom == 20){
-                        return zoom;
-                    }
-                    return zoom - 1;
-                }
-
-            }
-        }
-        return 11;
-    }*/
-
-
     final static int GLOBE_WIDTH = 256; // a constant in Google's map projection
     final static int ZOOM_MAX = 21;
 
-    public static int getBoundsZoomLevel(LatLng northeast,LatLng southwest,
+    private int getBoundsZoomLevel(LatLng northeast,LatLng southwest,
                                          int width, int height) {
 
         double latFraction = (latRad(northeast.latitude) - latRad(southwest.latitude)) / Math.PI;
@@ -535,7 +500,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         double latZoom = zoom(height, GLOBE_WIDTH, latFraction);
         double lngZoom = zoom(width, GLOBE_WIDTH, lngFraction);
         double zoom = Math.min(Math.min(latZoom, lngZoom),ZOOM_MAX);
-        return (int)(zoom);
+        return (int)(zoom-1);
     }
     private static double latRad(double lat) {
         double sin = Math.sin(lat * Math.PI / 180);

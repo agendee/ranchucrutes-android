@@ -81,7 +81,7 @@ public class ProfissionaisFavoritosFragment extends RoboListFragment {
                         Bundle b = new Bundle();
                         b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL, profissional);
                         AndroidUtils.closeWaitDlg();
-                        AndroidUtils.openActivity(getActivity(), AgendamentoActivity.class, b);
+                        AndroidUtils.openActivity(getActivity(), AgendamentoActivity.class, b, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST);
                     }
                 });
 

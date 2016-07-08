@@ -69,7 +69,7 @@ public class ProfissionalListActivity extends RoboActionBarActivity {
                 profissional.setIdClinicaAtual(clinicaVo.getId());
                 Bundle b = new Bundle();
                 b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL, profissional);
-                AndroidUtils.openActivity(ProfissionalListActivity.this, AgendamentoActivity.class, b);
+                AndroidUtils.openActivity(ProfissionalListActivity.this, AgendamentoActivity.class, b, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST);
             }
         });
     }

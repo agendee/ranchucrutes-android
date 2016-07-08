@@ -210,7 +210,7 @@ public class ProfissionalAgendaFragment extends RoboFragment {
     private void openConfirmeAgendamentoFragment(ConfirmarAgendamentoVo confirmarAgendamentoVo) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(RanchucrutesConstants.PARAM_CONFIMAR_AGENDAMENTO, confirmarAgendamentoVo);
-        AndroidUtils.openActivity(getActivity(),ConfirmeAgendamentoActivity.class, bundle);
+        AndroidUtils.openActivity(getActivity(),ConfirmeAgendamentoActivity.class, bundle, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO);
     }
 
     @Override

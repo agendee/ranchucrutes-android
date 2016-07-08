@@ -37,5 +37,6 @@ public class RanchucrutesConstants {
 
     public static final int FINISH_MY_LOCATION = 50;
     public static final int FINISH_CONFIRME_AGENDAMENTO = 51;
+    public static final int FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST = 52;
 
 }
