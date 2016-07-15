@@ -1,5 +1,6 @@
 package br.com.wjaa.ranchucrutes.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -275,12 +276,6 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
         }
     }
 
-    private void clearView(TextView ... t ){
-        for (TextView tv : t) {
-            tv.setText("-");
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -292,6 +287,17 @@ public class DetalhesConsultaActivity extends RoboActionBarActivity {
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO ||
+                requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST){
+            finish();
+        }
+
+
+    }
 
 
 }

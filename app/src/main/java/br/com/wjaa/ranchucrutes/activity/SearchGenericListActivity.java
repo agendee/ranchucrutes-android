@@ -59,7 +59,7 @@ public class SearchGenericListActivity extends SearchListActivity {
 
     @Override
     protected CharSequence getQueryHint() {
-        return "Pesquise aqui";
+        return this.queryText;
     }
 
 }

@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -44,6 +45,7 @@ import java.util.Locale;
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
 import br.com.wjaa.ranchucrutes.activity.SearchPlacesListActivity;
+import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.exception.ProfissionalServiceException;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
@@ -117,7 +119,6 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                     .build();
         }
         mGoogleApiClient.connect();
-
     }
 
     private void initBuffers() {
@@ -153,22 +154,29 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
 
     @Override
     public boolean onMyLocationButtonClick() {
-        if (myLocation == null){
-            myLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-        }
 
-        if (myLocation == null){
-            this.myLocation = this.ranchucrutesMaps.getmMap().getMyLocation();
-        }
+        boolean isOn = AndroidUtils.gpsActive(this.getActivity());
 
-        if (this.myLocation == null){
-            AndroidUtils.showMessageErroDlg(
-                    "Não foi possível pegar sua localização. \n Verique se o GPS está ativo.", getActivity());
+        if (!isOn){
+            AndroidUtils.showConfirmDlg("GPS desligado!", "Seu GPS está inativo, deseja ativa-lo agora ?", getActivity(), new DialogCallback() {
+                @Override
+                public void confirm() {
+                    final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+            });
+
         }else{
-            ranchucrutesMaps.setMyLocation(this.myLocation);
+            changeMyLocation();
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     @Override
@@ -251,6 +259,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                 parcelables.add(e);
             }
             b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
+            b.putSerializable(RanchucrutesConstants.PARAM_QUERY_TEXT, "Digite a especialidade");
             AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchGenericListActivity.class, b);
         }else{
             if (!AndroidUtils.internetActive(this.getContext())){
@@ -287,10 +296,28 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                 }
             }
         }else if (resultCode == RanchucrutesConstants.FINISH_MY_LOCATION){
-            onMyLocationButtonClick();
+            changeMyLocation();
             if (podeBuscar()){
                 pesquisarProfissional(getView());
             }
+        }
+    }
+
+    private void changeMyLocation() {
+        if (myLocation == null){
+            myLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        }
+
+        if (myLocation == null){
+            this.myLocation = this.ranchucrutesMaps.getmMap().getMyLocation();
+        }
+
+        if (this.myLocation == null){
+                AndroidUtils.showMessageErroDlg(
+                        "Não foi possível pegar sua localização. \n Verique se o GPS está ativo.", getActivity());
+        }else{
+            ranchucrutesMaps.setMyLocation(this.myLocation);
         }
     }
 

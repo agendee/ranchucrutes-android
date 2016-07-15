@@ -79,9 +79,6 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
             pbSearch.setVisibility(View.INVISIBLE);
             return;
         }
-
-
-
         if (q.length() < 5 ){
             mListFilter.clear();
             return;
@@ -91,6 +88,7 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
         pbSearch.setVisibility(View.VISIBLE);
 
         LatLngBounds bounds = new LatLngBounds( new LatLng(-23.769084, -45.458059 ), new LatLng( -23.231440, -47.219174 ) );
+
         List<Integer> filterTypes = new ArrayList<Integer>();
         filterTypes.add(Place.TYPE_STREET_ADDRESS);
         filterTypes.add(Place.TYPE_NEIGHBORHOOD);

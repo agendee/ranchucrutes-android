@@ -30,7 +30,7 @@ public class RanchucrutesConstants {
     public static final String PARAM_CONFIMAR_AGENDAMENTO = "confirmarAgendamentoParam";
     public static final String PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY = "openFragmentMainActivity";
     public static final String PARAM_AGENDAMENTO = "agendamentoParam";
-
+    public static final String PARAM_QUERY_TEXT = "queryText";
 
     /*CONSTANTES PARA CONTROLE DE ACTIVITYS*/
     public static final int FINISH_TO_OPEN_HOME = 1000;

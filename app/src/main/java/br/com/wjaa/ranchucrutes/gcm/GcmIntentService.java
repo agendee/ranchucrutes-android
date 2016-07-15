@@ -1,15 +1,14 @@
 package br.com.wjaa.ranchucrutes.gcm;
 
-import br.com.wjaa.ranchucrutes.activity.FacadeActivity;
-import br.com.wjaa.ranchucrutes.activity.MainActivity;
-import br.com.wjaa.ranchucrutes.utils.NotificationCustomUtil;
-import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
+import br.com.wjaa.ranchucrutes.activity.FacadeActivity;
+import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
 
 
 public class GcmIntentService extends IntentService {

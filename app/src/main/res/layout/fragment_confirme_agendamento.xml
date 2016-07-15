@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/edtConfirmeCode"
         android:hint="Confirme aqui o código"
+        android:inputType="number"
         android:layout_gravity="center"
         android:singleLine="true"
         style="@style/edt"/>

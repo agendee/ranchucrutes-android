@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -64,6 +65,9 @@ public class AgendamentoActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.fab)
     private FloatingActionButton fab;
+
+    @InjectView(R.id.progressBar)
+    private LinearLayout progressBar;
 
     @Inject
     private AgendamentoService agendamentoService;
@@ -242,7 +246,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                                 public void onPageScrollStateChanged(int state) {
                                 }
                             });
-
+                            progressBar.setVisibility(View.INVISIBLE);
                             tabLayout.setViewPager(viewPager);
                         }
                     });
@@ -293,6 +297,7 @@ public class AgendamentoActivity extends RoboActionBarActivity {
                     btnLigar.setVisibility(View.INVISIBLE);
                 }
 
+                progressBar.setVisibility(View.INVISIBLE);
                 fab.setVisibility(View.INVISIBLE);
                 tabLayout.setVisibility(View.INVISIBLE);
                 viewPager.setVisibility(View.INVISIBLE);
@@ -328,5 +333,14 @@ public class AgendamentoActivity extends RoboActionBarActivity {
             }
 
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        //jogando o setresult como cancelado porque a activity anterior espera
+        //que o paciente concretize o agendamento e irá mostrar a lista de agendamentos.
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 }

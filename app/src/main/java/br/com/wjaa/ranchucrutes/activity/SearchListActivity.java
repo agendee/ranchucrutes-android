@@ -28,6 +28,7 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.adapter.SearchingListAdapter;
 import br.com.wjaa.ranchucrutes.listener.RecyclerViewOnClickListenerHack;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
+import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 
 /**
@@ -42,6 +43,7 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
     protected List<SearchingListModel> mList;
     protected List<SearchingListModel> mListCache;
     protected List<SearchingListModel> mListFilter;
+    protected String queryText;
 
     private Toolbar toolbar;
 
@@ -63,7 +65,16 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         if (bundle != null){
             mList = bundle.getParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH);
             mListFilter = cloneList(mList);
+
+            queryText = (String) bundle.getSerializable(RanchucrutesConstants.PARAM_QUERY_TEXT);
+
+            if (StringUtils.isBlank(queryText)){
+                queryText = "Pesquise aqui";
+            }
+
         }
+
+
 
         clContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
         pbSearch = (LinearLayout) clContainer.findViewById(R.id.pbSearch);
@@ -137,8 +148,6 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         searchView.setLayoutParams(params);
         itemMenu.expandActionView();
         searchView.onActionViewExpanded();
-        //itemMenu.expandActionView();
-
         return true;
     }
 

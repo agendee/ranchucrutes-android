@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -87,6 +88,8 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
     @Inject
     private RanchucrutesBuffer buffer;
+
+    private MenuItem menuItem;
 
     private boolean isNotActivityResult = true;
 
@@ -244,10 +247,24 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.search) {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home, menu);
+        this.menuItem = menu.findItem(R.id.search);
+        this.menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                pesquisaProfissionalFragment.openDialogFindEspecialidade();
+                return true;
+            }
+        });
+        return true;
     }
 
 
@@ -265,14 +282,17 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     public void displayView(int id) {
 
         //ocultando o fab
-        fab.setVisibility( (id == R.id.navSearch || id == R.id.navExit || id == R.id.navEnter) ? View.VISIBLE : View.INVISIBLE);
+        this.fab.setVisibility( (id == R.id.navSearch || id == R.id.navExit || id == R.id.navEnter || id == R.id.navShare) ? View.VISIBLE : View.INVISIBLE);
+        if (this.menuItem != null){
+            this.menuItem.setVisible(this.fab.getVisibility() == View.VISIBLE);
+        }
         //TODO INATIVO POR ENQUANTO.
         //spinner.setVisibility(id == R.id.navSearch || id == R.id.navExit || id == R.id.navEnter ? View.VISIBLE : View.INVISIBLE);
 
 
-        MenuItem menuItem = navView.getMenu().findItem(id);
-        if (menuItem != null && id != R.id.navExit && id != R.id.navEnter && id != R.id.navSetting){
-            navToolbar.setTitle(menuItem.getTitle());
+        MenuItem navItem = navView.getMenu().findItem(id);
+        if (navItem != null && id != R.id.navExit && id != R.id.navEnter && id != R.id.navSetting && id != R.id.navShare){
+            navToolbar.setTitle(navItem.getTitle());
         }
 
         switch (id){
@@ -311,6 +331,14 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
             case R.id.navEnter:
                 AndroidUtils.openActivity(this, LoginActivity.class);
                 break;
+            case R.id.navShare:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "http://www.agendee.com.br/apk/version/agendee1.0.apk");
+                shareIntent.putExtra(Intent.EXTRA_TITLE, "Agendee - aplicativo de agendamento.");
+                startActivity(Intent.createChooser(shareIntent, "Compartilhe o Agendee"));
+                break;
+
             default:
                 break;
         }
@@ -392,6 +420,11 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         this.isNotActivityResult = false;
+
+        if (resultCode == RESULT_CANCELED){
+            return;
+        }
+
         if (requestCode == RanchucrutesConstants.FINISH_TO_OPEN_HOME){
             displayView(R.id.navSearch);
         }else if (requestCode == RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST){

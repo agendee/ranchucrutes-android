@@ -34,8 +34,6 @@ import br.com.wjaa.ranchucrutes.vo.PacienteVo;
 public class GPlusServiceImpl implements GPlusService, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int RC_SIGN_IN = 0;
-    // Logcat tag
-    private static final String TAG = "MainActivity";
 
     // Profile pic image size in pixels
     private static final int PROFILE_PIC_SIZE = 400;
@@ -158,8 +156,6 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
     public void onClick(View v) {
         AndroidUtils.showWaitDlg("Aguarde, comunicando com o GPlus...",context);
         gplusClient.connect();
-
-        //signInWithGplus();
     }
 
 
@@ -187,7 +183,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 PacienteEntity usuario = loginService.registrarAtualizarUsuario(pacienteVo);
                 RanchucrutesSession.setUsuario(usuario);
                 AndroidUtils.closeWaitDlg();
-                saudarSair(pacienteVo);
+                context.finish();
 
             } catch (LoginException e) {
 
@@ -268,7 +264,7 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
                 paciente.setKeyDeviceGcm(regId);
                 PacienteVo pacienteVo = loginService.criarPaciente(paciente);
                 AndroidUtils.closeWaitDlg();
-                saudarSair(pacienteVo);
+                context.finish();
             }  catch (NovoPacienteException e) {
                 Log.e("LoginFrament",e.getMessage(),e);
                 AndroidUtils.closeWaitDlg();
@@ -278,23 +274,4 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
         }
     }
 
-
-    private void saudarSair(PacienteVo pacienteVo) {
-        context.finish();
-        /*if (pacienteVo != null){
-            AndroidUtils.showMessageSuccessDlgOnUiThread("Olá " + pacienteVo.getNome(), context, new DialogCallback() {
-
-                @Override
-                public void confirm() {
-
-                }
-
-                @Override
-                public void cancel() {
-
-                }
-            });
-
-        }*/
-    }
 }

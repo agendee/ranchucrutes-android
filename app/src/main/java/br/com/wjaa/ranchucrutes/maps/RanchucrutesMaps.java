@@ -194,6 +194,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
             Log.e("RanchucrutesMaps","Erro no onmapsready",ex);
         }
 
+
     }
 
 

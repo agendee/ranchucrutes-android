@@ -37,7 +37,7 @@ public class FacadeActivity extends RoboActivity implements Runnable {
             Log.i("FacadeActivity", "ranchucrutes está rodando sim.....");
             Bundle bundle = new Bundle();
             bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, R.id.navAppointment);
-            AndroidUtils.openActivity(this, MainActivity.class, bundle);
+            AndroidUtils.openActivity(this, HomeActivity.class, bundle);
             finish();
             return;
         }else{
@@ -66,7 +66,7 @@ public class FacadeActivity extends RoboActivity implements Runnable {
     public void run(){
         Bundle bundle = new Bundle();
         bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, 2);
-        AndroidUtils.openActivity(this, MainActivity.class, bundle);
+        AndroidUtils.openActivity(this, HomeActivity.class, bundle);
         finish();
     }
 }

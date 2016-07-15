@@ -28,6 +28,11 @@
             android:id="@+id/navSetting"
             android:icon="@drawable/ic_settings_white_18dp"
             android:title="Configurações" />
+
+        <item
+            android:id="@+id/navShare"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Compartilhar" />
         <item
             android:id="@+id/navExit"
             android:icon="@drawable/ic_exit_to_app_white_18dp"

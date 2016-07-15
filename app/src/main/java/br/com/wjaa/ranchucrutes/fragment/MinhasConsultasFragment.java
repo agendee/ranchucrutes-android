@@ -69,7 +69,7 @@ public class MinhasConsultasFragment extends RoboListFragment {
                     Integer idPaciente = RanchucrutesSession.getUsuario().getId();
                     AndroidUtils.showWaitDlgOnUiThread("Aguarde carregando agendamentos...", getActivity());
                     final AgendamentoVo[] agendamentoVos = agendamentoService.getAgendamentos(idPaciente.longValue());
-                    if (agendamentoVos != null){
+                    if (agendamentoVos != null && getActivity() != null){
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
