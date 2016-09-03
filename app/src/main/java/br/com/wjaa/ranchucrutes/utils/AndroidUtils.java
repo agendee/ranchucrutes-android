@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -31,6 +32,21 @@ public class AndroidUtils {
     public static boolean gpsActive(Context c) {
         LocationManager manager = (LocationManager) c.getSystemService( Context.LOCATION_SERVICE );
         return manager.isProviderEnabled( LocationManager.GPS_PROVIDER);
+    }
+
+    public static void alertGps(final Activity activity) {
+        AndroidUtils.showConfirmDlg("GPS desligado!", "Seu GPS está inativo, deseja ativa-lo agora ?",activity, new DialogCallback() {
+            @Override
+            public void confirm() {
+                final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                activity.startActivity(intent);
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+        });
     }
 
 

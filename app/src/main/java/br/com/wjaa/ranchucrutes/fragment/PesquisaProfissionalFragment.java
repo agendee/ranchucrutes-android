@@ -1,16 +1,11 @@
 package br.com.wjaa.ranchucrutes.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,23 +13,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.inject.Inject;
 
 import java.io.IOException;
@@ -45,7 +32,6 @@ import java.util.Locale;
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
 import br.com.wjaa.ranchucrutes.activity.SearchPlacesListActivity;
-import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.exception.ProfissionalServiceException;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
@@ -58,15 +44,17 @@ import br.com.wjaa.ranchucrutes.vo.EspecialidadeVo;
 import br.com.wjaa.ranchucrutes.vo.LocationVo;
 import br.com.wjaa.ranchucrutes.vo.PlacesVo;
 import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
-import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaProfissionalVo;
 import roboguice.fragment.RoboFragment;
-import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 
 /**
  * @author Wagner Jeronimo
  */
-public class PesquisaProfissionalFragment extends RoboFragment implements GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class PesquisaProfissionalFragment extends RoboFragment implements
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener
+        {
 
     private static final String TAG = PesquisaProfissionalFragment.class.getSimpleName();
     private EspecialidadeVo especSelecionada;
@@ -80,6 +68,8 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
     private RanchucrutesMaps ranchucrutesMaps;
     private Location myLocation;
     private GoogleApiClient mGoogleApiClient;
+    private ResultadoBuscaClinicaVo resultadoBuscaClinicaVo = null;
+    private boolean gpsPermissionAuthorized = false;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -91,7 +81,6 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_pesquisa_profissional, container, false);
-
     }
 
     @Override
@@ -129,8 +118,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
         this.createMaps();
     }
     private void createMaps() {
-        SupportMapFragment mapFragment;
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this.ranchucrutesMaps);
     }
 
@@ -154,29 +142,32 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
 
     @Override
     public boolean onMyLocationButtonClick() {
-
         boolean isOn = AndroidUtils.gpsActive(this.getActivity());
-
         if (!isOn){
-            AndroidUtils.showConfirmDlg("GPS desligado!", "Seu GPS está inativo, deseja ativa-lo agora ?", getActivity(), new DialogCallback() {
-                @Override
-                public void confirm() {
-                    final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void cancel() {
-
-                }
-            });
-
+            AndroidUtils.alertGps(this.getActivity());
         }else{
             changeMyLocation();
             return true;
         }
-
         return false;
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //so chama o super caso alguma permissao foi autorizada.
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        gpsPermissionAuthorized = true;
+        if (resultadoBuscaClinicaVo != null){
+            ranchucrutesMaps.setMyLocation(myLocation);
+            ranchucrutesMaps.realoadMarker(resultadoBuscaClinicaVo);
+        }
+        boolean isOn = AndroidUtils.gpsActive(this.getActivity());
+        if (!isOn){
+            AndroidUtils.alertGps(this.getActivity());
+        }
+
     }
 
     @Override
@@ -198,6 +189,8 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
 
     }
 
+
+
     /**
      * Task para procurar profissionais
      *
@@ -209,10 +202,10 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
         @Override
         public Void call() throws Exception {
 
-            ResultadoBuscaClinicaVo resultado = null;
+
             if (myLocation != null){
                 try {
-                    resultado = profissionalService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
+                    resultadoBuscaClinicaVo = profissionalService.find(especSelecionada.getId(), new LocationVo(myLocation.getLatitude(),myLocation.getLongitude()));
                 } catch (ProfissionalServiceException e) {
                     AndroidUtils.closeWaitDlg();
                     AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(),getActivity());
@@ -220,9 +213,9 @@ public class PesquisaProfissionalFragment extends RoboFragment implements Google
                 }
             }
 
-            if (resultado != null) {
-                ranchucrutesMaps.realoadMarker(resultado);
-                if ( CollectionUtils.isNotEmpty(resultado.getClinicas()) ){
+            if (resultadoBuscaClinicaVo != null) {
+                ranchucrutesMaps.realoadMarker(resultadoBuscaClinicaVo);
+                if ( CollectionUtils.isNotEmpty(resultadoBuscaClinicaVo.getClinicas()) ){
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

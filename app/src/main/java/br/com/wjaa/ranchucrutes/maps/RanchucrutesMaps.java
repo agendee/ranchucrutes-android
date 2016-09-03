@@ -1,13 +1,16 @@
 package br.com.wjaa.ranchucrutes.maps;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -53,35 +56,36 @@ import br.com.wjaa.ranchucrutes.vo.ResultadoBuscaClinicaVo;
 public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnMarkerDragListener,
-        OnMapReadyCallback{
+        OnMapReadyCallback {
 
     private static final String TAG = RanchucrutesMaps.class.getSimpleName();
     private static final LatLng CENTER = new LatLng(-23.545616, -46.629299);
 
 
-    private final static Map<Integer,Double> scaleZoom = new HashMap<>(20);
+    private final static Map<Integer, Double> scaleZoom = new HashMap<>(20);
 
     private FragmentActivity context;
     private GoogleMap mMap;
     private Boolean reloadImage = true;
     private Marker mLastSelectedMarker;
-    private Map<String,ClinicaVo> profissionais = new HashMap<String, ClinicaVo>();
+    private Map<String, ClinicaVo> profissionais = new HashMap<String, ClinicaVo>();
     private GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener;
     private Fragment fragment;
     private View mapView;
     private Marker you;
 
-    public RanchucrutesMaps(Context context, Fragment fragment, GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener){
-        this.context = (FragmentActivity)context;
+    public RanchucrutesMaps(Context context, Fragment fragment,
+                            GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener
+                            ) {
+        this.context = (FragmentActivity) context;
         this.fragment = fragment;
         this.onMyLocationButtonClickListener = onMyLocationButtonClickListener;
         mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
-
         View zoomControl = mapView.findViewById(0x1);
         View myLocationControl = mapView.findViewById(0x2);
 
-        this.alignView(zoomControl,true);
-        this.alignView(myLocationControl,false);
+        this.alignView(zoomControl, true);
+        this.alignView(myLocationControl, false);
 
     }
 
@@ -99,24 +103,22 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     @Override
     public void onInfoWindowClick(Marker marker) {
 
-        try{
-            //TODO AQUI PRECISA SER DIFERENTE QUANDO TIVER MAIS DE UM PROFISSIONAL NO MESMO LOCAL.
+        try {
             ClinicaVo c = profissionais.get(marker.getId());
-            if (MapTipoLocalidade.PARTICULAR.equals(c.getMapTipoLocalidade())){
+            if (MapTipoLocalidade.PARTICULAR.equals(c.getMapTipoLocalidade())) {
                 ProfissionalBasicoVo p = c.getProfissionais().get(0);
-                if (StringUtils.isNotBlank(c.getTelefone())){
+                if (StringUtils.isNotBlank(c.getTelefone())) {
                     p.setTelefone(c.getTelefone());
                 }
                 Bundle b = new Bundle();
-                b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL,p);
-                AndroidUtils.openActivity(context,AgendamentoActivity.class, b, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST);
-            }else{
+                b.putSerializable(RanchucrutesConstants.PARAM_PROFISSIONAL, p);
+                AndroidUtils.openActivity(context, AgendamentoActivity.class, b, RanchucrutesConstants.FINISH_CONFIRME_AGENDAMENTO_OPEN_LIST);
+            } else {
                 Bundle b = new Bundle();
-                b.putSerializable(RanchucrutesConstants.PARAM_CLINICA,c);
-                AndroidUtils.openActivity(context,ProfissionalListActivity.class, b);
+                b.putSerializable(RanchucrutesConstants.PARAM_CLINICA, c);
+                AndroidUtils.openActivity(context, ProfissionalListActivity.class, b);
             }
-        }
-        catch(ActivityNotFoundException act){
+        } catch (ActivityNotFoundException act) {
             Log.e("Exemplo de chamada", "falha", act);
         }
 
@@ -149,6 +151,21 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+            fragment.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationButtonClickListener(this.onMyLocationButtonClickListener);
         // Setting an info window adapter allows us to change the both the contents and look of the
@@ -193,7 +210,6 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
         }catch(Exception ex){
             Log.e("RanchucrutesMaps","Erro no onmapsready",ex);
         }
-
 
     }
 
