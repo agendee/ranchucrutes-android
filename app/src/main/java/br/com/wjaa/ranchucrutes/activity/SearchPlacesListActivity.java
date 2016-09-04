@@ -1,33 +1,23 @@
 package br.com.wjaa.ranchucrutes.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -40,7 +30,6 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.callback.DialogCallback;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
-import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import br.com.wjaa.ranchucrutes.view.SearchingListModel;
 import br.com.wjaa.ranchucrutes.vo.PlacesVo;
 
@@ -89,14 +78,15 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
 
         LatLngBounds bounds = new LatLngBounds( new LatLng(-23.769084, -45.458059 ), new LatLng( -23.231440, -47.219174 ) );
 
-        List<Integer> filterTypes = new ArrayList<Integer>();
-        filterTypes.add(Place.TYPE_STREET_ADDRESS);
-        filterTypes.add(Place.TYPE_NEIGHBORHOOD);
-        filterTypes.add(Place.TYPE_POSTAL_CODE);
+        AutocompleteFilter acf = new AutocompleteFilter.Builder()
+                .setTypeFilter(Place.TYPE_STREET_ADDRESS)
+                .setTypeFilter(Place.TYPE_NEIGHBORHOOD)
+                .setTypeFilter(Place.TYPE_POSTAL_CODE)
+                .build();
 
 
         Places.GeoDataApi.getAutocompletePredictions(googleApiClient, q,
-                bounds, AutocompleteFilter.create(filterTypes)).setResultCallback(
+                bounds, acf ).setResultCallback(
                 new ResultCallback<AutocompletePredictionBuffer>() {
                     @Override
                     public void onResult(AutocompletePredictionBuffer buffer) {
@@ -108,7 +98,7 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
 
                         if (buffer.getStatus().isSuccess()) {
                             for (AutocompletePrediction prediction : buffer) {
-                                mListFilter.add(new PlacesVo(prediction.getPlaceId(),prediction.getDescription()));
+                                mListFilter.add(new PlacesVo(prediction.getPlaceId(),prediction.getFullText(null).toString()));
                             }
                         }
 

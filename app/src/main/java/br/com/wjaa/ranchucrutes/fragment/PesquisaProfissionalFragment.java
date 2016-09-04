@@ -34,6 +34,7 @@ import br.com.wjaa.ranchucrutes.activity.SearchGenericListActivity;
 import br.com.wjaa.ranchucrutes.activity.SearchPlacesListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
 import br.com.wjaa.ranchucrutes.exception.ProfissionalServiceException;
+import br.com.wjaa.ranchucrutes.listener.OnMapReadyFinish;
 import br.com.wjaa.ranchucrutes.maps.RanchucrutesMaps;
 import br.com.wjaa.ranchucrutes.service.ProfissionalService;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
@@ -53,8 +54,8 @@ import roboguice.util.RoboAsyncTask;
 public class PesquisaProfissionalFragment extends RoboFragment implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener
-        {
+        GoogleApiClient.OnConnectionFailedListener,
+        OnMapReadyFinish {
 
     private static final String TAG = PesquisaProfissionalFragment.class.getSimpleName();
     private EspecialidadeVo especSelecionada;
@@ -69,12 +70,11 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
     private Location myLocation;
     private GoogleApiClient mGoogleApiClient;
     private ResultadoBuscaClinicaVo resultadoBuscaClinicaVo = null;
-    private boolean gpsPermissionAuthorized = false;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ranchucrutesMaps = new RanchucrutesMaps(getActivity(),this, this);
+        ranchucrutesMaps = new RanchucrutesMaps(getActivity(),this, this,this);
         this.initActivity();
     }
 
@@ -158,7 +158,6 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //so chama o super caso alguma permissao foi autorizada.
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        gpsPermissionAuthorized = true;
         if (resultadoBuscaClinicaVo != null){
             ranchucrutesMaps.setMyLocation(myLocation);
             ranchucrutesMaps.realoadMarker(resultadoBuscaClinicaVo);
@@ -189,6 +188,13 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
 
     }
 
+    @Override
+    public void mapReadyFinish() {
+        if (resultadoBuscaClinicaVo != null){
+            ranchucrutesMaps.setMyLocation(myLocation);
+            ranchucrutesMaps.realoadMarker(resultadoBuscaClinicaVo);
+        }
+    }
 
 
     /**

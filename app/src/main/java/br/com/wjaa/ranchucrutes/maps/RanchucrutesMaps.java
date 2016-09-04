@@ -40,6 +40,7 @@ import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.activity.AgendamentoActivity;
 import br.com.wjaa.ranchucrutes.activity.ProfissionalListActivity;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesSession;
+import br.com.wjaa.ranchucrutes.listener.OnMapReadyFinish;
 import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.CollectionUtils;
@@ -73,13 +74,15 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
     private Fragment fragment;
     private View mapView;
     private Marker you;
+    private OnMapReadyFinish onMapReadyFinish;
 
     public RanchucrutesMaps(Context context, Fragment fragment,
-                            GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener
-                            ) {
+                            GoogleMap.OnMyLocationButtonClickListener onMyLocationButtonClickListener,
+                            OnMapReadyFinish onMapReadyFinish) {
         this.context = (FragmentActivity) context;
         this.fragment = fragment;
         this.onMyLocationButtonClickListener = onMyLocationButtonClickListener;
+        this.onMapReadyFinish = onMapReadyFinish;
         mapView = fragment.getChildFragmentManager().findFragmentById(R.id.map).getView();
         View zoomControl = mapView.findViewById(0x1);
         View myLocationControl = mapView.findViewById(0x2);
@@ -209,6 +212,10 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
             }
         }catch(Exception ex){
             Log.e("RanchucrutesMaps","Erro no onmapsready",ex);
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M ) {
+            onMapReadyFinish.mapReadyFinish();
         }
 
     }

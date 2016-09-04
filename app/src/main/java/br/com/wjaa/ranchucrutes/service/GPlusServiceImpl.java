@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,12 +54,27 @@ public class GPlusServiceImpl implements GPlusService, GoogleApiClient.Connectio
     @Override
     public void onCreate(Activity context) {
         this.context = context;
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
         // Builds single client object that connects to Drive and Google+
+       /* gplusClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addScope(Plus.SCOPE_PLUS_LOGIN).build();*/
+
         gplusClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+
+
+        /*gplusClient = new GoogleApiClient.Builder(context)
+                //.enableAutoManage(context, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();*/
     }
 
 

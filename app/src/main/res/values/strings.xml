@@ -12,16 +12,6 @@
     <string name="msg_nenhumProfissionalEncontrado">Nenhum profissional encontrado com essa especialidade na sua região.</string>
     <string name="action_menu">Menu Principal</string>
 
-    <string-array name="nav_drawer_items">
-        <item>Home</item>
-        <item>Cardápio</item>
-        <item>Notícias</item>
-        <item>Eventos</item>
-        <item>Locais</item>
-        <item>Anúncios</item>
-    </string-array>
-
-
     <string name="title_activity_main2">Main2Activity</string>
 
     <string name="title_section1">Section 1</string>
