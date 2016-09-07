@@ -146,7 +146,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
         if (!isOn){
             AndroidUtils.alertGps(this.getActivity());
         }else{
-            changeMyLocation();
+            changeMyLocation(false);
             return true;
         }
         return false;
@@ -295,14 +295,20 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
                 }
             }
         }else if (resultCode == RanchucrutesConstants.FINISH_MY_LOCATION){
-            changeMyLocation();
+            changeMyLocation(true);
             if (podeBuscar()){
                 pesquisarProfissional(getView());
             }
         }
     }
 
-    private void changeMyLocation() {
+    private void changeMyLocation(boolean forceChange) {
+        if (myLocation != null && forceChange){
+            myLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        }
+
+
         if (myLocation == null){
             myLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);

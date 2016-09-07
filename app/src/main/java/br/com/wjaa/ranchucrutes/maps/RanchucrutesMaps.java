@@ -497,7 +497,7 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(you.getPosition(), zoom -2));
                 //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(resultado.getClinicaMaisProxima().getLatitude(),resultado.getClinicaMaisProxima().getLongitude()), getZoom(resultado.getDistanceInKm())));
                 AndroidUtils.closeWaitDlg();
-                Toast.makeText(context, "Encontramos " + countProfissionais + " profissionais!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Encontramos " + countProfissionais + " profissionais!\nPara visualizar mais profissionais, arraste o mapa ou aumente o zoom.", Toast.LENGTH_LONG).show();
 
             } catch (Exception ex) {
                 ex.printStackTrace();
