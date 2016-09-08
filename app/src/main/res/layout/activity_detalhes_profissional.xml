@@ -55,22 +55,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:paddingTop="0dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingBottom="10dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginTop="-22dp"
+        android:paddingTop="0dp">
             <br.com.wjaa.ranchucrutes.view.SlidingTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:fillViewport="true"
-                android:paddingTop="2dp"
+
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:paddingBottom="10dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:paddingBottom="0dp"
+                android:paddingTop="0dp"
+                >
 
             </br.com.wjaa.ranchucrutes.view.SlidingTabLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -81,7 +82,9 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="0dp"
+        android:paddingTop="0dp"
+        />
 
 
 
@@ -126,7 +129,8 @@
         android:visibility="invisible"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
 
     </FrameLayout>
 
