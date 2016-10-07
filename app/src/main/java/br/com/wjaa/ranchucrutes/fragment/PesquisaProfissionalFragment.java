@@ -238,13 +238,6 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
     }
 
 
-    class DialogEspecialidade implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            openDialogFindEspecialidade();
-        }
-    }
-
     public void openDialogFindEspecialidade() {
         Bundle b = new Bundle();
         ArrayList<Parcelable> parcelables = new ArrayList<>();

@@ -1,8 +1,11 @@
 package br.com.wjaa.ranchucrutes.gcm;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -12,7 +15,7 @@ import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
 
 
 public class GcmIntentService extends IntentService {
-	public static final String TAG = "Script";
+	public static final String TAG = GcmIntentService.class.getSimpleName();
 	
 	public GcmIntentService(){
 		super("GcmIntentService");
@@ -42,7 +45,7 @@ public class GcmIntentService extends IntentService {
 				}else if ("CONFIRMATION".equalsIgnoreCase(status)){
 					titulo = "Consulta Confirmada!";
 				}
-
+				Log.d(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
 
 				NotificationUtils.criarNotificacao(GcmIntentService.this,"Notificação Agendee",titulo,msg, FacadeActivity.class);
 

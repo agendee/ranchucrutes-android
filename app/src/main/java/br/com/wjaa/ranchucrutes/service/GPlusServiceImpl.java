@@ -35,7 +35,7 @@ import br.com.wjaa.ranchucrutes.vo.PacienteVo;
  */
 public class GPlusServiceImpl implements GPlusService, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final int RC_SIGN_IN = 0;
+    private static final int RC_SIGN_IN = 9001;
 
     // Profile pic image size in pixels
     private static final int PROFILE_PIC_SIZE = 400;

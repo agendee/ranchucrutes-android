@@ -6,6 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 
 import br.com.wjaa.ranchucrutes.R;
 
@@ -23,25 +28,40 @@ public class NotificationUtils {
 
         // PendingIntent para executar a Activity se o usuario selecionar a notificacao
         PendingIntent p = PendingIntent.getActivity(context, 0, new Intent(context, activity), 0);
+        Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        Notification notification = new Notification.Builder(context)
+        Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.icone)
                 .setTicker(mensagemBarraStatus)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(p)
                 .setContentTitle(titulo)
-                .setContentText(mensagem)
-                .build();
+                .setSound(sound)
+                .setContentText(mensagem);
+
+        Notification notification = builder.build();
+
+        if(Build.VERSION.SDK_INT >= 21) {
+            notification.sound = sound;
+            notification.category = Notification.CATEGORY_ALARM;
+
+            AudioAttributes.Builder attrs = new AudioAttributes.Builder();
+            attrs.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION);
+            attrs.setUsage(AudioAttributes.USAGE_ALARM);
+            notification.audioAttributes = attrs.build();
+        }
+
 
         // Flag utilizada para remover a notificacao da barra de status
         // quando o usuario clicar nela
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // Espera 100ms e vibra por 250ms, espera por mais 100ms e vibra por 500ms
-        notification.vibrate = new long[] { 100, 250, 100, 500 };
+        notification.vibrate = new long[] { 200, 700, 200, 700 };
 
         // id da notificacao
         nm.notify(R.string.app_name, notification);
+
     }
 
 }

@@ -34,7 +34,7 @@ public class RestUtils {
 
         try {
             URL url = new URL("http://" + targetUrl + "/" + RestUtils.createParamsPath(params));
-
+            Log.i(TAG,"Iniciando conexao para = " + url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
@@ -53,9 +53,7 @@ public class RestUtils {
             }
             InputStream in = new BufferedInputStream(conn.getInputStream());
             String response = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
-            System.out.println(response);
-
-
+            Log.i(TAG, "Fim da conexao para " + url);
             Log.d(TAG, "m=getJsonWithParamPath Response: " + response);
 
             return ObjectUtils.fromJson(response, clazzReturn);

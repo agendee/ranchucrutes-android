@@ -1,15 +1,10 @@
 package br.com.wjaa.ranchucrutes.activity;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import com.google.inject.Inject;
-
-import java.util.List;
 
 import br.com.wjaa.ranchucrutes.R;
 import br.com.wjaa.ranchucrutes.buffer.RanchucrutesBuffer;
@@ -65,7 +60,7 @@ public class FacadeActivity extends RoboActivity implements Runnable {
 
     public void run(){
         Bundle bundle = new Bundle();
-        bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, 2);
+        bundle.putInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY, R.id.navAppointment);
         AndroidUtils.openActivity(this, HomeActivity.class, bundle);
         finish();
     }

@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ import br.com.wjaa.ranchucrutes.service.RanchucrutesConstants;
 import br.com.wjaa.ranchucrutes.utils.AndroidUtils;
 import br.com.wjaa.ranchucrutes.utils.GcmUtils;
 import br.com.wjaa.ranchucrutes.utils.ImageUtils;
+import br.com.wjaa.ranchucrutes.utils.NotificationUtils;
 import br.com.wjaa.ranchucrutes.utils.StringUtils;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
@@ -48,7 +50,7 @@ import roboguice.inject.InjectView;
 public class HomeActivity extends RoboActionBarActivity implements SessionChangedListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-
+    private static final String TAG = "HomeActivity";
     @InjectView(R.id.navToolbar)
     private Toolbar navToolbar;
 
@@ -102,27 +104,38 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
         if (RanchucrutesSession.isUsuarioLogado() && isNotActivityResult){
             AndroidUtils.closeWaitDlg();
-            AndroidUtils.showWaitDlg("Aguarde...",HomeActivity.this);
+            Log.i(TAG,"chamando o aguarde...");
+
             new Thread(){
                 @Override
                 public void run() {
                     try {
-
+                        AndroidUtils.showWaitDlgOnUiThread("Aguarde...",HomeActivity.this);
                         Thread.sleep(2000);
                         runOnUiThread(new Runnable(){
                             @Override
                             public void run() {
                                 usuarioChange(RanchucrutesSession.getUsuario());
+                                if (getIntent() != null && getIntent().getExtras() !=null){
+                                    Integer openFragment = getIntent().getExtras().getInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY,R.id.navSearch);
+                                    displayView(openFragment);
+                                }else{
+                                    displayView(R.id.navSearch);
+                                }
+                                Log.i(TAG,"chamando o close wait");
                                 AndroidUtils.closeWaitDlg();
                             }
                         });
 
 
                     } catch (InterruptedException e) {
+                        AndroidUtils.closeWaitDlg();
                         e.printStackTrace();
                     }
                 }
             }.start();
+        }else{
+            displayView(R.id.navSearch);
         }
 
         this.isNotActivityResult = true;
@@ -149,13 +162,6 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     }
 
     private void initPos() {
-        if (getIntent() != null && getIntent().getExtras() !=null){
-            Integer openFragment = getIntent().getExtras().getInt(RanchucrutesConstants.PARAM_OPEN_FRAGMENT_MAIN_ACTIVITY,R.id.navSearch);
-            displayView(openFragment);
-        }else{
-            displayView(R.id.navSearch);
-        }
-
         //TODO se o buffer estiver vazio eh pq o app saiu do estado de sleep e nao conseguiu carregar o buffer e nem logar.
         if ( buffer.empty() ){
             AndroidUtils.closeWaitDlg();
