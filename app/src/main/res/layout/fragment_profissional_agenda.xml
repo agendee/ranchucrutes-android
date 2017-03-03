@@ -9,7 +9,7 @@
         android:id="@+id/grLyButtons"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="br.com.wjaa.ranchucrutes.fragment.ProfissionalAgendaFragment"
+        tools:context="br.com.agendee.fragment.ProfissionalAgendaFragment"
         android:background="@color/cardview_dark_background"
         android:columnCount="4"
         >

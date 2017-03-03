@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <br.com.wjaa.ranchucrutes.components.RoundedImageView
+    <br.com.agendee.components.RoundedImageView
         android:id="@+id/navFotoUser"
         android:layout_width="70dp"
         android:layout_height="70dp"

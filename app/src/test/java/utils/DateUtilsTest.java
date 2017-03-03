@@ -1,8 +1,8 @@
 package br.com.wjaa.ranchucrutes.utils;
 
-import android.test.InstrumentationTestCase;
-
 import java.util.Calendar;
+
+import br.com.agendee.utils.DateUtils;
 
 /**
  * Created by wagner on 18/03/16.

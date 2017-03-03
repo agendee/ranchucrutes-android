@@ -28,14 +28,14 @@
         android:orientation="vertical"
         android:layout_marginTop="10dp">
 
-        <br.com.wjaa.ranchucrutes.components.RoundedImageView
+        <br.com.agendee.components.RoundedImageView
             android:id="@+id/badge"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:src="@drawable/unknow">
-        </br.com.wjaa.ranchucrutes.components.RoundedImageView>
+        </br.com.agendee.components.RoundedImageView>
 
     </LinearLayout>
     <LinearLayout

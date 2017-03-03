@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context=".activity.AgendamentoActivity"
+    tools:context="br.com.agendee.activity.AgendamentoActivity"
     android:fitsSystemWindows="true">
 
 
@@ -60,7 +60,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_marginTop="-22dp"
         android:paddingTop="0dp">
-            <br.com.wjaa.ranchucrutes.view.SlidingTabLayout
+            <br.com.agendee.view.SlidingTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -73,7 +73,7 @@
                 android:paddingTop="0dp"
                 >
 
-            </br.com.wjaa.ranchucrutes.view.SlidingTabLayout>
+            </br.com.agendee.view.SlidingTabLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.v4.view.ViewPager
