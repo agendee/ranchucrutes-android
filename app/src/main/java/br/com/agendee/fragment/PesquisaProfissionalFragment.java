@@ -25,8 +25,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -259,6 +262,7 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
             }
             b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
             b.putSerializable(RanchucrutesConstants.PARAM_QUERY_TEXT, "Digite uma profissão");
+            b.putSerializable(RanchucrutesConstants.PARAM_TITLE, "Escolha um profissional");
             AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchGenericListActivity.class, b);
         } else {
             if (!AndroidUtils.internetActive(this.getContext())) {
@@ -277,17 +281,14 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
         Bundle b = new Bundle();
         ArrayList<Parcelable> parcelables = new ArrayList<>();
 
-            //TODO AQUI PRECISA RODAR EM UMA THREAD
-        if (especialidades == null) {
-            especialidades = ranchucrutesService.getEspecialidadesByProfissao(profissaoSelecionada.getId());
-        }
 
         if (especialidades != null) {
-            for (EspecialidadeVo e : especialidades) {
+            for (EspecialidadeVo e : filtraPorProfissao(especialidades,profissaoSelecionada)) {
                 parcelables.add(e);
             }
             b.putParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH, parcelables);
             b.putSerializable(RanchucrutesConstants.PARAM_QUERY_TEXT, "Digite a especialidade");
+            b.putSerializable(RanchucrutesConstants.PARAM_TITLE, "Escolha uma especialidade");
             AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchGenericListActivity.class, b);
         } else {
             if (!AndroidUtils.internetActive(this.getContext())) {
@@ -300,8 +301,23 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
         }
     }
 
+    private EspecialidadeVo[] filtraPorProfissao(EspecialidadeVo[] especialidades, ProfissaoVo profissaoSelecionada) {
+        List<EspecialidadeVo> filteredEspec = new ArrayList<>();
+        for (EspecialidadeVo vo: especialidades) {
+            if (vo.getProfissao().getId().equals(profissaoSelecionada.getId())){
+                filteredEspec.add(vo);
+            }
+
+        }
+
+        return filteredEspec.toArray(new EspecialidadeVo[]{});
+    }
+
     public void openDialogFindPlace() {
-        AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchPlacesListActivity.class);
+        Bundle b = new Bundle();
+
+        b.putSerializable(RanchucrutesConstants.PARAM_TITLE, "Pesquise um endereço");
+        AndroidUtils.openActivityFromFragment(PesquisaProfissionalFragment.this, SearchPlacesListActivity.class, b);
     }
 
     private boolean podeBuscar() {

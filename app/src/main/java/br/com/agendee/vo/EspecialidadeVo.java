@@ -14,6 +14,7 @@ public class EspecialidadeVo implements Serializable, SearchingListModel {
     private Integer id;
     private String nome;
     private Boolean popular;
+    private ProfissaoVo profissao;
 
     public EspecialidadeVo(Parcel parcel) {
         setId(parcel.readInt());
@@ -70,4 +71,12 @@ public class EspecialidadeVo implements Serializable, SearchingListModel {
             return new EspecialidadeVo[size];
         }
     };
+
+    public ProfissaoVo getProfissao() {
+        return profissao;
+    }
+
+    public void setProfissao(ProfissaoVo profissao) {
+        this.profissao = profissao;
+    }
 }

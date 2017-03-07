@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,9 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.Inflater;
 
+import br.com.agendee.utils.CollectionUtils;
 import br.com.agendee.view.SearchingListModel;
 import br.com.agendee.R;
 import br.com.agendee.activity.callback.DialogCallback;
@@ -55,6 +58,14 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                 .addOnConnectionFailedListener( this )
                 .build();
 
+        createViewDefault();
+    }
+
+    private void createViewDefault() {
+        if (CollectionUtils.isEmpty(getListCache())){
+            View v = LayoutInflater.from(this).inflate(R.layout.title_view_searchplaces,null);
+            clContainer.addView(v);
+        }
     }
 
     @Override
@@ -102,6 +113,11 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                             }
                         }
 
+                        //removendo a primeira tela
+                        if (clContainer.findViewById(R.id.titleViewSearchPlace) != null){
+                            clContainer.removeView( clContainer.findViewById(R.id.titleViewSearchPlace) );
+                        }
+
                         mRecyclerView.setVisibility(mListFilter.isEmpty() ? View.GONE : View.VISIBLE);
 
                         if( mListFilter.isEmpty() ){
@@ -113,8 +129,6 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
                                 tv.setId(idFake);
                                 tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
                                 tv.setGravity(Gravity.CENTER);
-
-
                                 clContainer.addView(tv);
                             }
                             pbSearch.setVisibility(View.INVISIBLE);
@@ -200,6 +214,11 @@ public class SearchPlacesListActivity extends SearchListActivity implements Goog
             }
         });
         return true;
+    }
+
+    @Override
+    protected boolean isExpandActionView() {
+        return false;
     }
 
     @Override

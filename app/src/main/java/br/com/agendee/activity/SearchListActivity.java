@@ -55,14 +55,13 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         //==========================
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             mList = bundle.getParcelableArrayList(RanchucrutesConstants.PARAM_LIST_SEARCH);
-            mListFilter = cloneList(mList);
+            if (mList != null){
+                mListFilter = cloneList(mList);
+            }
 
             queryText = (String) bundle.getSerializable(RanchucrutesConstants.PARAM_QUERY_TEXT);
 
@@ -70,8 +69,16 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
                 queryText = "Pesquise aqui";
             }
 
+            String title = (String) bundle.getSerializable(RanchucrutesConstants.PARAM_TITLE);
+            if (StringUtils.isNotBlank(title)){
+                toolbar.setTitle(title);
+            }
+
         }
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().set
 
 
         clContainer = (CoordinatorLayout) findViewById(R.id.cl_container);
@@ -144,10 +151,16 @@ public abstract class SearchListActivity extends AppCompatActivity implements Re
         searchView.setIconifiedByDefault(false);
         ActionBar.LayoutParams params = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT);
         searchView.setLayoutParams(params);
-        itemMenu.expandActionView();
-        searchView.onActionViewExpanded();
+
+        if(isExpandActionView()){
+            itemMenu.expandActionView();
+            searchView.onActionViewExpanded();
+        }
+
         return true;
     }
+
+    protected abstract boolean isExpandActionView();
 
     protected abstract CharSequence getQueryHint();
 

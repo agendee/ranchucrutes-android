@@ -1,0 +1,21 @@
+
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/titleViewSearchPlace"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="20dp"
+
+    android:orientation="vertical">
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Pesquise um endereço ou utilize a sua localização para encontrar profissionais ao seu redor."
+      android:textSize="20dp"
+      android:layout_marginTop="70dp"
+      android:gravity="left"/>
+
+</LinearLayout>
+
+

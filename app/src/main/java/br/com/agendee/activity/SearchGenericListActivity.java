@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import br.com.agendee.R;
 import br.com.agendee.utils.StringUtils;
 import br.com.agendee.view.SearchingListModel;
 
@@ -54,6 +55,11 @@ public class SearchGenericListActivity extends SearchListActivity {
         }
 
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected boolean isExpandActionView() {
+        return false;
     }
 
     @Override
