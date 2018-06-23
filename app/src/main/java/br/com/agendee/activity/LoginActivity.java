@@ -57,6 +57,11 @@ public class LoginActivity extends RoboActionBarActivity {
     @InjectView(R.id.txtNovoPaciente)
     private TextView txtNovoPaciente;
 
+
+    @InjectView(R.id.txtRecuperarSenha)
+    private TextView txtRecuperarSenha;
+
+
     @InjectView(R.id.edtLoginEmail)
     private EditText edtLoginEmail;
 
@@ -111,6 +116,20 @@ public class LoginActivity extends RoboActionBarActivity {
             @Override
             public void onClick(View v) {
                 AndroidUtils.openActivity(LoginActivity.this, NovoPacienteActivity.class);
+            }
+        });
+
+
+        txtRecuperarSenha.setText(Html.fromHtml("<u>" + getString(R.string.txtRecuperarSenha) + "</u>"));
+        txtRecuperarSenha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = edtLoginEmail.getText().toString();
+                if (StringUtils.isBlank(email)) {
+                    AndroidUtils.showMessageErroDlg("Preencha seu email para recuperar sua senha.", LoginActivity.this);
+                    return;
+                }
+                new RecuperarSenha(email).start();
             }
         });
 
@@ -188,6 +207,36 @@ public class LoginActivity extends RoboActionBarActivity {
                 AndroidUtils.closeWaitDlg();
                 AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), LoginActivity.this);
             }
+        }
+    }
+
+    class RecuperarSenha extends Thread{
+        private String email;
+
+        public RecuperarSenha(String email){
+            this.email = email;
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                AndroidUtils.showWaitDlgOnUiThread("Aguarde, enviando informações", LoginActivity.this);
+                PacienteVo pacienteVo = loginService.recuperarSenha(email);
+                //loginService.registerKeyDevice(LoginActivity.this, pacienteVo.getKeyDeviceGcm());
+                AndroidUtils.closeWaitDlg();
+
+                AndroidUtils.showMessageDlgOnUiThread("Atenção","Instruções para recuperação de senha enviadas para o email do paciente.", LoginActivity.this, AndroidUtils.AlertType.ALERT_SUCESSO);
+
+            } catch (Exception e) {
+                Log.e("LoginFrament",e.getMessage(),e);
+                AndroidUtils.closeWaitDlg();
+                if(e.getMessage() == null){
+                    AndroidUtils.showMessageErroDlgOnUiThread("Paciente não encontrado!", LoginActivity.this);
+                }else {
+                    AndroidUtils.showMessageErroDlgOnUiThread(e.getMessage(), LoginActivity.this);
+                }
+                }
         }
     }
 

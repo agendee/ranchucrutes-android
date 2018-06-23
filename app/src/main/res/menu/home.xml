@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.agendee.activity.HomeActivity"
     android:theme="@style/AppTheme.ToolbarSearch">
+/*
 
     <item
         android:id="@+id/search"

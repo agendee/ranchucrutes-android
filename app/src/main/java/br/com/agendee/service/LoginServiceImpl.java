@@ -284,6 +284,15 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
+    @Override
+    public PacienteVo recuperarSenha(String email) throws RanchucrutesWSException, RestResponseUnsatisfiedException, RestRequestUnstable, RestException {
+      PacienteVo pacienteVo = new PacienteVo();
+      pacienteVo.setEmail(email);
+      String pacienteJson = ObjectUtils.toJson(pacienteVo);
+      return       RestUtils.postJson(PacienteVo.class, RanchucrutesConstants.WS_HOST,
+                RanchucrutesConstants.END_POINT_RECUPERAR_SENHA_PACIENTE, pacienteJson);
+    }
+
 
 }
 

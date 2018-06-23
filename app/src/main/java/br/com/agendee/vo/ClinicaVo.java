@@ -19,6 +19,7 @@ public class ClinicaVo implements Parcelable, Serializable{
     private String telefone;
     private Double latitude;
     private Double longitude;
+    private Double valorConsulta;
     private List<ProfissionalBasicoVo> profissionais;
     private MapTipoLocalidade mapTipoLocalidade = MapTipoLocalidade.PARTICULAR;
 
@@ -146,5 +147,13 @@ public class ClinicaVo implements Parcelable, Serializable{
         }
 
         return false;
+    }
+
+    public Double getValorConsulta() {
+        return valorConsulta;
+    }
+
+    public void setValorConsulta(Double valorConsulta) {
+        this.valorConsulta = valorConsulta;
     }
 }

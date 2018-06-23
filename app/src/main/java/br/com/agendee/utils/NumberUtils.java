@@ -1,5 +1,8 @@
 package br.com.agendee.utils;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  * Created by wagner on 20/09/15.
  */
@@ -48,4 +51,10 @@ public class NumberUtils {
         return s != null && isPositive(s.longValue());
     }
 
+    public static String formatMoney(Double d){
+    Locale ptBr = new Locale("pt", "BR");
+    NumberFormat nf = NumberFormat.getCurrencyInstance(ptBr);
+    String formatado = nf.format (d);
+    return formatado;
+    }
 }

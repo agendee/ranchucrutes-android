@@ -303,13 +303,15 @@ public class PesquisaProfissionalFragment extends RoboFragment implements
 
     private EspecialidadeVo[] filtraPorProfissao(EspecialidadeVo[] especialidades, ProfissaoVo profissaoSelecionada) {
         List<EspecialidadeVo> filteredEspec = new ArrayList<>();
-        for (EspecialidadeVo vo: especialidades) {
-            if (vo.getProfissao().getId().equals(profissaoSelecionada.getId())){
-                filteredEspec.add(vo);
-            }
-
+        if(profissaoSelecionada == null){
+            return  especialidades;
         }
 
+        for (EspecialidadeVo vo: especialidades) {
+                if (vo.getProfissao().getId().equals(profissaoSelecionada.getId())) {
+                    filteredEspec.add(vo);
+                }
+        }
         return filteredEspec.toArray(new EspecialidadeVo[]{});
     }
 

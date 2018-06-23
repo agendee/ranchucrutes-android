@@ -5,6 +5,9 @@ import android.content.Context;
 import javax.security.auth.login.LoginException;
 
 import br.com.agendee.entity.PacienteEntity;
+import br.com.agendee.exception.RestException;
+import br.com.agendee.exception.RestRequestUnstable;
+import br.com.agendee.exception.RestResponseUnsatisfiedException;
 import br.com.agendee.vo.PacienteVo;
 import br.com.agendee.commons.AuthType;
 import br.com.agendee.exception.NovoPacienteException;
@@ -39,4 +42,6 @@ public interface LoginService {
     PacienteEntity registrarAtualizarUsuario(PacienteVo paciente);
 
     void registerKeyDevice(Context context, String keyRegister);
+
+    PacienteVo recuperarSenha(String email) throws RanchucrutesWSException, RestResponseUnsatisfiedException, RestRequestUnstable, RestException;
 }

@@ -45,6 +45,7 @@ import br.com.agendee.service.RanchucrutesConstants;
 import br.com.agendee.utils.AndroidUtils;
 import br.com.agendee.utils.CollectionUtils;
 import br.com.agendee.utils.ImageUtils;
+import br.com.agendee.utils.NumberUtils;
 import br.com.agendee.utils.StringUtils;
 import br.com.agendee.vo.ClinicaVo;
 import br.com.agendee.vo.MapTipoLocalidade;
@@ -352,8 +353,9 @@ public class RanchucrutesMaps implements GoogleMap.OnMarkerClickListener,
                     }else{
                         telProfissional.setText("Telefone: --");
                     }
-
-
+                    if (clinicaVo.getValorConsulta() != null && clinicaVo.getProfissionais().size() == 1) {
+                        telProfissional.setText("Valor: " + NumberUtils.formatMoney(clinicaVo.getValorConsulta()));
+                    }
                 }
             }else{
 

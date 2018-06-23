@@ -157,6 +157,9 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
 
         //Pós inicio
         initPos();
+
+
+
     }
 
     private void initPos() {
@@ -261,6 +264,7 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
         this.menuItem = menu.findItem(R.id.search);
+
         this.menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -268,6 +272,9 @@ public class HomeActivity extends RoboActionBarActivity implements SessionChange
                 return true;
             }
         });
+        this.menuItem.setVisible(false);
+
+
         return true;
     }
 

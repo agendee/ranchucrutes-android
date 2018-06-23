@@ -36,6 +36,8 @@
 
 
     <string name="txtNovoPaciente"><u>Sou novo e quero me cadastrar</u></string>
+    <string name="txtRecuperarSenha"><u>Recuperar senha</u></string>
+
     <string name="title_activity_profissional_detalhes">Destalhes do Profissional</string>
     <string name="title_activity_confirme_agendamento">Confirmar Agendamento</string>
 

@@ -4,7 +4,9 @@ package br.com.agendee.service;
  * Created by wagner on 10/09/15.
  */
 public class RanchucrutesConstants {
-    public static final String WS_HOST = "rest.agendee.com.br";
+     public static final String WS_HOST = "rest.agendee.com.br";
+
+    // public static final String WS_HOST = "localhost:9191/ranchucrutes-ws";
 
 
     public static final String END_POINT_PROCURAR_PROFISSIONAL = "profissional/search";
@@ -12,6 +14,7 @@ public class RanchucrutesConstants {
     public static final String END_POINT_CRIAR_PACIENTE = "paciente/save";
     public static final String END_POINT_AUTH_PACIENTE = "auth/paciente";
     public static final String END_POINT_ATUALIZAR_PACIENTE = "paciente/update";
+    public static final String END_POINT_RECUPERAR_SENHA_PACIENTE = "paciente/recuperarsenha";
     public static final String END_POINT_CRIAR_AGENDAMENTO = "agendamento/criar";
     public static final String END_POINT_AGENDAMENTO = "agendamento";
     public static final String END_POINT_CONFIRMAR_SOLICITACAO = "agendamento/confirmarSolicitacao";
